@@ -1,15 +1,14 @@
-import React from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
-
-const container = document.getElementById("root");
+import { AppThemeProvider } from "./context/AppTheme";
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
-const root = createRoot(container!);
-
-root.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>,
+createRoot(document.getElementById("root")!).render(
+	<StrictMode>
+		<AppThemeProvider defaultTheme="light">
+			<App />
+		</AppThemeProvider>
+	</StrictMode>,
 );
