@@ -8,7 +8,7 @@ import { SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime";
 import CustomCode from "./components/CustomCode";
 import "github-markdown-css/github-markdown-light.css";
-import hljs from "highlight.js";
+import hljs from "./lib/custom-highlight";
 
 function App() {
 	const [input, setInput] = useState("");
