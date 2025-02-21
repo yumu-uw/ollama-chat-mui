@@ -50,9 +50,13 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
-func (a *App) SendChat(chatHistory []Chat) string {
+func (a *App) LoadConfig() model.ConfigJson {
+	return a.config
+}
+
+func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []Chat) string {
 	data := RequestData{
-		Model:    a.config.OllamaEndpoints[0].LLMModels[0].ModelName,
+		Model:    ollamaModel,
 		Messages: chatHistory,
 		Stream:   true,
 	}
@@ -62,7 +66,7 @@ func (a *App) SendChat(chatHistory []Chat) string {
 		return err.Error()
 	}
 
-	req, err := http.NewRequest("POST", a.config.OllamaEndpoints[0].Endpoint+"/api/chat", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", ollamaURL+"/api/chat", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return err.Error()
 	}

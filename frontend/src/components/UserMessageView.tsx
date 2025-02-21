@@ -1,5 +1,6 @@
-import { AppThemeContext } from "@/context/AppTheme";
-import { memo, use } from "react";
+import { configAtom } from "@/atom/configAtom";
+import { useAtomValue } from "jotai";
+import { memo } from "react";
 import { Box, Flex, styled } from "styled-system/jsx";
 
 const UserMsgBox = styled(Box, {
@@ -25,14 +26,10 @@ type Props = {
 };
 
 export const UserMessageView = memo(({ message }: Props) => {
-	const context = use(AppThemeContext);
-	if (!context) {
-		throw new Error("Header must be used within a ThemeProvider");
-	}
-	const { appTheme } = context;
+	const config = useAtomValue(configAtom);
 	return (
 		<Flex justify={"flex-end"}>
-			<UserMsgBox variants={appTheme}>
+			<UserMsgBox variants={config?.AppTheme}>
 				{message.split(/\r?\n/).map((v, index) => {
 					return (
 						<styled.p

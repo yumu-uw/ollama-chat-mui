@@ -1,5 +1,6 @@
-import { AppThemeContext } from "@/context/AppTheme";
-import { use, useEffect, useRef } from "react";
+import { configAtom } from "@/atom/configAtom";
+import { useAtomValue } from "jotai";
+import { useEffect, useRef } from "react";
 import { Circle, Divider, Flex, VStack, styled } from "styled-system/jsx";
 
 const MessageInputAreaVStack = styled(VStack, {
@@ -38,12 +39,7 @@ export const MessageInputArea = ({
 	setPrevInput,
 	sendChat,
 }: Props) => {
-	const context = use(AppThemeContext);
-	if (!context) {
-		throw new Error("Header must be used within a ThemeProvider");
-	}
-	const { appTheme } = context;
-
+	const config = useAtomValue(configAtom);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	// テキストエリアの高さを自動調節
@@ -56,7 +52,7 @@ export const MessageInputArea = ({
 	}, [input]);
 
 	return (
-		<MessageInputAreaVStack variants={appTheme}>
+		<MessageInputAreaVStack variants={config?.AppTheme}>
 			<styled.textarea
 				ref={textareaRef}
 				w={"100%"}

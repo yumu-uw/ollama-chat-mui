@@ -1,6 +1,7 @@
 package model
 
 type ConfigJson struct {
+	AppTheme        string           `json:"AppTheme"`
 	OllamaEndpoints []OllamaEndpoint `json:"OllamaEndpoints"`
 }
 
@@ -10,8 +11,8 @@ type LLMModel struct {
 }
 
 type OllamaEndpoint struct {
-	Name      string      `json:"Name"`
-	Endpoint  string      `json:"Endpoint"`
+	Name      string     `json:"Name"`
+	Endpoint  string     `json:"Endpoint"`
 	LLMModels []LLMModel `json:"LLMModels"`
-	Default   bool        `json:"Default"`
+	Default   bool       `json:"Default"`
 }
