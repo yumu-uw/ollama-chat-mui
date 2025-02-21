@@ -16,9 +16,8 @@ import (
 
 // App struct
 type App struct {
-	ctx            context.Context
-	messageHistory []Chat
-	config         model.ConfigJson
+	ctx    context.Context
+	config model.ConfigJson
 }
 
 // NewApp creates a new App application struct
@@ -32,20 +31,14 @@ func NewApp(config model.ConfigJson) *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	a.messageHistory = []Chat{
-		{
-			Role:    "system",
-			Content: "You are a helpful, respectful and honest coding assistant. Always reply using markdown. Be clear and concise, prioritizing brevity in your responses.",
-		},
-	}
 }
 
 func (a *App) GetConfig() model.ConfigJson {
 	return a.config
 }
 
-func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []Chat) string {
-	data := RequestData{
+func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model.Chat) string {
+	data := model.RequestData{
 		Model:    ollamaModel,
 		Messages: chatHistory,
 		Stream:   true,
@@ -74,7 +67,7 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []Chat)
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
 		for _, v := range strings.Split(scanner.Text(), "\n") {
-			var obj ResponseData
+			var obj model.ResponseData
 			if err := json.Unmarshal([]byte(v), &obj); err != nil {
 				panic(err)
 			}
@@ -89,21 +82,4 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []Chat)
 	}
 	runtime.EventsEmit(a.ctx, "deleteEvent", output)
 	return ""
-}
-
-type Chat struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
-}
-
-type RequestData struct {
-	Model    string `json:"model"`
-	Messages []Chat `json:"messages"`
-	Stream   bool   `json:"stream"`
-}
-
-type ResponseData struct {
-	Message struct {
-		Content string `json:"content"`
-	} `json:"message"`
 }

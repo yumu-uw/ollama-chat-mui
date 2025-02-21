@@ -1,4 +1,4 @@
-export namespace main {
+export namespace model {
 	
 	export class Chat {
 	    role: string;
@@ -14,11 +14,6 @@ export namespace main {
 	        this.content = source["content"];
 	    }
 	}
-
-}
-
-export namespace model {
-	
 	export class LLMModel {
 	    ModelName: string;
 	    Default: boolean;
