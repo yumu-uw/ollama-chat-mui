@@ -1,4 +1,4 @@
-import { configAtom } from "@/atom/configAtom";
+import { appThemeAtom } from "@/atom/appThemeAtom";
 import { supportLangs } from "@/lib/custom-highlight";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
@@ -33,7 +33,7 @@ const MessageInputAreaHStack = styled(HStack, {
 });
 
 export default function CustomCode({ classAttr, value }: Props) {
-	const config = useAtomValue(configAtom);
+	const appTheme = useAtomValue(appThemeAtom);
 
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
 
@@ -55,13 +55,13 @@ export default function CustomCode({ classAttr, value }: Props) {
 	};
 	return (
 		<Flex direction={"column"}>
-			<MessageInputAreaHStack variants={config?.AppTheme}>
+			<MessageInputAreaHStack variants={appTheme}>
 				{classAttr?.split("-")[1]}
 				<Spacer />
 				{!hasCopied && (
 					<Box verticalAlign={"middle"}>
 						<styled.button onClick={handleCopyButton}>
-							{config?.AppTheme === "light" ? (
+							{appTheme === "light" ? (
 								<styled.img
 									display={"inline!"}
 									pr={"0.5em"}
@@ -80,7 +80,7 @@ export default function CustomCode({ classAttr, value }: Props) {
 				)}
 				{hasCopied && (
 					<Box verticalAlign={"middle"}>
-						{config?.AppTheme === "light" ? (
+						{appTheme === "light" ? (
 							<styled.img
 								display={"inline!"}
 								pr={"0.5em"}

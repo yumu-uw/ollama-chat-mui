@@ -2,18 +2,20 @@ import { useEffect, useRef, useState } from "react";
 import { Box, Container, Flex } from "styled-system/jsx";
 import "./github-markdown.css";
 import { useAtom } from "jotai";
-import { LoadConfig, SendChat } from "wailsjs/go/main/App";
+import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
+import { appThemeAtom } from "./atom/appThemeAtom";
 import { configAtom } from "./atom/configAtom";
 import ChatView from "./components/ChatView";
 import { MarkdownView } from "./components/MarkdownView";
 import { MessageInputArea } from "./components/MessageInputArea";
 import { TopMenuBar } from "./components/TopMenuBar";
 import { UserMessageView } from "./components/UserMessageView";
-import type { AppTheme, ConfigModel } from "./model/configModel";
+import type { ConfigModel } from "./model/configModel";
 import type { Chat, ResponseData } from "./model/dataModels";
 
 function App() {
+	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
 	const [config, setConfig] = useAtom(configAtom);
 
 	const [input, setInput] = useState("");
@@ -32,26 +34,23 @@ function App() {
 	// 設定ファイルの情報を取得
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		LoadConfig().then((data) => {
-			let appTheme: AppTheme;
+		GetConfig().then((data) => {
 			switch (data.AppTheme) {
 				case "light":
-					appTheme = "light";
+					setAppTheme("light");
 					break;
 				case "dark":
-					appTheme = "dark";
+					setAppTheme("dark");
 					break;
 				default:
-					appTheme = "light";
+					setAppTheme("light");
 					break;
 			}
-
+			document.body.setAttribute("data-theme", data.AppTheme);
 			const config: ConfigModel = {
 				OllamaEndpoints: data.OllamaEndpoints,
-				AppTheme: appTheme,
 			};
 			setConfig(config);
-			// console.log(config);
 		});
 	}, []);
 

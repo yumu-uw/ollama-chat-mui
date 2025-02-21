@@ -1,4 +1,4 @@
-import { configAtom } from "@/atom/configAtom";
+import { appThemeAtom } from "@/atom/appThemeAtom";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef } from "react";
 import { Circle, Divider, Flex, VStack, styled } from "styled-system/jsx";
@@ -39,7 +39,7 @@ export const MessageInputArea = ({
 	setPrevInput,
 	sendChat,
 }: Props) => {
-	const config = useAtomValue(configAtom);
+	const appTheme = useAtomValue(appThemeAtom);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
 	// テキストエリアの高さを自動調節
@@ -52,7 +52,7 @@ export const MessageInputArea = ({
 	}, [input]);
 
 	return (
-		<MessageInputAreaVStack variants={config?.AppTheme}>
+		<MessageInputAreaVStack variants={appTheme}>
 			<styled.textarea
 				ref={textareaRef}
 				w={"100%"}

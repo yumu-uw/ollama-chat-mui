@@ -3,6 +3,6 @@
 import {model} from '../models';
 import {main} from '../models';
 
-export function LoadConfig():Promise<model.ConfigJson>;
+export function GetConfig():Promise<model.ConfigJson>;
 
 export function SendChat(arg1:string,arg2:string,arg3:Array<main.Chat>):Promise<string>;

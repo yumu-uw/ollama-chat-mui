@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 
 	"ollama-chat/pkg/model"
@@ -23,16 +22,7 @@ type App struct {
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	var config model.ConfigJson
-	// if buildMode == "dev" {
-	f, err := os.Open("devconf/config.json")
-	if err != nil {
-		panic(err)
-	}
-	parser := json.NewDecoder(f)
-	parser.Decode(&config)
-	// }
+func NewApp(config model.ConfigJson) *App {
 	return &App{
 		config: config,
 	}
@@ -50,7 +40,7 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
-func (a *App) LoadConfig() model.ConfigJson {
+func (a *App) GetConfig() model.ConfigJson {
 	return a.config
 }
 

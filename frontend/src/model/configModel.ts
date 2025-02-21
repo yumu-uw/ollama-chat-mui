@@ -1,7 +1,6 @@
-export type AppTheme = "light" | "dark";
+export type AppThemeModel = "light" | "dark";
 
 export type ConfigModel = {
-	AppTheme: AppTheme;
 	OllamaEndpoints: OllamaEndpoint[];
 };
 

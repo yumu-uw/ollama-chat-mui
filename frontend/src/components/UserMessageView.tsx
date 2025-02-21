@@ -1,4 +1,4 @@
-import { configAtom } from "@/atom/configAtom";
+import { appThemeAtom } from "@/atom/appThemeAtom";
 import { useAtomValue } from "jotai";
 import { memo } from "react";
 import { Box, Flex, styled } from "styled-system/jsx";
@@ -26,10 +26,10 @@ type Props = {
 };
 
 export const UserMessageView = memo(({ message }: Props) => {
-	const config = useAtomValue(configAtom);
+	const appTheme = useAtomValue(appThemeAtom);
 	return (
 		<Flex justify={"flex-end"}>
-			<UserMsgBox variants={config?.AppTheme}>
+			<UserMsgBox variants={appTheme}>
 				{message.split(/\r?\n/).map((v, index) => {
 					return (
 						<styled.p
