@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"ollama-chat/pkg/model"
+	ymuwutil "ollama-chat/pkg/ymuw-util"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -81,5 +82,13 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 		panic(err)
 	}
 	runtime.EventsEmit(a.ctx, "deleteEvent", output)
+	return ""
+}
+
+func (a *App) UpdateAppTheme(newAppTheme string) string {
+	a.config.AppTheme = newAppTheme
+	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
+		return err.Error()
+	}
 	return ""
 }
