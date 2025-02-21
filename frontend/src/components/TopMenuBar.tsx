@@ -11,6 +11,7 @@ import {
 	VStack,
 	styled,
 } from "styled-system/jsx";
+import { UpdateAppTheme } from "wailsjs/go/main/App";
 import { ConfigDialog } from "./ConfigDialog";
 
 const CustomH1 = styled("h1", {
@@ -42,7 +43,11 @@ export const TopMenuBar = () => {
 		} else {
 			document.body.setAttribute("data-theme", "light");
 		}
-		setAppTheme(document.body.getAttribute("data-theme") as AppThemeModel);
+		const newAppTheme = document.body.getAttribute("data-theme");
+		setAppTheme(newAppTheme as AppThemeModel);
+		UpdateAppTheme(newAppTheme as string).then((error) => {
+			console.error(error);
+		});
 	};
 
 	return (

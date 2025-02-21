@@ -78,14 +78,19 @@ func LoadConfigJson(buildMode string) (model.ConfigJson, error) {
 }
 
 func UpdateConfigJson(newConfig model.ConfigJson) error {
-	file, err := os.OpenFile(configFile, os.O_RDWR|os.O_CREATE, 0666)
+	jsonData, err := json.MarshalIndent(newConfig, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	file, err := os.Create(configFile)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	encoder := json.NewEncoder(file)
-	if err := encoder.Encode(newConfig); err != nil {
+	_, err = file.Write(jsonData)
+	if err != nil {
 		return err
 	}
 	return nil
