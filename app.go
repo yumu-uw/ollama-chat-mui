@@ -10,18 +10,32 @@ import (
 	"os"
 	"strings"
 
+	"ollama-chat/pkg/model"
+
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
 type App struct {
-	ctx context.Context
+	ctx            context.Context
 	messageHistory []Chat
+	config         model.ConfigJson
 }
 
 // NewApp creates a new App application struct
 func NewApp() *App {
-	return &App{}
+	var config model.ConfigJson
+	// if buildMode == "dev" {
+	f, err := os.Open("devconf/config.json")
+	if err != nil {
+		panic(err)
+	}
+	parser := json.NewDecoder(f)
+	parser.Decode(&config)
+	// }
+	return &App{
+		config: config,
+	}
 }
 
 // startup is called when the app starts. The context is saved
@@ -36,24 +50,19 @@ func (a *App) startup(ctx context.Context) {
 	}
 }
 
-func (a *App) SendChat2(chatHistory []Chat) string {
-	url := "http://192.168.1.250:11434/api/chat"
-
-	// リクエストデータを作成
+func (a *App) SendChat(chatHistory []Chat) string {
 	data := RequestData{
-		Model: "qwen2.5-coder:7b",
+		Model:    a.config.OllamaEndpoints[0].LLMModels[0].ModelName,
 		Messages: chatHistory,
-		Stream: true,
+		Stream:   true,
 	}
 
-	// JSONエンコード
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return err.Error()
 	}
 
-	// HTTPリクエストを作成
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", a.config.OllamaEndpoints[0].Endpoint+"/api/chat", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return err.Error()
 	}
@@ -82,72 +91,9 @@ func (a *App) SendChat2(chatHistory []Chat) string {
 
 	if err := scanner.Err(); err != nil {
 		fmt.Println("Error reading response:", err)
-		os.Exit(1)
+		panic(err)
 	}
 	runtime.EventsEmit(a.ctx, "deleteEvent", output)
-	return ""
-}
-
-func (a *App) SendChat(input string) string {
-	url := "http://localhost:11434/api/chat"
-	a.messageHistory = append(a.messageHistory, Chat{
-		Role:    "user",
-		Content: input,
-	})
-
-	// リクエストデータを作成
-	data := RequestData{
-		Model: "qwen2.5-coder:7b",
-		Messages: a.messageHistory,
-		Stream: true,
-	}
-
-	// JSONエンコード
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		return err.Error()
-	}
-
-	// HTTPリクエストを作成
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
-	if err != nil {
-		return err.Error()
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	// HTTPクライアントでリクエストを送信
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return err.Error()
-	}
-	defer resp.Body.Close()
-
-	decoder := json.NewDecoder(resp.Body)
-	var output string
-
-	for decoder.More() {
-		var chunk struct {
-			Message struct {
-				Content string `json:"content"`
-			} `json:"message"`
-		}
-
-		err := decoder.Decode(&chunk)
-		if err != nil {
-			fmt.Println("Error:", err)
-			break
-		}
-
-		output += chunk.Message.Content
-		runtime.EventsEmit(a.ctx, "receiveChat", chunk.Message.Content)
-		// fmt.Print(chunk.Message.Content)
-	}
-	runtime.EventsEmit(a.ctx, "deleteEvent")
-	a.messageHistory = append(a.messageHistory, Chat{
-		Role:    "assistant",
-		Content: output,
-	})
 	return ""
 }
 
@@ -157,9 +103,9 @@ type Chat struct {
 }
 
 type RequestData struct {
-	Model    string    `json:"model"`
+	Model    string `json:"model"`
 	Messages []Chat `json:"messages"`
-	Stream   bool      `json:"stream"`
+	Stream   bool   `json:"stream"`
 }
 
 type ResponseData struct {

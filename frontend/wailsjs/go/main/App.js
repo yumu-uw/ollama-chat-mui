@@ -5,7 +5,3 @@
 export function SendChat(arg1) {
   return window['go']['main']['App']['SendChat'](arg1);
 }
-
-export function SendChat2(arg1) {
-  return window['go']['main']['App']['SendChat2'](arg1);
-}

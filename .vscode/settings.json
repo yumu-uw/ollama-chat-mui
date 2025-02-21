@@ -15,5 +15,8 @@
   "editor.codeActionsOnSave": {
     "quickfix.biome": "explicit",
     "source.organizeImports.biome": "explicit"
+  },
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
   }
 }

@@ -7,3 +7,4 @@ styled-system-studio
 
 .DS_Store
 .env
+devconf/config.json

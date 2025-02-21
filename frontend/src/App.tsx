@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Box, Container, Flex } from "styled-system/jsx";
 import "./github-markdown.css";
-import { SendChat2 } from "wailsjs/go/main/App";
+import { SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 import ChatView from "./components/ChatView";
 import { MarkdownView } from "./components/MarkdownView";
@@ -32,67 +32,7 @@ function App() {
 		}
 	}, [ollamaResopnse]);
 
-	async function sendChat() {
-		const msg = input;
-		setInput("");
-		const data: RequestData = {
-			model: "qwen2.5-coder:7b",
-			messages: [
-				...chatHistory,
-				{
-					role: "user",
-					content: msg,
-				},
-			],
-			stream: true,
-		};
-		const options = {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(data),
-		};
-
-		const decoder = new TextDecoder();
-		const response = await fetch("http://localhost:11434/api/chat", options);
-		const reader = response.body?.getReader();
-		if (!reader) {
-			console.error("No readable stream available.");
-			return;
-		}
-
-		let output = "";
-		while (true) {
-			const { done, value } = await reader.read();
-			if (done) {
-				break;
-			}
-			decoder
-				.decode(value)
-				.split(/\r?\n/)
-				.map((v) => {
-					if (v !== "") {
-						const j = JSON.parse(v) as ResponseData;
-						output += j.message.content;
-						setOllamaResopnse((prev) => prev + j.message.content);
-					}
-				});
-		}
-		const newMessages: Chat[] = [
-			...chatHistory,
-			{
-				role: "user",
-				content: msg,
-			},
-			{
-				role: "assistant",
-				content: output,
-			},
-		];
-		setOllamaResopnse("");
-		setChatHistory(newMessages);
-	}
-
-	async function sendChat2() {
+	async function callOllamaApi() {
 		const msg = input;
 		setInput("");
 		EventsOn("receiveChat", (data: string) => {
@@ -116,13 +56,12 @@ function App() {
 					content: output,
 				},
 			];
-			console.log(newMessages);
 			setOllamaResopnse("");
 			setChatHistory(newMessages);
 			EventsOff("receiveChat");
 		});
 
-		SendChat2([
+		SendChat([
 			...chatHistory,
 			{
 				role: "user",
@@ -162,7 +101,7 @@ function App() {
 					input={input}
 					setInput={setInput}
 					setPrevInput={setPrevInput}
-					sendChat={sendChat2}
+					sendChat={callOllamaApi}
 				/>
 			</Flex>
 		</Container>
