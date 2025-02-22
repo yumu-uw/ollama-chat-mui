@@ -6,10 +6,22 @@ export function GetConfig() {
   return window['go']['main']['App']['GetConfig']();
 }
 
+export function GetModels() {
+  return window['go']['main']['App']['GetModels']();
+}
+
+export function GetOllamaModels(arg1) {
+  return window['go']['main']['App']['GetOllamaModels'](arg1);
+}
+
 export function SendChat(arg1, arg2, arg3) {
   return window['go']['main']['App']['SendChat'](arg1, arg2, arg3);
 }
 
 export function UpdateAppTheme(arg1) {
   return window['go']['main']['App']['UpdateAppTheme'](arg1);
+}
+
+export function UpdateOllamaEndpoints(arg1) {
+  return window['go']['main']['App']['UpdateOllamaEndpoints'](arg1);
 }

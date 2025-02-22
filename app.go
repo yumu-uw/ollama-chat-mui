@@ -39,7 +39,7 @@ func (a *App) GetConfig() model.ConfigJson {
 }
 
 func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model.Chat) string {
-	data := model.RequestData{
+	data := model.ChatApiRequestData{
 		Model:    ollamaModel,
 		Messages: chatHistory,
 		Stream:   true,
@@ -68,7 +68,7 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
 		for _, v := range strings.Split(scanner.Text(), "\n") {
-			var obj model.ResponseData
+			var obj model.ChatApiResponseData
 			if err := json.Unmarshal([]byte(v), &obj); err != nil {
 				panic(err)
 			}
@@ -85,8 +85,40 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 	return ""
 }
 
+func (a *App) GetOllamaModels(ollamaURL string) string {
+	resp, err := http.Get(ollamaURL + "/api/tags")
+	if err != nil {
+		return "error: " + err.Error()
+	}
+	defer resp.Body.Close()
+
+	var data model.TagApiResponse
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return "error: " + err.Error()
+	}
+
+	var models []string
+	for _, v := range data.Models {
+		models = append(models, string(v.Name))
+	}
+
+	return strings.Join(models, ",")
+}
+
+func (a *App) GetModels() string {
+	return a.config.AppTheme
+}
+
 func (a *App) UpdateAppTheme(newAppTheme string) string {
 	a.config.AppTheme = newAppTheme
+	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
+		return err.Error()
+	}
+	return ""
+}
+
+func (a *App) UpdateOllamaEndpoints(newOllamaEndpoint model.OllamaEndpoint) string {
+	a.config.OllamaEndpoints = append(a.config.OllamaEndpoints, newOllamaEndpoint)
 	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
 		return err.Error()
 	}

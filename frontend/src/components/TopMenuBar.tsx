@@ -45,8 +45,10 @@ export const TopMenuBar = () => {
 		}
 		const newAppTheme = document.body.getAttribute("data-theme");
 		setAppTheme(newAppTheme as AppThemeModel);
-		UpdateAppTheme(newAppTheme as string).then((error) => {
-			console.error(error);
+		UpdateAppTheme(newAppTheme as string).then((data: string) => {
+			if (data !== "") {
+				console.error(data);
+			}
 		});
 	};
 
@@ -105,13 +107,11 @@ export const TopMenuBar = () => {
 				margin={"auto"}
 				w={"90vw"}
 				h={"90vh"}
+				borderRadius={"md"}
 			>
 				<Container p={"1em"}>
 					<VStack>
-						<ConfigDialog />
-						<styled.button onClick={() => dialogRef.current?.close()}>
-							close
-						</styled.button>
+						<ConfigDialog dialogRef={dialogRef} />
 					</VStack>
 				</Container>
 			</styled.dialog>

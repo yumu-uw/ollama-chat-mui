@@ -4,6 +4,12 @@ import {model} from '../models';
 
 export function GetConfig():Promise<model.ConfigJson>;
 
+export function GetModels():Promise<string>;
+
+export function GetOllamaModels(arg1:string):Promise<string>;
+
 export function SendChat(arg1:string,arg2:string,arg3:Array<model.Chat>):Promise<string>;
 
 export function UpdateAppTheme(arg1:string):Promise<string>;
+
+export function UpdateOllamaEndpoints(arg1:model.OllamaEndpoint):Promise<string>;
