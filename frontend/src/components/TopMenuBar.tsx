@@ -1,7 +1,18 @@
-import { AppThemeContext } from "@/context/AppTheme";
+import { appThemeAtom } from "@/atom/appThemeAtom";
 import hljs from "@/lib/custom-highlight";
-import { use } from "react";
-import { Box, HStack, Spacer, styled } from "styled-system/jsx";
+import type { AppThemeModel } from "@/model/configModel";
+import { useAtom } from "jotai";
+import { useRef } from "react";
+import {
+	Box,
+	Container,
+	HStack,
+	Spacer,
+	VStack,
+	styled,
+} from "styled-system/jsx";
+import { UpdateAppTheme } from "wailsjs/go/main/App";
+import { ConfigDialog } from "./ConfigDialog";
 
 const CustomH1 = styled("h1", {
 	base: {
@@ -23,11 +34,24 @@ const CustomH1 = styled("h1", {
 });
 
 export const TopMenuBar = () => {
-	const context = use(AppThemeContext);
-	if (!context) {
-		throw new Error("Header must be used within a ThemeProvider");
-	}
-	const { appTheme, toggleAppTheme } = context;
+	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
+	const dialogRef = useRef<HTMLDialogElement>(null);
+
+	const switchAppTheme = () => {
+		if (document.body.getAttribute("data-theme") === "light") {
+			document.body.setAttribute("data-theme", "dark");
+		} else {
+			document.body.setAttribute("data-theme", "light");
+		}
+		const newAppTheme = document.body.getAttribute("data-theme");
+		setAppTheme(newAppTheme as AppThemeModel);
+		UpdateAppTheme(newAppTheme as string).then((data: string) => {
+			if (data !== "") {
+				console.error(data);
+			}
+		});
+	};
+
 	return (
 		<>
 			<HStack>
@@ -38,15 +62,11 @@ export const TopMenuBar = () => {
 				<button
 					type="button"
 					onClick={() => {
-						toggleAppTheme();
-						if (document.body.getAttribute("data-theme") === "light") {
-							document.body.setAttribute("data-theme", "dark");
-						} else {
-							document.body.setAttribute("data-theme", "light");
-						}
+						switchAppTheme();
 						hljs.highlightAll();
 					}}
 				>
+					{/* テーマ切り替えボタン */}
 					{appTheme === "light" ? (
 						<img
 							alt="light"
@@ -59,7 +79,42 @@ export const TopMenuBar = () => {
 						/>
 					)}
 				</button>
+
+				{/* 設定画面表示ボタン */}
+				<button
+					type="button"
+					onClick={() => {
+						dialogRef.current?.showModal();
+					}}
+				>
+					{appTheme === "light" ? (
+						<img
+							alt="light"
+							src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtc2V0dGluZ3MiPjxwYXRoIGQ9Ik0xMi4yMiAyaC0uNDRhMiAyIDAgMCAwLTIgMnYuMThhMiAyIDAgMCAxLTEgMS43M2wtLjQzLjI1YTIgMiAwIDAgMS0yIDBsLS4xNS0uMDhhMiAyIDAgMCAwLTIuNzMuNzNsLS4yMi4zOGEyIDIgMCAwIDAgLjczIDIuNzNsLjE1LjFhMiAyIDAgMCAxIDEgMS43MnYuNTFhMiAyIDAgMCAxLTEgMS43NGwtLjE1LjA5YTIgMiAwIDAgMC0uNzMgMi43M2wuMjIuMzhhMiAyIDAgMCAwIDIuNzMuNzNsLjE1LS4wOGEyIDIgMCAwIDEgMiAwbC40My4yNWEyIDIgMCAwIDEgMSAxLjczVjIwYTIgMiAwIDAgMCAyIDJoLjQ0YTIgMiAwIDAgMCAyLTJ2LS4xOGEyIDIgMCAwIDEgMS0xLjczbC40My0uMjVhMiAyIDAgMCAxIDIgMGwuMTUuMDhhMiAyIDAgMCAwIDIuNzMtLjczbC4yMi0uMzlhMiAyIDAgMCAwLS43My0yLjczbC0uMTUtLjA4YTIgMiAwIDAgMS0xLTEuNzR2LS41YTIgMiAwIDAgMSAxLTEuNzRsLjE1LS4wOWEyIDIgMCAwIDAgLjczLTIuNzNsLS4yMi0uMzhhMiAyIDAgMCAwLTIuNzMtLjczbC0uMTUuMDhhMiAyIDAgMCAxLTIgMGwtLjQzLS4yNWEyIDIgMCAwIDEtMS0xLjczVjRhMiAyIDAgMCAwLTItMnoiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIzIi8+PC9zdmc+"
+						/>
+					) : (
+						<img
+							alt="dark"
+							src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtc2V0dGluZ3MiPjxwYXRoIGQ9Ik0xMi4yMiAyaC0uNDRhMiAyIDAgMCAwLTIgMnYuMThhMiAyIDAgMCAxLTEgMS43M2wtLjQzLjI1YTIgMiAwIDAgMS0yIDBsLS4xNS0uMDhhMiAyIDAgMCAwLTIuNzMuNzNsLS4yMi4zOGEyIDIgMCAwIDAgLjczIDIuNzNsLjE1LjFhMiAyIDAgMCAxIDEgMS43MnYuNTFhMiAyIDAgMCAxLTEgMS43NGwtLjE1LjA5YTIgMiAwIDAgMC0uNzMgMi43M2wuMjIuMzhhMiAyIDAgMCAwIDIuNzMuNzNsLjE1LS4wOGEyIDIgMCAwIDEgMiAwbC40My4yNWEyIDIgMCAwIDEgMSAxLjczVjIwYTIgMiAwIDAgMCAyIDJoLjQ0YTIgMiAwIDAgMCAyLTJ2LS4xOGEyIDIgMCAwIDEgMS0xLjczbC40My0uMjVhMiAyIDAgMCAxIDIgMGwuMTUuMDhhMiAyIDAgMCAwIDIuNzMtLjczbC4yMi0uMzlhMiAyIDAgMCAwLS43My0yLjczbC0uMTUtLjA4YTIgMiAwIDAgMS0xLTEuNzR2LS41YTIgMiAwIDAgMSAxLTEuNzRsLjE1LS4wOWEyIDIgMCAwIDAgLjczLTIuNzNsLS4yMi0uMzhhMiAyIDAgMCAwLTIuNzMtLjczbC0uMTUuMDhhMiAyIDAgMCAxLTIgMGwtLjQzLS4yNWEyIDIgMCAwIDEtMS0xLjczVjRhMiAyIDAgMCAwLTItMnoiLz48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIzIi8+PC9zdmc+"
+						/>
+					)}
+				</button>
 			</HStack>
+
+			<styled.dialog
+				ref={dialogRef}
+				position={"fixed"}
+				margin={"auto"}
+				w={"90vw"}
+				h={"90vh"}
+				borderRadius={"md"}
+			>
+				<Container p={"1em"}>
+					<VStack>
+						<ConfigDialog dialogRef={dialogRef} />
+					</VStack>
+				</Container>
+			</styled.dialog>
 		</>
 	);
 };

@@ -7,32 +7,22 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 	"strings"
 
 	"ollama-chat/pkg/model"
+	ymuwutil "ollama-chat/pkg/ymuw-util"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 // App struct
 type App struct {
-	ctx            context.Context
-	messageHistory []Chat
-	config         model.ConfigJson
+	ctx    context.Context
+	config model.ConfigJson
 }
 
 // NewApp creates a new App application struct
-func NewApp() *App {
-	var config model.ConfigJson
-	// if buildMode == "dev" {
-	f, err := os.Open("devconf/config.json")
-	if err != nil {
-		panic(err)
-	}
-	parser := json.NewDecoder(f)
-	parser.Decode(&config)
-	// }
+func NewApp(config model.ConfigJson) *App {
 	return &App{
 		config: config,
 	}
@@ -42,17 +32,15 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	a.messageHistory = []Chat{
-		{
-			Role:    "system",
-			Content: "You are a helpful, respectful and honest coding assistant. Always reply using markdown. Be clear and concise, prioritizing brevity in your responses.",
-		},
-	}
 }
 
-func (a *App) SendChat(chatHistory []Chat) string {
-	data := RequestData{
-		Model:    a.config.OllamaEndpoints[0].LLMModels[0].ModelName,
+func (a *App) GetConfig() model.ConfigJson {
+	return a.config
+}
+
+func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model.Chat) string {
+	data := model.ChatApiRequestData{
+		Model:    ollamaModel,
 		Messages: chatHistory,
 		Stream:   true,
 	}
@@ -62,7 +50,7 @@ func (a *App) SendChat(chatHistory []Chat) string {
 		return err.Error()
 	}
 
-	req, err := http.NewRequest("POST", a.config.OllamaEndpoints[0].Endpoint+"/api/chat", bytes.NewBuffer(jsonData))
+	req, err := http.NewRequest("POST", ollamaURL+"/api/chat", bytes.NewBuffer(jsonData))
 	if err != nil {
 		return err.Error()
 	}
@@ -80,7 +68,7 @@ func (a *App) SendChat(chatHistory []Chat) string {
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
 		for _, v := range strings.Split(scanner.Text(), "\n") {
-			var obj ResponseData
+			var obj model.ChatApiResponseData
 			if err := json.Unmarshal([]byte(v), &obj); err != nil {
 				panic(err)
 			}
@@ -97,19 +85,42 @@ func (a *App) SendChat(chatHistory []Chat) string {
 	return ""
 }
 
-type Chat struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+func (a *App) GetOllamaModels(ollamaURL string) string {
+	resp, err := http.Get(ollamaURL + "/api/tags")
+	if err != nil {
+		return "error: " + err.Error()
+	}
+	defer resp.Body.Close()
+
+	var data model.TagApiResponse
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return "error: " + err.Error()
+	}
+
+	var models []string
+	for _, v := range data.Models {
+		models = append(models, string(v.Name))
+	}
+
+	return strings.Join(models, ",")
 }
 
-type RequestData struct {
-	Model    string `json:"model"`
-	Messages []Chat `json:"messages"`
-	Stream   bool   `json:"stream"`
+func (a *App) GetModels() string {
+	return a.config.AppTheme
 }
 
-type ResponseData struct {
-	Message struct {
-		Content string `json:"content"`
-	} `json:"message"`
+func (a *App) UpdateAppTheme(newAppTheme string) string {
+	a.config.AppTheme = newAppTheme
+	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
+		return err.Error()
+	}
+	return ""
+}
+
+func (a *App) UpdateOllamaEndpoints(newOllamaEndpoint model.OllamaEndpoint) string {
+	a.config.OllamaEndpoints = append(a.config.OllamaEndpoints, newOllamaEndpoint)
+	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
+		return err.Error()
+	}
+	return ""
 }

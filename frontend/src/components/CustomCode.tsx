@@ -1,6 +1,7 @@
-import { AppThemeContext } from "@/context/AppTheme";
+import { appThemeAtom } from "@/atom/appThemeAtom";
 import { supportLangs } from "@/lib/custom-highlight";
-import { use, useState } from "react";
+import { useAtomValue } from "jotai";
+import { useState } from "react";
 import { Box, Flex, HStack, Spacer, styled } from "styled-system/jsx";
 
 interface Props {
@@ -32,11 +33,7 @@ const MessageInputAreaHStack = styled(HStack, {
 });
 
 export default function CustomCode({ classAttr, value }: Props) {
-	const context = use(AppThemeContext);
-	if (!context) {
-		throw new Error("Header must be used within a ThemeProvider");
-	}
-	const { appTheme } = context;
+	const appTheme = useAtomValue(appThemeAtom);
 
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
 

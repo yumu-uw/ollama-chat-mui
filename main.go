@@ -2,6 +2,8 @@ package main
 
 import (
 	"embed"
+	"ollama-chat/pkg/model"
+	ymuwutil "ollama-chat/pkg/ymuw-util"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -14,11 +16,31 @@ var assets embed.FS
 var buildMode = "dev"
 
 func main() {
+	var config model.ConfigJson
+	var err error
+	if buildMode == "dev" {
+		config, err = ymuwutil.LoadConfigJson("dev")
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		if err := ymuwutil.SetupConfigDir(); err != nil {
+			panic(err)
+		}
+		if err := ymuwutil.CreateTemplateConfigJson(); err != nil {
+			panic(err)
+		}
+		config, err = ymuwutil.LoadConfigJson("prod")
+		if err != nil {
+			panic(err)
+		}
+	}
+
 	// Create an instance of the app structure
-	app := NewApp()
+	app := NewApp(config)
 
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:  "ollama-chat",
 		Width:  1024,
 		Height: 768,

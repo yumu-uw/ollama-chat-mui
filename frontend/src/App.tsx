@@ -1,16 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { Box, Container, Flex } from "styled-system/jsx";
 import "./github-markdown.css";
-import { SendChat } from "wailsjs/go/main/App";
+import { useAtom } from "jotai";
+import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
+import { appThemeAtom } from "./atom/appThemeAtom";
+import { configAtom } from "./atom/configAtom";
 import ChatView from "./components/ChatView";
 import { MarkdownView } from "./components/MarkdownView";
 import { MessageInputArea } from "./components/MessageInputArea";
 import { TopMenuBar } from "./components/TopMenuBar";
 import { UserMessageView } from "./components/UserMessageView";
-import type { Chat, RequestData, ResponseData } from "./model/dataModels";
+import type { ConfigModel } from "./model/configModel";
+import type { Chat, ResponseData } from "./model/dataModels";
 
 function App() {
+	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
+	const [config, setConfig] = useAtom(configAtom);
+
 	const [input, setInput] = useState("");
 	const [prevInput, setPrevInput] = useState("");
 	const [ollamaResopnse, setOllamaResopnse] = useState("");
@@ -23,6 +30,29 @@ function App() {
 	]);
 
 	const chatRef = useRef<HTMLDivElement>(null);
+
+	// 設定ファイルの情報を取得
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		GetConfig().then((data) => {
+			switch (data.AppTheme) {
+				case "light":
+					setAppTheme("light");
+					break;
+				case "dark":
+					setAppTheme("dark");
+					break;
+				default:
+					setAppTheme("light");
+					break;
+			}
+			document.body.setAttribute("data-theme", data.AppTheme);
+			const config: ConfigModel = {
+				OllamaEndpoints: data.OllamaEndpoints,
+			};
+			setConfig(config);
+		});
+	}, []);
 
 	// チャットエリアを自動でスクロール
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -61,13 +91,17 @@ function App() {
 			EventsOff("receiveChat");
 		});
 
-		SendChat([
-			...chatHistory,
-			{
-				role: "user",
-				content: msg,
-			},
-		]);
+		SendChat(
+			config?.OllamaEndpoints[0].Endpoint as string,
+			config?.OllamaEndpoints[0].LLMModels[0].ModelName as string,
+			[
+				...chatHistory,
+				{
+					role: "user",
+					content: msg,
+				},
+			],
+		);
 	}
 
 	return (
