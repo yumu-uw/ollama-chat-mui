@@ -8,7 +8,7 @@ type Props = {
 	chatHistory: Chat[];
 };
 
-const ChatView = memo(({ chatHistory }: Props) => {
+export const ChatView = memo(({ chatHistory }: Props) => {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		hljs.highlightAll();
@@ -43,5 +43,3 @@ const ChatView = memo(({ chatHistory }: Props) => {
 		</>
 	);
 });
-
-export default ChatView;

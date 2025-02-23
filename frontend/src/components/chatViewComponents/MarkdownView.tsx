@@ -4,7 +4,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import { Box } from "styled-system/jsx";
-import CustomCode from "./CustomCode";
+import { CustomCode } from "./CustomCode";
 
 type Props = {
 	mdStr: string;

@@ -32,7 +32,7 @@ const MessageInputAreaHStack = styled(HStack, {
 	},
 });
 
-export default function CustomCode({ classAttr, value }: Props) {
+export const CustomCode = ({ classAttr, value }: Props) => {
 	const appTheme = useAtomValue(appThemeAtom);
 
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
@@ -100,4 +100,4 @@ export default function CustomCode({ classAttr, value }: Props) {
 			<code className={lang}>{value}</code>
 		</Flex>
 	);
-}
+};

@@ -7,7 +7,7 @@ import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 import { appThemeAtom } from "./atom/appThemeAtom";
 import { configAtom } from "./atom/configAtom";
 import { MessageInputArea } from "./components/MessageInputArea";
-import ChatView from "./components/chatViewComponents/ChatView";
+import { ChatView } from "./components/chatViewComponents/ChatView";
 import { MarkdownView } from "./components/chatViewComponents/MarkdownView";
 import { UserMessageView } from "./components/chatViewComponents/UserMessageView";
 import { TopMenuBar } from "./components/topMenuBarComponents/TopMenuBar";
