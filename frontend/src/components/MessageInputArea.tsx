@@ -29,16 +29,10 @@ const MessageInputAreaVStack = styled(VStack, {
 type Props = {
 	input: string;
 	setInput: React.Dispatch<React.SetStateAction<string>>;
-	setPrevInput: React.Dispatch<React.SetStateAction<string>>;
-	sendChat(): Promise<void>;
+	callOllamaApi(): void;
 };
 
-export const MessageInputArea = ({
-	input,
-	setInput,
-	setPrevInput,
-	sendChat,
-}: Props) => {
+export const MessageInputArea = ({ input, setInput, callOllamaApi }: Props) => {
 	const appTheme = useAtomValue(appThemeAtom);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -65,18 +59,17 @@ export const MessageInputArea = ({
 				onKeyDown={(e) => {
 					if (e.key === "Enter" && e.altKey) {
 						e.preventDefault();
-						sendChat();
+						callOllamaApi();
 					}
 				}}
 				onChange={(e) => {
 					setInput(e.target.value);
-					setPrevInput(e.target.value);
 				}}
 			/>
 			<Divider />
 			<Flex w={"100%"} justify={"flex-end"}>
 				<Circle bg="gray.300" w={"2em"} h={"2em"}>
-					<styled.button onClick={sendChat}>
+					<styled.button onClick={callOllamaApi}>
 						<styled.img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWFycm93LXVwIj48cGF0aCBkPSJtNSAxMiA3LTcgNyA3Ii8+PHBhdGggZD0iTTEyIDE5VjUiLz48L3N2Zz4=" />
 					</styled.button>
 				</Circle>

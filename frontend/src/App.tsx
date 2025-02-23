@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Box, Container, Flex } from "styled-system/jsx";
 import "./github-markdown.css";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 import { appThemeAtom } from "./atom/appThemeAtom";
 import { configAtom } from "./atom/configAtom";
+import { currentOllamaHostAtom } from "./atom/currentOllamaHostAtom";
 import { MessageInputArea } from "./components/MessageInputArea";
 import { ChatView } from "./components/chatViewComponents/ChatView";
 import { MarkdownView } from "./components/chatViewComponents/MarkdownView";
@@ -15,8 +16,11 @@ import type { ConfigModel } from "./model/configModel";
 import type { Chat, ResponseData } from "./model/dataModels";
 
 function App() {
-	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
-	const [config, setConfig] = useAtom(configAtom);
+	const setAppTheme = useSetAtom(appThemeAtom);
+	const setConfig = useSetAtom(configAtom);
+	const [currentOllamaHost, setCurrentOllamaHost] = useAtom(
+		currentOllamaHostAtom,
+	);
 
 	const [input, setInput] = useState("");
 	const [prevInput, setPrevInput] = useState("");
@@ -51,6 +55,27 @@ function App() {
 				OllamaEndpoints: data.OllamaEndpoints,
 			};
 			setConfig(config);
+
+			let currentHostName = "";
+			let currentEndpoint = "";
+			let currentModelName = "";
+			for (const endpoint of config?.OllamaEndpoints || []) {
+				if (endpoint.Default) {
+					for (const model of endpoint.LLMModels) {
+						if (model.Default) {
+							currentModelName = model.ModelName;
+						}
+					}
+					currentHostName = endpoint.Name;
+					currentEndpoint = endpoint.Endpoint;
+					break;
+				}
+			}
+			setCurrentOllamaHost({
+				DisplayName: currentHostName,
+				Endpoint: currentEndpoint,
+				ModelName: currentModelName,
+			});
 		});
 	}, []);
 
@@ -62,8 +87,9 @@ function App() {
 		}
 	}, [ollamaResopnse]);
 
-	async function callOllamaApi() {
+	function callOllamaApi() {
 		const msg = input;
+		setPrevInput(msg);
 		setInput("");
 		EventsOn("receiveChat", (data: string) => {
 			data.split(/\r?\n/).map((v) => {
@@ -86,14 +112,15 @@ function App() {
 					content: output,
 				},
 			];
+			setPrevInput("");
 			setOllamaResopnse("");
 			setChatHistory(newMessages);
 			EventsOff("receiveChat");
 		});
 
 		SendChat(
-			config?.OllamaEndpoints[0].Endpoint as string,
-			config?.OllamaEndpoints[0].LLMModels[0].ModelName as string,
+			currentOllamaHost?.Endpoint as string,
+			currentOllamaHost?.ModelName as string,
 			[
 				...chatHistory,
 				{
@@ -124,18 +151,13 @@ function App() {
 					pr={"1.5em"}
 				>
 					<ChatView chatHistory={chatHistory} />
-					{ollamaResopnse !== "" && (
-						<>
-							<UserMessageView message={prevInput} />
-							<MarkdownView mdStr={ollamaResopnse} />
-						</>
-					)}
+					{prevInput && <UserMessageView message={prevInput} />}
+					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
 				</Box>
 				<MessageInputArea
 					input={input}
 					setInput={setInput}
-					setPrevInput={setPrevInput}
-					sendChat={callOllamaApi}
+					callOllamaApi={callOllamaApi}
 				/>
 			</Flex>
 		</Container>

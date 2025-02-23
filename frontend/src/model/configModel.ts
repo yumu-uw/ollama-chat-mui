@@ -15,3 +15,9 @@ export type OllamaEndpoint = {
 	LLMModels: LLMModel[];
 	Default: boolean;
 };
+
+export type CurrentOllamaHostModel = {
+	DisplayName: string;
+	Endpoint: string;
+	ModelName: string;
+};

@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -78,8 +77,8 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 	}
 
 	if err := scanner.Err(); err != nil {
-		fmt.Println("Error reading response:", err)
-		panic(err)
+		runtime.EventsEmit(a.ctx, "deleteEvent", output)
+		return "error: " + err.Error()
 	}
 	runtime.EventsEmit(a.ctx, "deleteEvent", output)
 	return ""
