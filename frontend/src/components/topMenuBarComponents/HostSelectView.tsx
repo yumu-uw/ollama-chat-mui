@@ -47,34 +47,48 @@ export const HostSelectView = () => {
 		currentOllamaHostAtom,
 	);
 
+	const handleSelectOllamaHost = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setCurrentOllamaHost({
+			DisplayName: e.target.value,
+			Endpoint:
+				config?.OllamaEndpoints?.find((v) => v.EndpointName === e.target.value)
+					?.EndpointUrl || "",
+			ModelName:
+				config?.OllamaEndpoints?.find((v) => v.EndpointName === e.target.value)
+					?.DefaultLLMModel || "",
+		});
+	};
+
+	const handleSelectModel = (e: React.ChangeEvent<HTMLSelectElement>) => {
+		setCurrentOllamaHost((prev) => {
+			const prevDisplayName = prev?.DisplayName as string;
+			const prevEndpoint = prev?.Endpoint as string;
+			const newModelName =
+				config?.OllamaEndpoints?.find(
+					(v) => v.EndpointName === prevDisplayName,
+				)?.LLMModels.find((v) => v === e.target.value) || "";
+			return {
+				DisplayName: prevDisplayName,
+				Endpoint: prevEndpoint,
+				ModelName: newModelName,
+			};
+		});
+	};
+
 	return (
 		<>
 			<VStack alignItems={"flex-start"}>
 				<select
 					id="endpoint-select"
 					value={currentOllamaHost?.DisplayName}
-					onChange={(e) =>
-						setCurrentOllamaHost({
-							DisplayName: e.target.value,
-							Endpoint:
-								config?.OllamaEndpoints?.find((v) => v.Name === e.target.value)
-									?.Endpoint || "",
-							ModelName:
-								config?.OllamaEndpoints?.find(
-									(v) => v.Name === e.target.value,
-								)?.LLMModels.find((v) => v.Default)?.ModelName || "",
-						})
-					}
+					onChange={handleSelectOllamaHost}
 				>
-					{config?.OllamaEndpoints?.map((endpoint, index) => (
+					{config?.OllamaEndpoints?.map((endpoint) => (
 						<option
-							key={`endpoint-${
-								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-								index
-							}`}
-							value={endpoint.Name}
+							key={`host-${endpoint.EndpointName}`}
+							value={endpoint.EndpointName}
 						>
-							{endpoint.Name}
+							{endpoint.EndpointName}
 						</option>
 					))}
 				</select>
@@ -85,34 +99,16 @@ export const HostSelectView = () => {
 				<select
 					id="model-select"
 					value={currentOllamaHost?.ModelName}
-					onChange={(e) =>
-						setCurrentOllamaHost((prev) => {
-							const prevDisplayName = prev?.DisplayName as string;
-							const prevEndpoint = prev?.Endpoint as string;
-							const newModelName =
-								config?.OllamaEndpoints?.find(
-									(v) => v.Name === prevDisplayName,
-								)?.LLMModels.find((v) => v.ModelName === e.target.value)
-									?.ModelName || "";
-							return {
-								DisplayName: prevDisplayName,
-								Endpoint: prevEndpoint,
-								ModelName: newModelName,
-							};
-						})
-					}
+					onChange={handleSelectModel}
 				>
 					{config?.OllamaEndpoints?.find(
-						(v) => v.Name === currentOllamaHost?.DisplayName,
-					)?.LLMModels.map((model, index) => (
+						(v) => v.EndpointName === currentOllamaHost?.DisplayName,
+					)?.LLMModels.map((modelName) => (
 						<option
-							key={`model-${
-								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-								index
-							}`}
-							value={model.ModelName}
+							key={`model-${currentOllamaHost?.ModelName}-${modelName}`}
+							value={modelName}
 						>
-							{model.ModelName}
+							{modelName}
 						</option>
 					))}
 				</select>

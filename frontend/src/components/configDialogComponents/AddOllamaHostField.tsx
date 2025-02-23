@@ -1,5 +1,5 @@
 import { configAtom } from "@/atom/configAtom";
-import type { LLMModel, OllamaEndpoint } from "@/model/configModel";
+import type { OllamaEndpoint } from "@/model/configModel";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Box, VStack, styled } from "styled-system/jsx";
@@ -44,41 +44,38 @@ export const AddOllamaHostField = ({ dialogRef }: Props) => {
 			return;
 		}
 
-		for (const endpoint of config?.OllamaEndpoints ?? []) {
-			if (endpoint.Name === displayName) {
-				alert("DisplayName is already registered");
-				return;
-			}
-			if (endpoint.Endpoint === ollamaHost) {
-				alert("OllamaHost is already registered");
-				return;
-			}
-		}
+		// for (const endpoint of config?.OllamaEndpoints ?? []) {
+		// 	if (endpoint.EndpointName === displayName) {
+		// 		alert("DisplayName is already registered");
+		// 		return;
+		// 	}
+		// 	if (endpoint.EndpointUrl === ollamaHost) {
+		// 		alert("OllamaHost is already registered");
+		// 		return;
+		// 	}
+		// }
 		GetOllamaModels(ollamaHost).then((data: string) => {
 			if (data.startsWith("error:")) {
 				alert(data);
 				return;
 			}
 
-			const models: LLMModel[] = [];
+			const models: string[] = [];
 			data.split(",").map((v, i) => {
-				models.push({
-					ModelName: v,
-					Default: i === 0,
-				});
+				models.push(v);
 			});
 
-			const newOllamaEndpoint: OllamaEndpoint = {
-				Name: displayName,
-				Endpoint: ollamaHost,
+			const newOllamaEndpoint: model.OllamaEndpoint = {
+				EndpointName: displayName,
+				EndpointUrl: ollamaHost,
 				LLMModels: models,
-				Default: false,
+				DefaultLLMModel: models.length > 0 ? models[0] : "",
 			};
 
 			const newConfig = config;
 			newConfig?.OllamaEndpoints.push(newOllamaEndpoint);
 			setConfig(newConfig);
-			UpdateOllamaEndpoints(newOllamaEndpoint as model.OllamaEndpoint);
+			UpdateOllamaEndpoints(newOllamaEndpoint);
 		});
 	};
 

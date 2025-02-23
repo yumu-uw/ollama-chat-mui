@@ -53,29 +53,20 @@ function App() {
 			document.body.setAttribute("data-theme", data.AppTheme);
 			const config: ConfigModel = {
 				OllamaEndpoints: data.OllamaEndpoints,
+				DefaultOllamaEndPointName: data.DefaultOllamaEndPointName,
 			};
 			setConfig(config);
 
-			let currentHostName = "";
-			let currentEndpoint = "";
-			let currentModelName = "";
 			for (const endpoint of config?.OllamaEndpoints || []) {
-				if (endpoint.Default) {
-					for (const model of endpoint.LLMModels) {
-						if (model.Default) {
-							currentModelName = model.ModelName;
-						}
-					}
-					currentHostName = endpoint.Name;
-					currentEndpoint = endpoint.Endpoint;
+				if (endpoint.EndpointName === config.DefaultOllamaEndPointName) {
+					setCurrentOllamaHost({
+						DisplayName: endpoint.EndpointName,
+						Endpoint: endpoint.EndpointUrl,
+						ModelName: endpoint.DefaultLLMModel,
+					});
 					break;
 				}
 			}
-			setCurrentOllamaHost({
-				DisplayName: currentHostName,
-				Endpoint: currentEndpoint,
-				ModelName: currentModelName,
-			});
 		});
 	}, []);
 
