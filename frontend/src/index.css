@@ -9,3 +9,9 @@
   color: white;
   background-color: #111827;
 }
+
+pre code:not(.hljs) {
+  display: block !important;
+  overflow-x: auto !important;
+  padding: 1em !important;
+}
