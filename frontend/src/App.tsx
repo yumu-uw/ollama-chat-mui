@@ -6,11 +6,11 @@ import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 import { appThemeAtom } from "./atom/appThemeAtom";
 import { configAtom } from "./atom/configAtom";
-import ChatView from "./components/ChatView";
-import { MarkdownView } from "./components/MarkdownView";
 import { MessageInputArea } from "./components/MessageInputArea";
-import { TopMenuBar } from "./components/TopMenuBar";
-import { UserMessageView } from "./components/UserMessageView";
+import ChatView from "./components/chatViewComponents/ChatView";
+import { MarkdownView } from "./components/chatViewComponents/MarkdownView";
+import { UserMessageView } from "./components/chatViewComponents/UserMessageView";
+import { TopMenuBar } from "./components/topMenuBarComponents/TopMenuBar";
 import type { ConfigModel } from "./model/configModel";
 import type { Chat, ResponseData } from "./model/dataModels";
 

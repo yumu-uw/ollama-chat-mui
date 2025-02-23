@@ -1,7 +1,7 @@
 import { configAtom } from "@/atom/configAtom";
 import { useAtom } from "jotai";
 import { Flex, VStack, styled } from "styled-system/jsx";
-import { AddOllamaHostField } from "./config/AddOllamaHostField";
+import { AddOllamaHostField } from "./AddOllamaHostField";
 
 type Props = {
 	dialogRef: React.RefObject<HTMLDialogElement | null>;
