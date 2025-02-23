@@ -2,18 +2,14 @@ export type AppThemeModel = "light" | "dark";
 
 export type ConfigModel = {
 	OllamaEndpoints: OllamaEndpoint[];
-};
-
-export type LLMModel = {
-	ModelName: string;
-	Default: boolean;
+	DefaultOllamaEndPointName: string;
 };
 
 export type OllamaEndpoint = {
-	Name: string;
-	Endpoint: string;
-	LLMModels: LLMModel[];
-	Default: boolean;
+	EndpointName: string;
+	EndpointUrl: string;
+	LLMModels: string[];
+	DefaultLLMModel: string;
 };
 
 export type CurrentOllamaHostModel = {

@@ -46,14 +46,15 @@ func CreateTemplateConfigJson() error {
 		AppTheme: "light",
 		OllamaEndpoints: []model.OllamaEndpoint{
 			{
-				Name:     "localhost",
-				Endpoint: "http://localhost:11434",
-				LLMModels: []model.LLMModel{
-					{ModelName: "llama3.2", Default: true},
+				EndpointName: "localhost",
+				EndpointURL:  "http://localhost:11434",
+				LLMModels: []string{
+					"qwen2.5-coder:7b",
 				},
-				Default: true,
+				DefaultLLMModel: "qwen2.5-coder:7b",
 			},
 		},
+		DefaultOllamaEndPointName: "localhost",
 	}
 
 	if err := encoder.Encode(config); err != nil {
