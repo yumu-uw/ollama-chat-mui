@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Box, Container, Flex } from "styled-system/jsx";
-import "./github-markdown.css";
+import "./css/github-markdown.css";
 import { useAtom, useSetAtom } from "jotai";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";

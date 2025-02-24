@@ -1,5 +1,4 @@
 import { configAtom } from "@/atom/configAtom";
-import type { OllamaEndpoint } from "@/model/configModel";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Box, VStack, styled } from "styled-system/jsx";
@@ -44,16 +43,6 @@ export const AddOllamaHostField = ({ dialogRef }: Props) => {
 			return;
 		}
 
-		// for (const endpoint of config?.OllamaEndpoints ?? []) {
-		// 	if (endpoint.EndpointName === displayName) {
-		// 		alert("DisplayName is already registered");
-		// 		return;
-		// 	}
-		// 	if (endpoint.EndpointUrl === ollamaHost) {
-		// 		alert("OllamaHost is already registered");
-		// 		return;
-		// 	}
-		// }
 		GetOllamaModels(ollamaHost).then((data: string) => {
 			if (data.startsWith("error:")) {
 				alert(data);
