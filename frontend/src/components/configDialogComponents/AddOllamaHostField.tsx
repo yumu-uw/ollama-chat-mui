@@ -1,4 +1,5 @@
 import { configAtom } from "@/atom/configAtom";
+import { deepCopyObject } from "@/lib/util";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Box, VStack, styled } from "styled-system/jsx";
@@ -43,6 +44,17 @@ export const AddOllamaHostField = ({ dialogRef }: Props) => {
 			return;
 		}
 
+		// for (const endpoint of config?.OllamaEndpoints ?? []) {
+		// 	if (endpoint.EndpointName === displayName) {
+		// 		alert("DisplayName is already registered");
+		// 		return;
+		// 	}
+		// 	if (endpoint.EndpointUrl === ollamaHost) {
+		// 		alert("OllamaHost is already registered");
+		// 		return;
+		// 	}
+		// }
+
 		GetOllamaModels(ollamaHost).then((data: string) => {
 			if (data.startsWith("error:")) {
 				alert(data);
@@ -61,7 +73,7 @@ export const AddOllamaHostField = ({ dialogRef }: Props) => {
 				DefaultLLMModel: models.length > 0 ? models[0] : "",
 			};
 
-			const newConfig = config;
+			const newConfig = deepCopyObject(config);
 			newConfig?.OllamaEndpoints.push(newOllamaEndpoint);
 			setConfig(newConfig);
 			UpdateOllamaEndpoints(newOllamaEndpoint);
