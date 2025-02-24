@@ -1,5 +1,3 @@
-import { configAtom } from "@/atom/configAtom";
-import { useAtom } from "jotai";
 import { Flex, VStack, styled } from "styled-system/jsx";
 import { AddOllamaHostField } from "./AddOllamaHostField";
 
@@ -8,7 +6,6 @@ type Props = {
 };
 
 export const ConfigDialog = ({ dialogRef }: Props) => {
-	const [config, setConfig] = useAtom(configAtom);
 	return (
 		<VStack gap={4} w={"100%"} alignItems={"flex-start"}>
 			<Flex w={"100%"} justify={"flex-end"}>
