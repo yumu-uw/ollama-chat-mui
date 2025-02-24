@@ -7,7 +7,13 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": []
+		"ignore": [
+			"wailsjs/",
+			"styled-system/",
+			"dist/",
+			"tsconfig.*",
+			"postcss.config.cjs"
+		]
 	},
 	"formatter": {
 		"enabled": true,
