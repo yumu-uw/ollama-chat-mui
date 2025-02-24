@@ -116,8 +116,8 @@ func (a *App) UpdateAppTheme(newAppTheme string) string {
 	return ""
 }
 
-func (a *App) UpdateOllamaEndpoints(newOllamaEndpoint model.OllamaEndpoint) string {
-	a.config.OllamaEndpoints = append(a.config.OllamaEndpoints, newOllamaEndpoint)
+func (a *App) UpdateOllamaEndpoints(newOllamaEndpoints []model.OllamaEndpoint) string {
+	a.config.OllamaEndpoints = newOllamaEndpoints
 	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
 		return err.Error()
 	}
