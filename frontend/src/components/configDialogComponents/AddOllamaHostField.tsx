@@ -77,6 +77,8 @@ export const AddOllamaHostField = ({ dialogRef }: Props) => {
 			newConfig?.OllamaEndpoints.push(newOllamaEndpoint);
 			setConfig(newConfig);
 			UpdateOllamaEndpoints(newOllamaEndpoint);
+			setDisplayName("");
+			setOllamaHost("");
 		});
 	};
 
