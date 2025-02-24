@@ -27,8 +27,8 @@ export const RightButtonView = () => {
 	};
 	return (
 		<>
-			<button
-				type="button"
+			<styled.button
+				cursor={"pointer"}
 				onClick={() => {
 					switchAppTheme();
 					hljs.highlightAll();
@@ -36,17 +36,17 @@ export const RightButtonView = () => {
 			>
 				{/* テーマ切り替えボタン */}
 				{appTheme === "light" ? <Sun color="black" /> : <Moon color="white" />}
-			</button>
+			</styled.button>
 
 			{/* 設定画面表示ボタン */}
-			<button
-				type="button"
+			<styled.button
+				cursor={"pointer"}
 				onClick={() => {
 					dialogRef.current?.showModal();
 				}}
 			>
 				<Settings color={appTheme === "light" ? "black" : "white"} />
-			</button>
+			</styled.button>
 
 			<styled.dialog
 				ref={dialogRef}
