@@ -13,27 +13,18 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-var buildMode = "dev"
-
 func main() {
 	var config model.ConfigJson
 	var err error
-	if buildMode == "dev" {
-		config, err = ymuwutil.LoadConfigJson("dev")
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		if err := ymuwutil.SetupConfigDir(); err != nil {
-			panic(err)
-		}
-		if err := ymuwutil.CreateTemplateConfigJson(); err != nil {
-			panic(err)
-		}
-		config, err = ymuwutil.LoadConfigJson("prod")
-		if err != nil {
-			panic(err)
-		}
+	if err = ymuwutil.SetupConfigDir(); err != nil {
+		panic(err)
+	}
+	if err = ymuwutil.CreateTemplateConfigJson(); err != nil {
+		panic(err)
+	}
+	config, err = ymuwutil.LoadConfigJson()
+	if err != nil {
+		panic(err)
 	}
 
 	// Create an instance of the app structure

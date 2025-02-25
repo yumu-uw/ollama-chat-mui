@@ -75,11 +75,8 @@ func CreateTemplateConfigJson() error {
 	return nil
 }
 
-func LoadConfigJson(buildMode string) (model.ConfigJson, error) {
+func LoadConfigJson() (model.ConfigJson, error) {
 	var config model.ConfigJson
-	if buildMode == "dev" {
-		configFile = "devconf/config.json"
-	}
 	f, err := os.Open(configFile)
 	if err != nil {
 		panic(err)

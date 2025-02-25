@@ -19,14 +19,14 @@ build:
 
 .PHONY: build_all
 build_all:
-	wails build -platform=windows/amd64,darwin/arm64,darwin/amd64 -ldflags '-s -w -X main.buildMode=prod' -trimpath -clean
+	wails build -platform=windows/amd64,darwin/arm64,darwin/amd64 -ldflags '-s -w' -trimpath -clean
 
 .PHONY: build_darwin_arm64
 build_darwin_arm64:
-	wails build -platform=darwin/arm64 -ldflags '-s -w -X main.buildMode=prod' -trimpath
+	wails build -platform=darwin/arm64 -ldflags '-s -w' -trimpath
 
 build_darwin_amd64:
-	wails build -platform=darwin/amd64 -ldflags '-s -w -X main.buildMode=prod' -trimpath
+	wails build -platform=darwin/amd64 -ldflags '-s -w' -trimpath
 
 build_windows_amd64:
-	wails build -platform=windows/amd64 -ldflags '-s -w -X main.buildMode=prod' -trimpath
+	wails build -platform=windows/amd64 -ldflags '-s -w' -trimpath
