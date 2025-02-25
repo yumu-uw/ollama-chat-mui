@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/user"
 	"path"
+	"runtime"
 )
 
 var configDir string
@@ -16,8 +17,14 @@ func SetupConfigDir() error {
 	if err != nil {
 		return err
 	}
-	home_dir := user.HomeDir
-	configDir = path.Join(home_dir, "Library/Application Support/YmuwApps/ollama-chat")
+
+	if runtime.GOOS == "windows" {
+		configDir = path.Join(os.Getenv("LOCALAPPDATA"), "YmuwApps", "ollama-chat")
+	} else if runtime.GOOS == "darwin" {
+		configDir = path.Join(user.HomeDir, "Library/Application Support/YmuwApps/ollama-chat")
+	} else {
+		configDir = user.HomeDir
+	}
 
 	// 設定ファイル保存ディレクトリの作成
 	os.MkdirAll(configDir, os.ModePerm)
