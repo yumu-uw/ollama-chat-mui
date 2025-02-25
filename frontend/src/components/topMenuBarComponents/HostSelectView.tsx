@@ -2,6 +2,7 @@ import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
 import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
 import { useAtom, useAtomValue } from "jotai";
+import { ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
 import { Box, HStack, VStack, styled } from "styled-system/jsx";
 import { TooltipView } from "./TooltipView";
@@ -98,17 +99,7 @@ export const HostSelectView = () => {
 							onClick={() => setHostSelectIsOpen(!hostSelectIsOpen)}
 							rounded="md"
 						>
-							{appTheme === "light" ? (
-								<img
-									alt="chevron-down"
-									src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtY2hldnJvbi1kb3duIj48cGF0aCBkPSJtNiA5IDYgNiA2LTYiLz48L3N2Zz4="
-								/>
-							) : (
-								<img
-									alt="chevron-down"
-									src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtY2hldnJvbi1kb3duIj48cGF0aCBkPSJtNiA5IDYgNiA2LTYiLz48L3N2Zz4="
-								/>
-							)}
+							<ChevronDown color={appTheme === "light" ? "black" : "white"} />
 						</styled.button>
 					</HStack>
 					<TooltipView
@@ -132,17 +123,7 @@ export const HostSelectView = () => {
 							onClick={() => setmodelSelectIsOpen(!modelSelectIsOpen)}
 							rounded="md"
 						>
-							{appTheme === "light" ? (
-								<img
-									alt="chevron-down"
-									src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtY2hldnJvbi1kb3duIj48cGF0aCBkPSJtNiA5IDYgNiA2LTYiLz48L3N2Zz4="
-								/>
-							) : (
-								<img
-									alt="chevron-down"
-									src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgY2xhc3M9Imx1Y2lkZSBsdWNpZGUtY2hldnJvbi1kb3duIj48cGF0aCBkPSJtNiA5IDYgNiA2LTYiLz48L3N2Zz4="
-								/>
-							)}
+							<ChevronDown color={appTheme === "light" ? "black" : "white"} />
 						</styled.button>
 					</HStack>
 					<TooltipView
