@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Container, Flex } from "styled-system/jsx";
+import { Box, Container, Flex, styled } from "styled-system/jsx";
 import "./css/github-markdown.css";
 import { useAtom, useSetAtom } from "jotai";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
@@ -7,6 +7,7 @@ import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 import { appThemeAtom } from "./atom/appThemeAtom";
 import { configAtom } from "./atom/configAtom";
 import { currentOllamaHostAtom } from "./atom/currentOllamaHostAtom";
+import { InitialSettingView } from "./components/InitialSettingView";
 import { MessageInputArea } from "./components/MessageInputArea";
 import { ChatView } from "./components/chatViewComponents/ChatView";
 import { MarkdownView } from "./components/chatViewComponents/MarkdownView";
@@ -17,7 +18,7 @@ import type { Chat, ResponseData } from "./model/dataModels";
 
 function App() {
 	const setAppTheme = useSetAtom(appThemeAtom);
-	const setConfig = useSetAtom(configAtom);
+	const [config, setConfig] = useAtom(configAtom);
 	const [currentOllamaHost, setCurrentOllamaHost] = useAtom(
 		currentOllamaHostAtom,
 	);
@@ -34,6 +35,7 @@ function App() {
 	]);
 
 	const chatRef = useRef<HTMLDivElement>(null);
+	const dialogRef = useRef<HTMLDialogElement>(null);
 
 	// 設定ファイルの情報を取得
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -51,14 +53,21 @@ function App() {
 					break;
 			}
 			document.body.setAttribute("data-theme", data.AppTheme);
-			const config: ConfigModel = {
+			const newConfig: ConfigModel = {
 				OllamaEndpoints: data.OllamaEndpoints,
 				DefaultOllamaEndPointName: data.DefaultOllamaEndPointName,
 			};
-			setConfig(config);
+			setConfig(newConfig);
 
-			for (const endpoint of config?.OllamaEndpoints || []) {
-				if (endpoint.EndpointName === config.DefaultOllamaEndPointName) {
+			if (newConfig.OllamaEndpoints.length === 0) {
+				setTimeout(() => {
+					dialogRef.current?.showModal();
+				}, 500);
+				return;
+			}
+
+			for (const endpoint of newConfig.OllamaEndpoints || []) {
+				if (endpoint.EndpointName === newConfig.DefaultOllamaEndPointName) {
 					setCurrentOllamaHost({
 						DisplayName: endpoint.EndpointName,
 						Endpoint: endpoint.EndpointUrl,
@@ -151,6 +160,17 @@ function App() {
 					callOllamaApi={callOllamaApi}
 				/>
 			</Flex>
+			<styled.dialog
+				ref={dialogRef}
+				margin={"auto"}
+				w={"90vw"}
+				minH={"40vh"}
+				borderRadius={"md"}
+			>
+				<Container alignContent={"center"} minH={"40vh"} p={"1em"}>
+					<InitialSettingView dialogRef={dialogRef} />
+				</Container>
+			</styled.dialog>
 		</Container>
 	);
 }

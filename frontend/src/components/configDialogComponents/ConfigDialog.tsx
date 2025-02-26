@@ -12,7 +12,11 @@ export const ConfigDialog = ({ dialogRef }: Props) => {
 		<VStack gap={8} w={"100%"} alignItems={"flex-start"}>
 			<Flex w={"100%"} justify={"flex-end"}>
 				<VStack gap={0}>
-					<styled.button onClick={() => dialogRef.current?.close()}>
+					<styled.button
+						onClick={() => {
+							dialogRef.current?.close();
+						}}
+					>
 						<CircleX cursor="pointer" />
 					</styled.button>
 					ESC

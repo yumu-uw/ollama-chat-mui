@@ -50,16 +50,14 @@ export const RightButtonView = () => {
 
 			<styled.dialog
 				ref={dialogRef}
-				position={"fixed"}
 				margin={"auto"}
 				w={"90vw"}
-				h={"90vh"}
+				minH={"60vh"}
+				maxH={"80vh"}
 				borderRadius={"md"}
 			>
-				<Container p={"1em"}>
-					<VStack>
-						<ConfigDialog dialogRef={dialogRef} />
-					</VStack>
+				<Container minH={"60vh"} maxH={"80vh"} p={"1em"}>
+					<ConfigDialog dialogRef={dialogRef} />
 				</Container>
 			</styled.dialog>
 		</>

@@ -123,3 +123,11 @@ func (a *App) UpdateOllamaEndpoints(newOllamaEndpoints []model.OllamaEndpoint) s
 	}
 	return ""
 }
+
+func (a *App) UpdateDefaultOllamaEndPointName(name string) string {
+	a.config.DefaultOllamaEndPointName = name
+	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
+		return err.Error()
+	}
+	return ""
+}
