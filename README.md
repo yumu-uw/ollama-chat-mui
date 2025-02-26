@@ -4,6 +4,10 @@
 
 Ollama をチャット形式で使用するための GUI アプリ
 
+## Demo
+
+![Feb-26-2025 21-35-33](https://github.com/user-attachments/assets/5f7d6c79-193d-4b09-bff9-822e99469f14)
+
 ## Usage
 
 アプリケーションへの署名は実施していないため、Mac 版の初回起動時には下記コマンドの実行が必須
