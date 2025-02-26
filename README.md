@@ -1,11 +1,16 @@
-# README
+# Ollama Chat
 
-## About
+## Overview
 
-This is the official Wails React-TS template.
+Ollama をチャット形式で使用するための GUI アプリ
 
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
+## Usage
+
+アプリケーションへの署名は実施していないため、Mac 版の初回起動時には下記コマンドの実行が必須
+
+```zsh
+xattr -rc [アプリのパス]
+```
 
 ## Live Development
 
