@@ -3,11 +3,29 @@
 [data-theme="light"] {
 	color: black;
 	background-color: white;
+
+	@media not (forced-colors: active) {
+		div::-webkit-scrollbar, div::-webkit-scrollbar-track {
+			background-color: inherit;
+			border-radius: calc(var(--ec-brdRad) + var(--ec-brdWd));
+			border-top-left-radius: 0;
+			border-top-right-radius:0
+		}
+	}
 }
 
 [data-theme="dark"] {
 	color: white;
 	background-color: #111827;
+
+	@media not (forced-colors: active) {
+		div::-webkit-scrollbar, div::-webkit-scrollbar-track {
+			background-color: inherit;
+			border-radius: calc(var(--ec-brdRad) + var(--ec-brdWd));
+			border-top-left-radius: 0;
+			border-top-right-radius:0
+		}
+	}
 }
 
 pre code:not(.hljs) {

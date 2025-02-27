@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { css } from "styled-system/css";
 import { Box, Container, Flex, styled } from "styled-system/jsx";
 import "./css/github-markdown.css";
 import { useAtom, useSetAtom } from "jotai";
@@ -16,8 +17,62 @@ import { TopMenuBar } from "./components/topMenuBarComponents/TopMenuBar";
 import type { ConfigModel } from "./model/configModel";
 import type { Chat, ResponseData } from "./model/dataModels";
 
+const scrollbarStyle = css({
+	"&::-webkit-scrollbar": {
+		width: "30px",
+	},
+	"&::-webkit-scrollbar-thumb": {
+		background: "#888",
+		borderRadius: "10px",
+		_hover: { background: "#555" },
+	},
+	scrollbarColor: "blue red",
+	scrollbarWidth: "thin",
+	_scrollbarTrack: {
+		background: "#000000",
+		borderRadius: "10px",
+	},
+});
+
+const ChatViewWrapperBox = styled(Box, {
+	base: {
+		marginEnd: "auto",
+		overflow: "auto",
+		w: "100%",
+		h: "100%",
+		pr: "1.5em",
+		_scrollbarThumb: {
+			borderRadius: "10px",
+			border: "2px solid transparent",
+			backgroundClip: "content-box",
+		},
+	},
+	variants: {
+		variants: {
+			light: {
+				scrollbarColor: "#a9a9a9 #eeeeee",
+				_scrollbarTrack: {
+					backgroundColor: "#eeeeee",
+				},
+				_scrollbarThumb: {
+					background: "#a9a9a9",
+				},
+			},
+			dark: {
+				scrollbarColor: "#3D3C3B #1D2A39",
+				_scrollbarTrack: {
+					backgroundColor: "#000000",
+				},
+				_scrollbarThumb: {
+					background: "#3D3C3B",
+				},
+			},
+		},
+	},
+});
+
 function App() {
-	const setAppTheme = useSetAtom(appThemeAtom);
+	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
 	const [config, setConfig] = useAtom(configAtom);
 	const [currentOllamaHost, setCurrentOllamaHost] = useAtom(
 		currentOllamaHostAtom,
@@ -142,18 +197,11 @@ function App() {
 				justify={"space-between"}
 			>
 				<TopMenuBar />
-				<Box
-					ref={chatRef}
-					marginEnd={"auto"}
-					overflow={"auto"}
-					w={"100%"}
-					h={"100%"}
-					pr={"1.5em"}
-				>
+				<ChatViewWrapperBox variants={appTheme} ref={chatRef}>
 					<ChatView chatHistory={chatHistory} />
 					{prevInput && <UserMessageView message={prevInput} />}
 					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
-				</Box>
+				</ChatViewWrapperBox>
 				<MessageInputArea
 					input={input}
 					setInput={setInput}
