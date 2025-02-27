@@ -2,7 +2,7 @@ module ollama-chat
 
 go 1.24.0
 
-require github.com/wailsapp/wails/v2 v2.10.0
+require github.com/wailsapp/wails/v2 v2.10.1
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
