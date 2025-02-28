@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { css } from "styled-system/css";
 import { Box, Container, Flex, styled } from "styled-system/jsx";
 import "./css/github-markdown.css";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 import { appThemeAtom } from "./atom/appThemeAtom";
@@ -16,23 +15,6 @@ import { UserMessageView } from "./components/chatViewComponents/UserMessageView
 import { TopMenuBar } from "./components/topMenuBarComponents/TopMenuBar";
 import type { ConfigModel } from "./model/configModel";
 import type { Chat, ResponseData } from "./model/dataModels";
-
-const scrollbarStyle = css({
-	"&::-webkit-scrollbar": {
-		width: "30px",
-	},
-	"&::-webkit-scrollbar-thumb": {
-		background: "#888",
-		borderRadius: "10px",
-		_hover: { background: "#555" },
-	},
-	scrollbarColor: "blue red",
-	scrollbarWidth: "thin",
-	_scrollbarTrack: {
-		background: "#000000",
-		borderRadius: "10px",
-	},
-});
 
 const ChatViewWrapperBox = styled(Box, {
 	base: {
