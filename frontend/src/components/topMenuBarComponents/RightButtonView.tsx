@@ -47,10 +47,8 @@ export const RightButtonView = () => {
 				<Settings color={appTheme === "light" ? "black" : "white"} />
 			</styled.button>
 
-			<ConfigDialogWrapper dialogRef={dialogRef}>
-				<Container minH={"60vh"} maxH={"80vh"} p={"1em"}>
-					<ConfigDialog dialogRef={dialogRef} />
-				</Container>
+			<ConfigDialogWrapper dialogRef={dialogRef} minH={"60vh"} maxH={"80vh"}>
+				<ConfigDialog dialogRef={dialogRef} />
 			</ConfigDialogWrapper>
 		</>
 	);

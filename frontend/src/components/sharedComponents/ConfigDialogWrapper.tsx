@@ -1,14 +1,12 @@
 import { appThemeAtom } from "@/atom/appThemeAtom";
 import { useAtomValue } from "jotai";
-import { styled } from "styled-system/jsx";
+import { Container, styled } from "styled-system/jsx";
 
-const ConfigDialog = styled("dialog", {
+const StyledConfigDialogWrapper = styled("dialog", {
 	base: {
 		margin: "auto",
 		w: "90vw",
 		borderRadius: "md",
-		minH: "60vh",
-		maxH: "80vh",
 	},
 	variants: {
 		variants: {
@@ -28,14 +26,30 @@ const ConfigDialog = styled("dialog", {
 
 type Props = {
 	dialogRef: React.RefObject<HTMLDialogElement | null>;
+	alignContent?: string;
+	minH?: string;
+	maxH?: string;
 	children: React.ReactNode;
 };
 
-export const ConfigDialogWrapper = ({ dialogRef, children }: Props) => {
+export const ConfigDialogWrapper = ({
+	dialogRef,
+	alignContent,
+	minH,
+	maxH,
+	children,
+}: Props) => {
 	const appTheme = useAtomValue(appThemeAtom);
 	return (
-		<ConfigDialog variants={appTheme} ref={dialogRef}>
-			{children}
-		</ConfigDialog>
+		<StyledConfigDialogWrapper
+			variants={appTheme}
+			ref={dialogRef}
+			minH={minH}
+			maxH={maxH}
+		>
+			<Container alignContent={alignContent} minH={minH} maxH={maxH} p={"1em"}>
+				{children}
+			</Container>
+		</StyledConfigDialogWrapper>
 	);
 };

@@ -192,10 +192,12 @@ function App() {
 				/>
 			</Flex>
 
-			<ConfigDialogWrapper dialogRef={dialogRef}>
-				<Container alignContent={"center"} minH={"40vh"} p={"1em"}>
-					<InitialSettingView dialogRef={dialogRef} />
-				</Container>
+			<ConfigDialogWrapper
+				dialogRef={dialogRef}
+				alignContent={"center"}
+				minH={"40vh"}
+			>
+				<InitialSettingView dialogRef={dialogRef} />
 			</ConfigDialogWrapper>
 		</Container>
 	);
