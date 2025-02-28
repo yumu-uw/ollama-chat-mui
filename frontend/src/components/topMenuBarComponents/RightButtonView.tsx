@@ -4,9 +4,10 @@ import type { AppThemeModel } from "@/model/configModel";
 import { useAtom } from "jotai";
 import { Moon, Settings, Sun } from "lucide-react";
 import { useRef } from "react";
-import { Container, VStack, styled } from "styled-system/jsx";
+import { Container, styled } from "styled-system/jsx";
 import { UpdateAppTheme } from "wailsjs/go/main/App";
 import { ConfigDialog } from "../configDialogComponents/ConfigDialog";
+import { ConfigDialogWrapper } from "../sharedComponents/ConfigDialogWrapper";
 
 export const RightButtonView = () => {
 	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
@@ -34,11 +35,9 @@ export const RightButtonView = () => {
 					hljs.highlightAll();
 				}}
 			>
-				{/* テーマ切り替えボタン */}
 				{appTheme === "light" ? <Sun color="black" /> : <Moon color="white" />}
 			</styled.button>
 
-			{/* 設定画面表示ボタン */}
 			<styled.button
 				cursor={"pointer"}
 				onClick={() => {
@@ -48,18 +47,11 @@ export const RightButtonView = () => {
 				<Settings color={appTheme === "light" ? "black" : "white"} />
 			</styled.button>
 
-			<styled.dialog
-				ref={dialogRef}
-				margin={"auto"}
-				w={"90vw"}
-				minH={"60vh"}
-				maxH={"80vh"}
-				borderRadius={"md"}
-			>
+			<ConfigDialogWrapper dialogRef={dialogRef}>
 				<Container minH={"60vh"} maxH={"80vh"} p={"1em"}>
 					<ConfigDialog dialogRef={dialogRef} />
 				</Container>
-			</styled.dialog>
+			</ConfigDialogWrapper>
 		</>
 	);
 };

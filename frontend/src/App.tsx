@@ -12,6 +12,7 @@ import { MessageInputArea } from "./components/MessageInputArea";
 import { ChatView } from "./components/chatViewComponents/ChatView";
 import { MarkdownView } from "./components/chatViewComponents/MarkdownView";
 import { UserMessageView } from "./components/chatViewComponents/UserMessageView";
+import { ConfigDialogWrapper } from "./components/sharedComponents/ConfigDialogWrapper";
 import { TopMenuBar } from "./components/topMenuBarComponents/TopMenuBar";
 import type { ConfigModel } from "./model/configModel";
 import type { Chat, ResponseData } from "./model/dataModels";
@@ -190,17 +191,12 @@ function App() {
 					callOllamaApi={callOllamaApi}
 				/>
 			</Flex>
-			<styled.dialog
-				ref={dialogRef}
-				margin={"auto"}
-				w={"90vw"}
-				minH={"40vh"}
-				borderRadius={"md"}
-			>
+
+			<ConfigDialogWrapper dialogRef={dialogRef}>
 				<Container alignContent={"center"} minH={"40vh"} p={"1em"}>
 					<InitialSettingView dialogRef={dialogRef} />
 				</Container>
-			</styled.dialog>
+			</ConfigDialogWrapper>
 		</Container>
 	);
 }
