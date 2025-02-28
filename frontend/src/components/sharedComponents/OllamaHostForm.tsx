@@ -1,3 +1,4 @@
+import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export const OllamaHostForm = ({ onSubmit }: Props) => {
+	const appTheme = useAtomValue(appThemeAtom);
 	const config = useAtomValue(configAtom);
 
 	const [displayName, setDisplayName] = useState("");
@@ -74,7 +76,8 @@ export const OllamaHostForm = ({ onSubmit }: Props) => {
 					p={"0.3em"}
 					w={"100%"}
 					placeholder="e.g. Ollama localhost"
-					border={"1px solid black"}
+					border={"1px solid"}
+					borderColor={appTheme === "light" ? "black" : "gray.400"}
 					borderRadius={"md"}
 					value={displayName}
 					onChange={(e) => setDisplayName(e.target.value)}
@@ -89,7 +92,8 @@ export const OllamaHostForm = ({ onSubmit }: Props) => {
 					p={"0.3em"}
 					w={"100%"}
 					placeholder="e.g. http://localhost:11434"
-					border={"1px solid black"}
+					border={"1px solid"}
+					borderColor={appTheme === "light" ? "black" : "gray.400"}
 					borderRadius={"md"}
 					value={ollamaHost}
 					onChange={(e) => setOllamaHost(e.target.value)}
@@ -100,7 +104,8 @@ export const OllamaHostForm = ({ onSubmit }: Props) => {
 				<styled.button
 					cursor={"pointer"}
 					p={"0.5em"}
-					border={"1px solid black"}
+					border={"1px solid"}
+					borderColor={appTheme === "light" ? "black" : "gray.400"}
 					borderRadius={"md"}
 					onClick={handleSubmit}
 				>

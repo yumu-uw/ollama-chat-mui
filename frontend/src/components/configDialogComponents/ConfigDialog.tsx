@@ -22,7 +22,7 @@ export const ConfigDialog = ({ dialogRef }: Props) => {
 					ESC
 				</VStack>
 			</Flex>
-			<AddOllamaHostField dialogRef={dialogRef} />
+			<AddOllamaHostField />
 			<ListOllamaHostField />
 		</VStack>
 	);
