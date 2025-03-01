@@ -15,7 +15,7 @@
 
 .PHONY: build
 build:
-	wails build -clean
+	wails build -ldflags '-s -w' -trimpath -clean
 
 .PHONY: build_all
 build_all:
@@ -23,10 +23,10 @@ build_all:
 
 .PHONY: build_darwin_arm64
 build_darwin_arm64:
-	wails build -platform=darwin/arm64 -ldflags '-s -w' -trimpath
+	wails build -platform=darwin/arm64 -ldflags '-s -w' -trimpath -clean
 
 build_darwin_amd64:
-	wails build -platform=darwin/amd64 -ldflags '-s -w' -trimpath
+	wails build -platform=darwin/amd64 -ldflags '-s -w' -trimpath -clean
 
 build_windows_amd64:
-	wails build -platform=windows/amd64 -ldflags '-s -w' -trimpath
+	wails build -platform=windows/amd64 -ldflags '-s -w' -trimpath -clean
