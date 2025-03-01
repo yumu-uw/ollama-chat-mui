@@ -6,7 +6,8 @@ Ollama をチャット形式で使用するための GUI アプリ
 
 ## Demo
 
-![Feb-26-2025 21-35-33](https://github.com/user-attachments/assets/5f7d6c79-193d-4b09-bff9-822e99469f14)
+![Mar-01-2025 14-51-33](https://github.com/user-attachments/assets/d46abe8c-4c59-4749-b48b-d75c8d6ca62c)
+
 
 ## Usage
 
