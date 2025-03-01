@@ -1,14 +1,20 @@
 import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
 import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
+import { deepCopyObject } from "@/lib/util";
 import { useAtom, useAtomValue } from "jotai";
 import { ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
-import { Box, HStack, VStack, styled } from "styled-system/jsx";
+import { Box, HStack, styled } from "styled-system/jsx";
+import {
+	UpdateDefaultOllamaEndPointName,
+	UpdateOllamaEndpoints,
+} from "wailsjs/go/main/App";
 import { TooltipView } from "./TooltipView";
 
-const EndpointP = styled("p", {
+const StyledSelectP = styled("p", {
 	base: {
+		cursor: "pointer",
 		fontSize: "xl",
 	},
 	variants: {
@@ -26,17 +32,18 @@ const EndpointP = styled("p", {
 	},
 });
 
-const ModelP = styled("p", {
+const StyledSetDefaultButton = styled("button", {
 	base: {
-		fontSize: "lg",
+		cursor: "pointer",
+		fontSize: "small",
 	},
 	variants: {
 		variants: {
 			light: {
-				color: "black",
+				color: "gray.700",
 			},
 			dark: {
-				color: "white",
+				color: "gray.300",
 			},
 		},
 	},
@@ -45,11 +52,51 @@ const ModelP = styled("p", {
 	},
 });
 
+type SelectablePProps = {
+	ref: React.RefObject<HTMLDivElement | null>;
+	selectIsOpen: boolean;
+	setSelectIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	displayText: string;
+	handleSelectt: (select: string) => void;
+	handleSetAsDefault: () => void;
+	tooltipViewData: string[];
+};
+
+const SelectableP = ({ ...rest }: SelectablePProps) => {
+	const appTheme = useAtomValue(appThemeAtom);
+	return (
+		<Box position={"relative"}>
+			<HStack ref={rest.ref}>
+				<StyledSelectP variants={appTheme}>{rest.displayText}</StyledSelectP>
+				<styled.button
+					cursor={"pointer"}
+					onClick={() => rest.setSelectIsOpen(!rest.selectIsOpen)}
+					rounded="md"
+				>
+					<ChevronDown color={appTheme === "light" ? "black" : "white"} />
+				</styled.button>
+			</HStack>
+			<TooltipView
+				baseRef={rest.ref}
+				isOpen={rest.selectIsOpen}
+				setIsOpen={rest.setSelectIsOpen}
+				data={rest.tooltipViewData}
+				handleSelectAction={rest.handleSelectt}
+			/>
+			<StyledSetDefaultButton
+				variants={appTheme}
+				onClick={rest.handleSetAsDefault}
+			>
+				Set as default
+			</StyledSetDefaultButton>
+		</Box>
+	);
+};
+
 export const HostSelectView = () => {
 	const [hostSelectIsOpen, setHostSelectIsOpen] = useState(false);
 	const [modelSelectIsOpen, setmodelSelectIsOpen] = useState(false);
 
-	const appTheme = useAtomValue(appThemeAtom);
 	const [config, setConfig] = useAtom(configAtom);
 	const [currentOllamaHost, setCurrentOllamaHost] = useAtom(
 		currentOllamaHostAtom,
@@ -86,59 +133,67 @@ export const HostSelectView = () => {
 		});
 	};
 
-	return (
-		<>
-			<VStack alignItems={"flex-start"}>
-				<Box position={"relative"}>
-					<HStack ref={hostRef}>
-						<EndpointP variants={appTheme}>
-							{currentOllamaHost?.DisplayName}
-						</EndpointP>
-						<styled.button
-							cursor={"pointer"}
-							onClick={() => setHostSelectIsOpen(!hostSelectIsOpen)}
-							rounded="md"
-						>
-							<ChevronDown color={appTheme === "light" ? "black" : "white"} />
-						</styled.button>
-					</HStack>
-					<TooltipView
-						baseRef={hostRef}
-						isOpen={hostSelectIsOpen}
-						setIsOpen={setHostSelectIsOpen}
-						data={
-							config?.OllamaEndpoints?.map((v) => {
-								return v.EndpointName;
-							}) || []
-						}
-						handleSelectAction={handleSelectOllamaHost}
-					/>
-				</Box>
+	const handleSetAsDefaultHost = () => {
+		const newConfig = deepCopyObject(config);
+		if (!newConfig) return;
+		newConfig.DefaultOllamaEndPointName =
+			currentOllamaHost?.DisplayName || newConfig.DefaultOllamaEndPointName;
+		setConfig(newConfig);
+		UpdateDefaultOllamaEndPointName(newConfig.DefaultOllamaEndPointName).then(
+			(result) => {
+				if (result !== "") {
+					alert(result);
+				}
+			},
+		);
+	};
 
-				<Box position={"relative"}>
-					<HStack ref={modelRef}>
-						<ModelP variants={appTheme}>{currentOllamaHost?.ModelName}</ModelP>
-						<styled.button
-							cursor={"pointer"}
-							onClick={() => setmodelSelectIsOpen(!modelSelectIsOpen)}
-							rounded="md"
-						>
-							<ChevronDown color={appTheme === "light" ? "black" : "white"} />
-						</styled.button>
-					</HStack>
-					<TooltipView
-						baseRef={modelRef}
-						isOpen={modelSelectIsOpen}
-						setIsOpen={setmodelSelectIsOpen}
-						data={
-							config?.OllamaEndpoints?.find(
-								(v) => v.EndpointName === currentOllamaHost?.DisplayName,
-							)?.LLMModels || []
-						}
-						handleSelectAction={handleSelectModel}
-					/>
-				</Box>
-			</VStack>
-		</>
+	const handleSetAsDefaultModel = () => {
+		const newConfig = deepCopyObject(config);
+		if (!newConfig) return;
+		for (const endpoint of newConfig.OllamaEndpoints) {
+			if (endpoint.EndpointName === currentOllamaHost?.DisplayName) {
+				endpoint.DefaultLLMModel = currentOllamaHost?.ModelName;
+				break;
+			}
+		}
+		setConfig(newConfig);
+		UpdateOllamaEndpoints(newConfig?.OllamaEndpoints || []).then((result) => {
+			if (result !== "") {
+				alert(result);
+			}
+		});
+	};
+
+	return (
+		<HStack alignItems={"flex-start"} gap={6}>
+			<SelectableP
+				ref={hostRef}
+				selectIsOpen={hostSelectIsOpen}
+				setSelectIsOpen={setHostSelectIsOpen}
+				displayText={currentOllamaHost?.DisplayName || ""}
+				handleSelectt={handleSelectOllamaHost}
+				handleSetAsDefault={handleSetAsDefaultHost}
+				tooltipViewData={
+					config?.OllamaEndpoints?.map((v) => {
+						return v.EndpointName;
+					}) || []
+				}
+			/>
+
+			<SelectableP
+				ref={modelRef}
+				selectIsOpen={modelSelectIsOpen}
+				setSelectIsOpen={setmodelSelectIsOpen}
+				displayText={currentOllamaHost?.ModelName || ""}
+				handleSelectt={handleSelectModel}
+				handleSetAsDefault={handleSetAsDefaultModel}
+				tooltipViewData={
+					config?.OllamaEndpoints?.find(
+						(v) => v.EndpointName === currentOllamaHost?.DisplayName,
+					)?.LLMModels || []
+				}
+			/>
+		</HStack>
 	);
 };

@@ -17,10 +17,8 @@ const TooltipBox = styled(Box, {
 		rounded: "md",
 		boxShadow: "2xl",
 		zIndex: "10",
-		minWidth: "300px",
 		maxWidth: "600px",
-		whiteSpace: "normal",
-		wordBreak: "break-word",
+		whiteSpace: "pre",
 	},
 	variants: {
 		variants: {
@@ -97,7 +95,7 @@ export const TooltipView = ({
 							<styled.button
 								w={"100%"}
 								py={"0.5em"}
-								pl={"1em"}
+								px={"1em"}
 								cursor={"pointer"}
 								textAlign={"left"}
 								onClick={() => {
