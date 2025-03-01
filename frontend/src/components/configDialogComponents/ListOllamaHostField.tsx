@@ -12,6 +12,13 @@ export const ListOllamaHostField = () => {
 
 	const handleDeleteOllamaHost = (index: number) => {
 		const newConfig = deepCopyObject(config);
+		if (
+			newConfig?.DefaultOllamaEndPointName ===
+			newConfig?.OllamaEndpoints[index].EndpointName
+		) {
+			alert("Cannot delete default Ollama Host");
+			return;
+		}
 		newConfig?.OllamaEndpoints.splice(index, 1);
 		setConfig(newConfig);
 		UpdateOllamaEndpoints(newConfig?.OllamaEndpoints || []);
