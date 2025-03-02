@@ -1,5 +1,7 @@
 import { appThemeAtom } from "@/atom/appThemeAtom";
-import { useAtomValue } from "jotai";
+import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useEffect } from "react";
 import { Container, styled } from "styled-system/jsx";
 
 const StyledConfigDialogWrapper = styled("dialog", {
@@ -59,6 +61,17 @@ export const ConfigDialogWrapper = ({
 	children,
 }: Props) => {
 	const appTheme = useAtomValue(appThemeAtom);
+	const setConfigDIalogIsOpen = useSetAtom(configDIalogIsOpenAtom);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		const handleCloseDialog = () => {
+			setConfigDIalogIsOpen(false);
+		};
+
+		dialogRef.current?.addEventListener("close", handleCloseDialog);
+	}, []);
+
 	return (
 		<StyledConfigDialogWrapper
 			variants={appTheme}

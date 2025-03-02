@@ -1,17 +1,20 @@
 import { appThemeAtom } from "@/atom/appThemeAtom";
+import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
 import hljs from "@/lib/custom-highlight";
 import type { AppThemeModel } from "@/model/configModel";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { Moon, Settings, Sun } from "lucide-react";
 import { useRef } from "react";
-import { Container, styled } from "styled-system/jsx";
+import { styled } from "styled-system/jsx";
 import { UpdateAppTheme } from "wailsjs/go/main/App";
 import { ConfigDialog } from "../configDialogComponents/ConfigDialog";
 import { ConfigDialogWrapper } from "../sharedComponents/ConfigDialogWrapper";
 
 export const RightButtonView = () => {
 	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
+	const setConfigDIalogIsOpen = useSetAtom(configDIalogIsOpenAtom);
 	const dialogRef = useRef<HTMLDialogElement>(null);
+
 	const switchAppTheme = () => {
 		if (document.body.getAttribute("data-theme") === "light") {
 			document.body.setAttribute("data-theme", "dark");
@@ -41,6 +44,7 @@ export const RightButtonView = () => {
 			<styled.button
 				cursor={"pointer"}
 				onClick={() => {
+					setConfigDIalogIsOpen(true);
 					dialogRef.current?.showModal();
 				}}
 			>
