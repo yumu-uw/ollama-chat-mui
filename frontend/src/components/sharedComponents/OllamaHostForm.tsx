@@ -1,7 +1,8 @@
 import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
+import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
 import { useAtomValue } from "jotai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, VStack, styled } from "styled-system/jsx";
 import { GetOllamaModels } from "wailsjs/go/main/App";
 import type { model } from "wailsjs/go/models";
@@ -17,6 +18,7 @@ type Props = {
 export const OllamaHostForm = ({ onSubmit }: Props) => {
 	const appTheme = useAtomValue(appThemeAtom);
 	const config = useAtomValue(configAtom);
+	const configDialogIsOpen = useAtomValue(configDIalogIsOpenAtom);
 
 	const [displayName, setDisplayName] = useState("");
 	const [ollamaHost, setOllamaHost] = useState("");
@@ -64,7 +66,16 @@ export const OllamaHostForm = ({ onSubmit }: Props) => {
 		onSubmit(newOllamaEndpoint);
 		setDisplayName("");
 		setOllamaHost("");
+		setErrorMessage("");
 	};
+
+	useEffect(() => {
+		if (!configDialogIsOpen) {
+			setDisplayName("");
+			setOllamaHost("");
+			setErrorMessage("");
+		}
+	}, [configDialogIsOpen]);
 
 	return (
 		<>

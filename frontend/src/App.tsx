@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Box, Container, Flex, styled } from "styled-system/jsx";
 import "./css/github-markdown.css";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 import { appThemeAtom } from "./atom/appThemeAtom";
 import { configAtom } from "./atom/configAtom";
+import { configDIalogIsOpenAtom } from "./atom/configDIalogIsOpenAtom";
 import { currentOllamaHostAtom } from "./atom/currentOllamaHostAtom";
 import { InitialSettingView } from "./components/InitialSettingView";
 import { MessageInputArea } from "./components/MessageInputArea";
@@ -56,10 +57,11 @@ const ChatViewWrapperBox = styled(Box, {
 
 function App() {
 	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
-	const [config, setConfig] = useAtom(configAtom);
+	const setConfig = useSetAtom(configAtom);
 	const [currentOllamaHost, setCurrentOllamaHost] = useAtom(
 		currentOllamaHostAtom,
 	);
+	const setConfigDIalogIsOpen = useSetAtom(configDIalogIsOpenAtom);
 
 	const [input, setInput] = useState("");
 	const [prevInput, setPrevInput] = useState("");
@@ -99,6 +101,7 @@ function App() {
 
 			if (newConfig.OllamaEndpoints.length === 0) {
 				setTimeout(() => {
+					setConfigDIalogIsOpen(true);
 					dialogRef.current?.showModal();
 				}, 500);
 				return;
