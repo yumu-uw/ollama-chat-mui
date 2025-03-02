@@ -1,5 +1,5 @@
-import hljs from "@/lib/custom-highlight";
 import type { Chat } from "@/model/dataModels";
+import hljs from "highlight.js";
 import { memo, useEffect } from "react";
 import { MarkdownView } from "./MarkdownView";
 import { UserMessageView } from "./UserMessageView";

@@ -1,7 +1,7 @@
 import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
-import hljs from "@/lib/custom-highlight";
 import type { AppThemeModel } from "@/model/configModel";
+import hljs from "highlight.js";
 import { useAtom, useSetAtom } from "jotai";
 import { Moon, Settings, Sun } from "lucide-react";
 import { useRef } from "react";
