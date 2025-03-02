@@ -7,15 +7,34 @@ const StyledConfigDialogWrapper = styled("dialog", {
 		margin: "auto",
 		w: "90vw",
 		borderRadius: "md",
+		_scrollbarThumb: {
+			borderRadius: "10px",
+			border: "2px solid transparent",
+			backgroundClip: "content-box",
+		},
 	},
 	variants: {
 		variants: {
 			light: {
 				color: "black",
+				scrollbarColor: "#a9a9a9 #eeeeee",
+				_scrollbarTrack: {
+					backgroundColor: "#eeeeee",
+				},
+				_scrollbarThumb: {
+					background: "#a9a9a9",
+				},
 			},
 			dark: {
 				color: "white",
 				bg: "gray.700",
+				scrollbarColor: "#3D3C3B #1D2A39",
+				_scrollbarTrack: {
+					backgroundColor: "#000000",
+				},
+				_scrollbarThumb: {
+					background: "#3D3C3B",
+				},
 			},
 		},
 	},
