@@ -1,5 +1,3 @@
-@layer reset, base, tokens, recipes, utilities;
-
 [data-theme="light"] {
 	color: black;
 	background-color: white;
