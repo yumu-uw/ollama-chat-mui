@@ -1,5 +1,5 @@
-import { CircleX } from "lucide-react";
-import { Flex, VStack, styled } from "styled-system/jsx";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import { Button, IconButton, Stack } from "@mui/material";
 import { AddOllamaHostField } from "./AddOllamaHostField";
 import { ListOllamaHostField } from "./ListOllamaHostField";
 
@@ -9,21 +9,25 @@ type Props = {
 
 export const ConfigDialog = ({ dialogRef }: Props) => {
 	return (
-		<VStack gap={8} w={"100%"} alignItems={"flex-start"}>
-			<Flex w={"100%"} justify={"flex-end"}>
-				<VStack gap={0}>
-					<styled.button
-						onClick={() => {
-							dialogRef.current?.close();
-						}}
+		<Stack sx={{ width: "100%", alignItems: "flex-start" }} gap={8}>
+			<Stack
+				direction={"row"}
+				sx={{ width: "100%", justifyContent: "flex-end" }}
+			>
+				<Stack gap={0}>
+					<IconButton
+						aria-label="close-dialog"
+						size="small"
+						sx={{ cursor: "pointer" }}
+						onClick={() => dialogRef.current?.close()}
 					>
-						<CircleX cursor="pointer" />
-					</styled.button>
+						<HighlightOffOutlinedIcon fontSize="medium" />
+					</IconButton>
 					ESC
-				</VStack>
-			</Flex>
+				</Stack>
+			</Stack>
 			<AddOllamaHostField />
 			<ListOllamaHostField />
-		</VStack>
+		</Stack>
 	);
 };

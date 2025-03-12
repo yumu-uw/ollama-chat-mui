@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Container, Flex, styled } from "styled-system/jsx";
 import "./css/github-markdown.css";
+import { Box, Container, Stack } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
@@ -13,47 +13,10 @@ import { MessageInputArea } from "./components/MessageInputArea";
 import { ChatView } from "./components/chatViewComponents/ChatView";
 import { MarkdownView } from "./components/chatViewComponents/MarkdownView";
 import { UserMessageView } from "./components/chatViewComponents/UserMessageView";
-import { ConfigDialogWrapper } from "./components/sharedComponents/ConfigDialogWrapper";
+import { FullScreenDialog } from "./components/sharedComponents/FullScreenDialog";
 import { TopMenuBar } from "./components/topMenuBarComponents/TopMenuBar";
 import type { ConfigModel } from "./model/configModel";
 import type { Chat, ResponseData } from "./model/dataModels";
-
-const ChatViewWrapperBox = styled(Box, {
-	base: {
-		marginEnd: "auto",
-		overflow: "auto",
-		w: "100%",
-		h: "100%",
-		pr: "1.5em",
-		_scrollbarThumb: {
-			borderRadius: "10px",
-			border: "2px solid transparent",
-			backgroundClip: "content-box",
-		},
-	},
-	variants: {
-		variants: {
-			light: {
-				scrollbarColor: "#a9a9a9 #eeeeee",
-				_scrollbarTrack: {
-					backgroundColor: "#eeeeee",
-				},
-				_scrollbarThumb: {
-					background: "#a9a9a9",
-				},
-			},
-			dark: {
-				scrollbarColor: "#3D3C3B #1D2A39",
-				_scrollbarTrack: {
-					backgroundColor: "#000000",
-				},
-				_scrollbarThumb: {
-					background: "#3D3C3B",
-				},
-			},
-		},
-	},
-});
 
 function App() {
 	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
@@ -75,7 +38,6 @@ function App() {
 	]);
 
 	const chatRef = useRef<HTMLDivElement>(null);
-	const dialogRef = useRef<HTMLDialogElement>(null);
 
 	// 設定ファイルの情報を取得
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -102,7 +64,6 @@ function App() {
 			if (newConfig.OllamaEndpoints.length === 0) {
 				setTimeout(() => {
 					setConfigDIalogIsOpen(true);
-					dialogRef.current?.showModal();
 				}, 500);
 				return;
 			}
@@ -173,35 +134,48 @@ function App() {
 	}
 
 	return (
-		<Container>
-			<Flex
+		<Container sx={{ height: "100vh", p: "1em" }}>
+			<Stack
 				direction={"column"}
-				gap={"8"}
-				h={"100vh"}
-				w={"100%"}
-				padding={"1em"}
-				justify={"space-between"}
+				gap={4}
+				sx={{
+					height: "100%",
+					width: "100%",
+					justifyContent: "space-between",
+				}}
 			>
 				<TopMenuBar />
-				<ChatViewWrapperBox variants={appTheme} ref={chatRef}>
+				<Box
+					ref={chatRef}
+					sx={{
+						height: "100%",
+						marginEnd: "auto",
+						pr: "1.5em",
+						overflow: "auto",
+					}}
+				>
 					<ChatView chatHistory={chatHistory} />
 					{prevInput && <UserMessageView message={prevInput} />}
 					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
-				</ChatViewWrapperBox>
+				</Box>
 				<MessageInputArea
 					input={input}
 					setInput={setInput}
 					callOllamaApi={callOllamaApi}
 				/>
-			</Flex>
+			</Stack>
 
-			<ConfigDialogWrapper
+			{/* <ConfigDialogWrapper
 				dialogRef={dialogRef}
 				alignContent={"center"}
 				minH={"40vh"}
 			>
 				<InitialSettingView dialogRef={dialogRef} />
-			</ConfigDialogWrapper>
+			</ConfigDialogWrapper> */}
+
+			{/* <FullScreenDialog>
+				<InitialSettingView />
+			</FullScreenDialog> */}
 		</Container>
 	);
 }

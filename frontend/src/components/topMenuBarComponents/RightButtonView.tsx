@@ -1,19 +1,21 @@
 import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
 import type { AppThemeModel } from "@/model/configModel";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { IconButton, Stack } from "@mui/material";
 import hljs from "highlight.js";
 import { useAtom, useSetAtom } from "jotai";
-import { Moon, Settings, Sun } from "lucide-react";
 import { useRef } from "react";
-import { styled } from "styled-system/jsx";
 import { UpdateAppTheme } from "wailsjs/go/main/App";
-import { ConfigDialog } from "../configDialogComponents/ConfigDialog";
-import { ConfigDialogWrapper } from "../sharedComponents/ConfigDialogWrapper";
+import { AddOllamaHostField } from "../configDialogComponents/AddOllamaHostField";
+import { ListOllamaHostField } from "../configDialogComponents/ListOllamaHostField";
+import { FullScreenDialog } from "../sharedComponents/FullScreenDialog";
 
 export const RightButtonView = () => {
 	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
 	const setConfigDIalogIsOpen = useSetAtom(configDIalogIsOpenAtom);
-	const dialogRef = useRef<HTMLDialogElement>(null);
 
 	const switchAppTheme = () => {
 		if (document.body.getAttribute("data-theme") === "light") {
@@ -30,30 +32,42 @@ export const RightButtonView = () => {
 		});
 	};
 	return (
-		<>
-			<styled.button
-				cursor={"pointer"}
+		<Stack direction={"row"} gap={1}>
+			<IconButton
+				aria-label="switch-theme"
+				size="small"
+				sx={{ cursor: "pointer" }}
 				onClick={() => {
 					switchAppTheme();
 					hljs.highlightAll();
 				}}
 			>
-				{appTheme === "light" ? <Sun color="black" /> : <Moon color="white" />}
-			</styled.button>
+				{appTheme === "light" ? (
+					<LightModeOutlinedIcon sx={{ color: "black" }} fontSize="medium" />
+				) : (
+					<DarkModeOutlinedIcon sx={{ color: "white" }} fontSize="medium" />
+				)}
+			</IconButton>
 
-			<styled.button
-				cursor={"pointer"}
+			<IconButton
+				aria-label="setting"
+				size="small"
+				sx={{ cursor: "pointer" }}
 				onClick={() => {
 					setConfigDIalogIsOpen(true);
-					dialogRef.current?.showModal();
 				}}
 			>
-				<Settings color={appTheme === "light" ? "black" : "white"} />
-			</styled.button>
+				{appTheme === "light" ? (
+					<SettingsOutlinedIcon sx={{ color: "black" }} fontSize="medium" />
+				) : (
+					<SettingsOutlinedIcon sx={{ color: "white" }} fontSize="medium" />
+				)}
+			</IconButton>
 
-			<ConfigDialogWrapper dialogRef={dialogRef} minH={"60vh"} maxH={"80vh"}>
-				<ConfigDialog dialogRef={dialogRef} />
-			</ConfigDialogWrapper>
-		</>
+			<FullScreenDialog>
+				<AddOllamaHostField />
+				<ListOllamaHostField />
+			</FullScreenDialog>
+		</Stack>
 	);
 };

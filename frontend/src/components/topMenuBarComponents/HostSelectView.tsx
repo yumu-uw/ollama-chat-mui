@@ -2,55 +2,15 @@ import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
 import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
 import { deepCopyObject } from "@/lib/util";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import { useAtom, useAtomValue } from "jotai";
-import { ChevronDown } from "lucide-react";
 import { useRef, useState } from "react";
-import { Box, HStack, styled } from "styled-system/jsx";
 import {
 	UpdateDefaultOllamaEndPointName,
 	UpdateOllamaEndpoints,
 } from "wailsjs/go/main/App";
 import { TooltipView } from "./TooltipView";
-
-const StyledSelectP = styled("p", {
-	base: {
-		cursor: "pointer",
-		fontSize: "xl",
-	},
-	variants: {
-		variants: {
-			light: {
-				color: "black",
-			},
-			dark: {
-				color: "white",
-			},
-		},
-	},
-	defaultVariants: {
-		variants: "light",
-	},
-});
-
-const StyledSetDefaultButton = styled("button", {
-	base: {
-		cursor: "pointer",
-		fontSize: "small",
-	},
-	variants: {
-		variants: {
-			light: {
-				color: "gray.700",
-			},
-			dark: {
-				color: "gray.300",
-			},
-		},
-	},
-	defaultVariants: {
-		variants: "light",
-	},
-});
 
 type SelectablePProps = {
 	ref: React.RefObject<HTMLDivElement | null>;
@@ -65,17 +25,26 @@ type SelectablePProps = {
 const SelectableP = ({ ...rest }: SelectablePProps) => {
 	const appTheme = useAtomValue(appThemeAtom);
 	return (
-		<Box position={"relative"}>
-			<HStack ref={rest.ref}>
-				<StyledSelectP variants={appTheme}>{rest.displayText}</StyledSelectP>
-				<styled.button
-					cursor={"pointer"}
-					onClick={() => rest.setSelectIsOpen(!rest.selectIsOpen)}
-					rounded="md"
+		<Box sx={{ position: "relative" }}>
+			<Stack direction={"row"} ref={rest.ref} sx={{ alignItems: "center" }}>
+				<Typography
+					sx={{
+						cursor: "pointer",
+						fontSize: "subtitle1",
+						color: "black",
+					}}
 				>
-					<ChevronDown color={appTheme === "light" ? "black" : "white"} />
-				</styled.button>
-			</HStack>
+					{rest.displayText}
+				</Typography>
+				<IconButton
+					aria-label="select-host"
+					size="small"
+					sx={{ cursor: "pointer" }}
+					onClick={() => rest.setSelectIsOpen(!rest.selectIsOpen)}
+				>
+					<ExpandMoreIcon fontSize="small" />
+				</IconButton>
+			</Stack>
 			<TooltipView
 				baseRef={rest.ref}
 				isOpen={rest.selectIsOpen}
@@ -83,12 +52,17 @@ const SelectableP = ({ ...rest }: SelectablePProps) => {
 				data={rest.tooltipViewData}
 				handleSelectAction={rest.handleSelectt}
 			/>
-			<StyledSetDefaultButton
-				variants={appTheme}
+			<Button
+				sx={{
+					cursor: "pointer",
+					fontSize: "small",
+					color: "gray",
+					px: 0,
+				}}
 				onClick={rest.handleSetAsDefault}
 			>
 				Set as default
-			</StyledSetDefaultButton>
+			</Button>
 		</Box>
 	);
 };
@@ -166,7 +140,7 @@ export const HostSelectView = () => {
 	};
 
 	return (
-		<HStack alignItems={"flex-start"} gap={6}>
+		<Stack sx={{ alignItems: "flex-start" }} direction={"row"} gap={6}>
 			<SelectableP
 				ref={hostRef}
 				selectIsOpen={hostSelectIsOpen}
@@ -194,6 +168,6 @@ export const HostSelectView = () => {
 					)?.LLMModels || []
 				}
 			/>
-		</HStack>
+		</Stack>
 	);
 };

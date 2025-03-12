@@ -1,4 +1,4 @@
-[data-theme="light"] {
+/* [data-theme="light"] {
 	color: black;
 	background-color: white;
 
@@ -24,6 +24,10 @@
 			border-top-right-radius:0
 		}
 	}
+} */
+
+body {
+	margin: 0;
 }
 
 pre code:not(.hljs) {

@@ -1,9 +1,9 @@
+import { Box } from "@mui/material";
 import { memo } from "react";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
-import { Box } from "styled-system/jsx";
 import { CustomCode } from "./CustomCode";
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
 
 export const MarkdownView = memo(({ mdStr }: Props) => {
 	return (
-		<Box w={"80%"} mb={"1em"}>
+		<Box sx={{ w: "80%", mb: "1em" }}>
 			<Markdown
 				className="markdown-body"
 				rehypePlugins={[rehypeRaw, rehypeSanitize]}

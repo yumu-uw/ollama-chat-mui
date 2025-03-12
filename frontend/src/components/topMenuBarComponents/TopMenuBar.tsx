@@ -1,14 +1,13 @@
+import { Stack } from "@mui/material";
 import { memo } from "react";
-import { HStack, Spacer } from "styled-system/jsx";
 import { HostSelectView } from "./HostSelectView";
 import { RightButtonView } from "./RightButtonView";
 
 export const TopMenuBar = memo(() => {
 	return (
-		<HStack>
+		<Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
 			<HostSelectView />
-			<Spacer />
 			<RightButtonView />
-		</HStack>
+		</Stack>
 	);
 });

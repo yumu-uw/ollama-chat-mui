@@ -1,14 +1,31 @@
 import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
 import { deepCopyObject } from "@/lib/util";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import {
+	Alert,
+	IconButton,
+	Paper,
+	Snackbar,
+	type SnackbarCloseReason,
+	Stack,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Typography,
+} from "@mui/material";
 import { useAtom, useAtomValue } from "jotai";
-import { Trash2 } from "lucide-react";
-import { Box, VStack, styled } from "styled-system/jsx";
+import { useState } from "react";
 import { UpdateOllamaEndpoints } from "wailsjs/go/main/App";
 
 export const ListOllamaHostField = () => {
 	const appTheme = useAtomValue(appThemeAtom);
 	const [config, setConfig] = useAtom(configAtom);
+
+	const [open, setOpen] = useState(false);
 
 	const handleDeleteOllamaHost = (index: number) => {
 		const newConfig = deepCopyObject(config);
@@ -16,7 +33,7 @@ export const ListOllamaHostField = () => {
 			newConfig?.DefaultOllamaEndPointName ===
 			newConfig?.OllamaEndpoints[index].EndpointName
 		) {
-			alert("Cannot delete default Ollama Host");
+			setOpen(true);
 			return;
 		}
 		newConfig?.OllamaEndpoints.splice(index, 1);
@@ -24,70 +41,67 @@ export const ListOllamaHostField = () => {
 		UpdateOllamaEndpoints(newConfig?.OllamaEndpoints || []);
 	};
 
+	const handleClose = (
+		event: React.SyntheticEvent | Event,
+		reason?: SnackbarCloseReason,
+	) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setOpen(false);
+	};
+
 	return (
-		<VStack
-			p={"1em"}
-			w={"100%"}
-			alignItems={"flex-start"}
-			border={"1px solid"}
-			borderColor={appTheme === "light" ? "black" : "gray.400"}
-			borderRadius={"2xl"}
+		<Stack
+			sx={{
+				p: "1em",
+				width: "90%",
+				alignItems: "flex-start",
+				border: "1px solid",
+				borderColor: "black",
+				borderRadius: "1em",
+			}}
 		>
-			<styled.h2 fontSize={"2xl"} fontWeight={"extrabold"} pb={"1em"}>
+			<Typography variant="h5" gutterBottom>
 				List Ollama Host
-			</styled.h2>
+			</Typography>
 
-			<Box overflowX="auto" w="100%">
-				<Box maxHeight="600px" overflowY="auto">
-					<styled.table
-						border="1px solid"
-						borderColor={appTheme === "light" ? "black" : "gray.400"}
-						borderCollapse="collapse"
-						width="100%"
-						textAlign="left"
-					>
-						<styled.thead bg={appTheme === "light" ? "gray.200" : "gray.800"}>
-							<styled.tr>
-								<styled.th border="1px solid gray" px="4" py="2">
-									DisplayName
-								</styled.th>
-								<styled.th border="1px solid gray" px="4" py="2">
-									OllamaHostURL
-								</styled.th>
-								<styled.th border="1px solid gray" px="4" py="2" />
-							</styled.tr>
-						</styled.thead>
-
-						<tbody>
-							{config?.OllamaEndpoints.map((v, i) => {
-								return (
-									<tr key={`hostlist-${v.EndpointName}`}>
-										<styled.td border="1px solid gray" px="4" py="2">
-											{v.EndpointName}
-										</styled.td>
-										<styled.td border="1px solid gray" px="4" py="2">
-											{v.EndpointUrl}
-										</styled.td>
-										<styled.td
-											textAlign="center"
-											border="1px solid gray"
-											px="4"
-											py="2"
-										>
-											<styled.button onClick={() => handleDeleteOllamaHost(i)}>
-												<Trash2
-													cursor={"pointer"}
-													color={appTheme === "light" ? "black" : "white"}
-												/>
-											</styled.button>
-										</styled.td>
-									</tr>
-								);
-							})}
-						</tbody>
-					</styled.table>
-				</Box>
-			</Box>
-		</VStack>
+			<TableContainer component={Paper} sx={{ maxHeight: "600px" }}>
+				<Table stickyHeader aria-label="ollama host table">
+					<TableHead>
+						<TableRow
+							sx={{
+								backgroundColor: appTheme === "light" ? "gray.200" : "gray.800",
+							}}
+						>
+							<TableCell>DisplayName</TableCell>
+							<TableCell>OllamaHostURL</TableCell>
+							<TableCell />
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{config?.OllamaEndpoints.map((v, i) => (
+							<TableRow key={`hostlist-${v.EndpointName}`}>
+								<TableCell>{v.EndpointName}</TableCell>
+								<TableCell>{v.EndpointUrl}</TableCell>
+								<TableCell align="center">
+									<IconButton onClick={() => handleDeleteOllamaHost(i)}>
+										<DeleteForeverIcon
+											color={appTheme === "light" ? "inherit" : "secondary"}
+										/>
+									</IconButton>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</Table>
+			</TableContainer>
+			<Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+				<Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+					Cannot delete default Ollama Host.
+				</Alert>
+			</Snackbar>
+		</Stack>
 	);
 };

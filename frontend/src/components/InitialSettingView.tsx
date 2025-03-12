@@ -1,23 +1,21 @@
 import { configAtom } from "@/atom/configAtom";
+import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
 import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
+import { deepCopyObject } from "@/lib/util";
+import { Stack, Typography } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { useState } from "react";
-import { VStack, styled } from "styled-system/jsx";
 import {
 	UpdateDefaultOllamaEndPointName,
 	UpdateOllamaEndpoints,
 } from "wailsjs/go/main/App";
-import { OllamaHostForm } from "./sharedComponents/OllamaHostForm";
 import type { model } from "wailsjs/go/models";
-import { deepCopyObject } from "@/lib/util";
+import { OllamaHostForm } from "./sharedComponents/OllamaHostForm";
 
-type Props = {
-	dialogRef: React.RefObject<HTMLDialogElement | null>;
-};
-
-export const InitialSettingView = ({ dialogRef }: Props) => {
+export const InitialSettingView = () => {
 	const [config, setConfig] = useAtom(configAtom);
 	const setCurrentOllamaHost = useSetAtom(currentOllamaHostAtom);
+	const setConfigDIalogIsOpen = useSetAtom(configDIalogIsOpenAtom);
 	const [errorMessage, setErrorMessage] = useState("");
 
 	const handleInitSetting = async (newOllamaEndpoint: model.OllamaEndpoint) => {
@@ -38,24 +36,25 @@ export const InitialSettingView = ({ dialogRef }: Props) => {
 				Endpoint: newOllamaEndpoint.EndpointUrl,
 				ModelName: newOllamaEndpoint.DefaultLLMModel,
 			});
-			dialogRef.current?.close();
+			setConfigDIalogIsOpen(false);
 		}
 	};
 
 	return (
-		<VStack
-			p={"1em"}
-			w={"100%"}
-			h={"100%"}
-			alignItems={"flex-start"}
-			border={"1px solid black"}
-			borderRadius={"2xl"}
+		<Stack
+			sx={{
+				p: "1em",
+				width: "90%",
+				alignItems: "flex-start",
+				border: "1px solid black",
+				borderRadius: "1em",
+			}}
 		>
-			<styled.h2 fontSize={"2xl"} fontWeight={"extrabold"} pb={"1em"}>
+			<Typography variant="h5" gutterBottom sx={{ pb: "1em" }}>
 				Add First Ollama Host
-			</styled.h2>
+			</Typography>
 			<OllamaHostForm onSubmit={handleInitSetting} />
-			{errorMessage && <styled.p color={"red"}>{errorMessage}</styled.p>}
-		</VStack>
+			{errorMessage && <Typography>{errorMessage}</Typography>}
+		</Stack>
 	);
 };
