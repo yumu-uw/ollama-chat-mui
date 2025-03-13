@@ -31,7 +31,7 @@ const SelectableP = ({ ...rest }: SelectablePProps) => {
 					sx={{
 						cursor: "pointer",
 						fontSize: "subtitle1",
-						color: "black",
+						color: "white",
 					}}
 				>
 					{rest.displayText}
@@ -39,7 +39,7 @@ const SelectableP = ({ ...rest }: SelectablePProps) => {
 				<IconButton
 					aria-label="select-host"
 					size="small"
-					sx={{ cursor: "pointer" }}
+					sx={{ cursor: "pointer", color: "white" }}
 					onClick={() => rest.setSelectIsOpen(!rest.selectIsOpen)}
 				>
 					<ExpandMoreIcon fontSize="small" />
@@ -56,7 +56,7 @@ const SelectableP = ({ ...rest }: SelectablePProps) => {
 				sx={{
 					cursor: "pointer",
 					fontSize: "small",
-					color: "gray",
+					color: "lightgray",
 					px: 0,
 				}}
 				onClick={rest.handleSetAsDefault}

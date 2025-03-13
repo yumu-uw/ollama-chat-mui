@@ -1,22 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import "./css/github-markdown.css";
-import { Box, Container, Stack } from "@mui/material";
+import "@/css/github-markdown.css";
+import { appThemeAtom } from "@/atom/appThemeAtom";
+import { configAtom } from "@/atom/configAtom";
+import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
+import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
+import { MessageInputArea } from "@/components/MessageInputArea";
+import { ChatView } from "@/components/chatViewComponents/ChatView";
+import { MarkdownView } from "@/components/chatViewComponents/MarkdownView";
+import { UserMessageView } from "@/components/chatViewComponents/UserMessageView";
+import { TopMenuBar } from "@/components/topMenuBarComponents/TopMenuBar";
+import type { ConfigModel } from "@/model/configModel";
+import type { Chat, ResponseData } from "@/model/dataModels";
+import { Box, Stack } from "@mui/material";
 import { useAtom, useSetAtom } from "jotai";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
-import { appThemeAtom } from "./atom/appThemeAtom";
-import { configAtom } from "./atom/configAtom";
-import { configDIalogIsOpenAtom } from "./atom/configDIalogIsOpenAtom";
-import { currentOllamaHostAtom } from "./atom/currentOllamaHostAtom";
-import { InitialSettingView } from "./components/InitialSettingView";
-import { MessageInputArea } from "./components/MessageInputArea";
-import { ChatView } from "./components/chatViewComponents/ChatView";
-import { MarkdownView } from "./components/chatViewComponents/MarkdownView";
-import { UserMessageView } from "./components/chatViewComponents/UserMessageView";
-import { FullScreenDialog } from "./components/sharedComponents/FullScreenDialog";
-import { TopMenuBar } from "./components/topMenuBarComponents/TopMenuBar";
-import type { ConfigModel } from "./model/configModel";
-import type { Chat, ResponseData } from "./model/dataModels";
 
 function App() {
 	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
@@ -33,7 +31,7 @@ function App() {
 		{
 			role: "system",
 			content:
-				"You are a helpful, respectful and honest coding assistant. Always reply using markdown. Be clear and concise, prioritizing brevity in your responses.",
+				"You are a helpful, respectful and honest coding assistant. Always reply using markdown. Be clear and concise, prioritizing brevity in your responses. Always answer in Japanese.",
 		},
 	]);
 
@@ -134,49 +132,34 @@ function App() {
 	}
 
 	return (
-		<Container sx={{ height: "100vh", p: "1em" }}>
-			<Stack
-				direction={"column"}
-				gap={4}
+		<Stack
+			direction={"column"}
+			gap={4}
+			sx={{
+				height: "100%",
+				width: "100%",
+				justifyContent: "space-between",
+			}}
+		>
+			<Box
+				ref={chatRef}
 				sx={{
 					height: "100%",
-					width: "100%",
-					justifyContent: "space-between",
+					marginEnd: "auto",
+					pr: "1.5em",
+					overflow: "auto",
 				}}
 			>
-				<TopMenuBar />
-				<Box
-					ref={chatRef}
-					sx={{
-						height: "100%",
-						marginEnd: "auto",
-						pr: "1.5em",
-						overflow: "auto",
-					}}
-				>
-					<ChatView chatHistory={chatHistory} />
-					{prevInput && <UserMessageView message={prevInput} />}
-					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
-				</Box>
-				<MessageInputArea
-					input={input}
-					setInput={setInput}
-					callOllamaApi={callOllamaApi}
-				/>
-			</Stack>
-
-			{/* <ConfigDialogWrapper
-				dialogRef={dialogRef}
-				alignContent={"center"}
-				minH={"40vh"}
-			>
-				<InitialSettingView dialogRef={dialogRef} />
-			</ConfigDialogWrapper> */}
-
-			{/* <FullScreenDialog>
-				<InitialSettingView />
-			</FullScreenDialog> */}
-		</Container>
+				<ChatView chatHistory={chatHistory} />
+				{prevInput && <UserMessageView message={prevInput} />}
+				{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
+			</Box>
+			<MessageInputArea
+				input={input}
+				setInput={setInput}
+				callOllamaApi={callOllamaApi}
+			/>
+		</Stack>
 	);
 }
 
