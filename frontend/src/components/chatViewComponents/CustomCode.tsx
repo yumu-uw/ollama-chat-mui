@@ -2,7 +2,7 @@ import { appThemeAtom } from "@/atom/appThemeAtom";
 import { supportLangs } from "@/lib/custom-highlight";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-import { Box, Button, IconButton, Stack } from "@mui/material";
+import { Box, Card, IconButton, Stack } from "@mui/material";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 
@@ -46,7 +46,6 @@ export const CustomCode = ({ classAttr, value }: Props) => {
 				}}
 			>
 				{classAttr?.split("-")[1]}
-
 				{!hasCopied && (
 					<Box>
 						<IconButton
@@ -79,7 +78,9 @@ export const CustomCode = ({ classAttr, value }: Props) => {
 					</Box>
 				)}
 			</Stack>
-			<code className={lang}>{value}</code>
+			<Card variant="outlined">
+				<code className={lang}>{value}</code>
+			</Card>
 		</Stack>
 	);
 };

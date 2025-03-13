@@ -1,6 +1,4 @@
-import { appThemeAtom } from "@/atom/appThemeAtom";
-import { Box, Stack, Typography } from "@mui/material";
-import { useAtomValue } from "jotai";
+import { Card, CardContent, Paper, Stack, Typography } from "@mui/material";
 import { memo } from "react";
 
 type Props = {
@@ -8,18 +6,12 @@ type Props = {
 };
 
 export const UserMessageView = memo(({ message }: Props) => {
-	const appTheme = useAtomValue(appThemeAtom);
 	return (
-		<Stack direction={"row"} sx={{ justifyContent: "flex-end" }}>
-			<Box
-				sx={{
-					p: "0.5em",
-					my: "1em",
-					borderRadius: "md",
-					bg: "gray.200",
-					color: "black",
-				}}
-			>
+		<Stack
+			direction={"row"}
+			sx={{ mx: "0.5em", mb: "1em", justifyContent: "flex-end" }}
+		>
+			<Paper elevation={4} sx={{ textAlign: "right", padding: "0.5em" }}>
 				{message.split(/\r?\n/).map((v, index) => {
 					return (
 						<Typography
@@ -27,14 +19,14 @@ export const UserMessageView = memo(({ message }: Props) => {
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								index
 							}`}
-							sx={{ fontWeight: 600 }}
-							gutterBottom
+							variant="body1"
+							sx={{ fontWeight: 500 }}
 						>
 							{v}
 						</Typography>
 					);
 				})}
-			</Box>
+			</Paper>
 		</Stack>
 	);
 });

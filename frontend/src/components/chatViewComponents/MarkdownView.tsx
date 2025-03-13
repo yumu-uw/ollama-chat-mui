@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Paper } from "@mui/material";
 import { memo } from "react";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -12,7 +12,7 @@ type Props = {
 
 export const MarkdownView = memo(({ mdStr }: Props) => {
 	return (
-		<Box sx={{ w: "80%", mb: "1em" }}>
+		<Paper elevation={4} sx={{ width: "90%", mx: "0.5em", mb: "3em" }}>
 			<Markdown
 				className="markdown-body"
 				rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -29,6 +29,6 @@ export const MarkdownView = memo(({ mdStr }: Props) => {
 			>
 				{mdStr}
 			</Markdown>
-		</Box>
+		</Paper>
 	);
 });
