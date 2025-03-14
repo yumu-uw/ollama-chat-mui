@@ -1,9 +1,7 @@
-import { appThemeAtom } from "@/atom/appThemeAtom";
 import { supportLangs } from "@/lib/custom-highlight";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import { Box, Card, IconButton, Stack } from "@mui/material";
-import { useAtomValue } from "jotai";
 import { useState } from "react";
 
 interface Props {
@@ -12,8 +10,6 @@ interface Props {
 }
 
 export const CustomCode = ({ classAttr, value }: Props) => {
-	const appTheme = useAtomValue(appThemeAtom);
-
 	const [hasCopied, setHasCopied] = useState<boolean>(false);
 
 	const classNames =
@@ -53,7 +49,7 @@ export const CustomCode = ({ classAttr, value }: Props) => {
 							size="small"
 							sx={{
 								cursor: "pointer",
-								color: appTheme === "light" ? "black" : "white",
+								color: "black",
 							}}
 							onClick={handleCopyButton}
 						>
@@ -69,7 +65,7 @@ export const CustomCode = ({ classAttr, value }: Props) => {
 							size="small"
 							sx={{
 								cursor: "pointer",
-								color: appTheme === "light" ? "black" : "white",
+								color: "black",
 							}}
 						>
 							<CheckOutlinedIcon />

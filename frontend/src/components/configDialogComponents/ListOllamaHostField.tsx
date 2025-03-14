@@ -1,4 +1,3 @@
-import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
 import { deepCopyObject } from "@/lib/util";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -17,12 +16,11 @@ import {
 	TableRow,
 	Typography,
 } from "@mui/material";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { useState } from "react";
 import { UpdateOllamaEndpoints } from "wailsjs/go/main/App";
 
 export const ListOllamaHostField = () => {
-	const appTheme = useAtomValue(appThemeAtom);
 	const [config, setConfig] = useAtom(configAtom);
 
 	const [open, setOpen] = useState(false);
@@ -72,7 +70,7 @@ export const ListOllamaHostField = () => {
 					<TableHead>
 						<TableRow
 							sx={{
-								backgroundColor: appTheme === "light" ? "gray.200" : "gray.800",
+								bgcolor: "gray",
 							}}
 						>
 							<TableCell>DisplayName</TableCell>
@@ -87,9 +85,7 @@ export const ListOllamaHostField = () => {
 								<TableCell>{v.EndpointUrl}</TableCell>
 								<TableCell align="center">
 									<IconButton onClick={() => handleDeleteOllamaHost(i)}>
-										<DeleteForeverIcon
-											color={appTheme === "light" ? "inherit" : "secondary"}
-										/>
+										<DeleteForeverIcon color={"inherit"} />
 									</IconButton>
 								</TableCell>
 							</TableRow>

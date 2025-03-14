@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import "@/css/github-markdown.css";
-import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
 import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
 import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
@@ -8,7 +7,6 @@ import { MessageInputArea } from "@/components/MessageInputArea";
 import { ChatView } from "@/components/chatViewComponents/ChatView";
 import { MarkdownView } from "@/components/chatViewComponents/MarkdownView";
 import { UserMessageView } from "@/components/chatViewComponents/UserMessageView";
-import { TopMenuBar } from "@/components/topMenuBarComponents/TopMenuBar";
 import type { ConfigModel } from "@/model/configModel";
 import type { Chat, ResponseData } from "@/model/dataModels";
 import { Box, Stack } from "@mui/material";
@@ -17,7 +15,6 @@ import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 
 function App() {
-	const [appTheme, setAppTheme] = useAtom(appThemeAtom);
 	const setConfig = useSetAtom(configAtom);
 	const [currentOllamaHost, setCurrentOllamaHost] = useAtom(
 		currentOllamaHostAtom,
@@ -41,18 +38,7 @@ function App() {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		GetConfig().then((data) => {
-			switch (data.AppTheme) {
-				case "light":
-					setAppTheme("light");
-					break;
-				case "dark":
-					setAppTheme("dark");
-					break;
-				default:
-					setAppTheme("light");
-					break;
-			}
-			document.body.setAttribute("data-theme", data.AppTheme);
+			// document.body.setAttribute("data-theme", data.AppTheme);
 			const newConfig: ConfigModel = {
 				OllamaEndpoints: data.OllamaEndpoints,
 				DefaultOllamaEndPointName: data.DefaultOllamaEndPointName,
