@@ -11,7 +11,7 @@ import {
 	UpdateOllamaEndpoints,
 } from "wailsjs/go/main/App";
 import type { model } from "wailsjs/go/models";
-import { z } from "zod";
+import { set, z } from "zod";
 
 const DisplayNameScheme = z.string().nonempty();
 const OllamaHostScheme = z.string().url();
@@ -24,17 +24,34 @@ export const AddOllamaHostField = () => {
 
 	const [displayName, setDisplayName] = useState("");
 	const [ollamaHost, setOllamaHost] = useState("");
-	const [errorMessage, setErrorMessage] = useState("");
+
+	const [displayNameEerrorMessage, setDisplayNameEerrorMessage] = useState("");
+	const [hostErrorMessage, setHostErrorMessage] = useState("");
 
 	const handleSubmit = async () => {
+		let newDisplayNameErrorMessage = "";
+		let newHostErrorMessage = "";
 		if (!DisplayNameScheme.safeParse(displayName).success) {
-			setErrorMessage("DisplayName can't be empty");
-			return;
+			newDisplayNameErrorMessage = "DisplayName can't be empty";
+			setDisplayNameEerrorMessage(newDisplayNameErrorMessage);
+		} else {
+			newDisplayNameErrorMessage = "";
+			setDisplayNameEerrorMessage("");
 		}
+
 		if (!OllamaHostScheme.safeParse(ollamaHost).success) {
-			setErrorMessage("OllamaHost format is invalid");
+			newHostErrorMessage = "OllamaHost format is invalid";
+			setHostErrorMessage(newHostErrorMessage);
+		} else {
+			newHostErrorMessage = "";
+			setHostErrorMessage("");
+		}
+
+		if (newDisplayNameErrorMessage !== "" || newHostErrorMessage !== "") {
 			return;
 		}
+		setDisplayNameEerrorMessage("");
+		setHostErrorMessage("");
 
 		for (const endpoint of config?.OllamaEndpoints ?? []) {
 			if (endpoint.EndpointName === displayName) {
@@ -45,7 +62,6 @@ export const AddOllamaHostField = () => {
 
 		const data = await GetOllamaModels(ollamaHost);
 		if (data.startsWith("error:")) {
-			setErrorMessage(data.replace("error: ", ""));
 			return;
 		}
 
@@ -68,7 +84,8 @@ export const AddOllamaHostField = () => {
 		}
 		setDisplayName("");
 		setOllamaHost("");
-		setErrorMessage("");
+		setDisplayNameEerrorMessage("");
+		setHostErrorMessage("");
 	};
 
 	const handleInitSetting = async (newOllamaEndpoint: model.OllamaEndpoint) => {
@@ -108,7 +125,8 @@ export const AddOllamaHostField = () => {
 		if (!configDialogIsOpen) {
 			setDisplayName("");
 			setOllamaHost("");
-			setErrorMessage("");
+			setDisplayNameEerrorMessage("");
+			setHostErrorMessage("");
 		}
 	}, [configDialogIsOpen]);
 
@@ -130,7 +148,11 @@ export const AddOllamaHostField = () => {
 				<Stack sx={{ width: "100%", alignItems: "flex-start" }}>
 					<TextField
 						variant="outlined"
+						label="DisplayName*"
 						placeholder="e.g. Ollama localhost"
+						error={displayNameEerrorMessage !== ""}
+						helperText={displayNameEerrorMessage}
+						slotProps={{ inputLabel: { shrink: true } }}
 						sx={{
 							p: "0.3em",
 							width: "100%",
@@ -145,7 +167,11 @@ export const AddOllamaHostField = () => {
 				<Stack sx={{ width: "100%", alignItems: "flex-start" }}>
 					<TextField
 						variant="outlined"
+						label="Ollama Host URL*"
 						placeholder="e.g. http://localhost:11434"
+						error={hostErrorMessage !== ""}
+						helperText={hostErrorMessage}
+						slotProps={{ inputLabel: { shrink: true } }}
 						sx={{
 							p: "0.3em",
 							width: "100%",
@@ -168,12 +194,6 @@ export const AddOllamaHostField = () => {
 					>
 						Add Ollama Host
 					</Button>
-
-					{errorMessage && (
-						<Typography variant="body1" gutterBottom>
-							{errorMessage}
-						</Typography>
-					)}
 				</Box>
 			</Stack>
 		</Stack>
