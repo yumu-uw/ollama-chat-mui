@@ -19,8 +19,9 @@ export const RootLayout = () => {
 						<Typography variant="h6" noWrap component="div" sx={{ pr: "2em" }}>
 							Ollama Chat
 						</Typography>
-						<HostSelectView />
 						<Box sx={{ flexGrow: 1 }} />
+						<HostSelectView />
+						<Box sx={{ mr: "2em" }} />
 						<RightButtonView />
 					</Toolbar>
 				</AppBar>
