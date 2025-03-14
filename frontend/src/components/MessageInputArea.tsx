@@ -1,7 +1,5 @@
-import { appThemeAtom } from "@/atom/appThemeAtom";
 import ArrowCircleUpOutlinedIcon from "@mui/icons-material/ArrowCircleUpOutlined";
 import { Divider, IconButton, Stack, TextField } from "@mui/material";
-import { useAtomValue } from "jotai";
 
 type Props = {
 	input: string;
@@ -10,8 +8,6 @@ type Props = {
 };
 
 export const MessageInputArea = ({ input, setInput, callOllamaApi }: Props) => {
-	const appTheme = useAtomValue(appThemeAtom);
-
 	return (
 		<Stack
 			sx={{
@@ -19,6 +15,7 @@ export const MessageInputArea = ({ input, setInput, callOllamaApi }: Props) => {
 				borderRadius: "1em",
 				bgcolor: "lightgray",
 				color: "black",
+				boxShadow: 3,
 			}}
 		>
 			<TextField

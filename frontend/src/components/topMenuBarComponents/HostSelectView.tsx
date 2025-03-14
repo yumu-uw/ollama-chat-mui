@@ -1,21 +1,20 @@
-import { appThemeAtom } from "@/atom/appThemeAtom";
 import { configAtom } from "@/atom/configAtom";
 import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
 import { deepCopyObject } from "@/lib/util";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
-import { useAtom, useAtomValue } from "jotai";
-import { useRef, useState } from "react";
+import {
+	Button,
+	MenuItem,
+	Select,
+	type SelectChangeEvent,
+	Stack,
+} from "@mui/material";
+import { useAtom } from "jotai";
 import {
 	UpdateDefaultOllamaEndPointName,
 	UpdateOllamaEndpoints,
 } from "wailsjs/go/main/App";
-import { TooltipView } from "./TooltipView";
 
 type SelectablePProps = {
-	ref: React.RefObject<HTMLDivElement | null>;
-	selectIsOpen: boolean;
-	setSelectIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	displayText: string;
 	handleSelectt: (select: string) => void;
 	handleSetAsDefault: () => void;
@@ -23,61 +22,59 @@ type SelectablePProps = {
 };
 
 const SelectableP = ({ ...rest }: SelectablePProps) => {
-	const appTheme = useAtomValue(appThemeAtom);
+	const handleChange = (event: SelectChangeEvent) => {
+		rest.handleSelectt(event.target.value as string);
+	};
 	return (
-		<Box sx={{ position: "relative" }}>
-			<Stack direction={"row"} ref={rest.ref} sx={{ alignItems: "center" }}>
-				<Typography
-					sx={{
-						cursor: "pointer",
-						fontSize: "subtitle1",
+		<Stack
+			gap={1}
+			direction={"column"}
+			sx={{ alignItems: "center", justifyContent: "center" }}
+		>
+			<Select
+				sx={{
+					color: "white",
+					border: "none",
+					"& .MuiSvgIcon-root": {
 						color: "white",
-					}}
-				>
-					{rest.displayText}
-				</Typography>
-				<IconButton
-					aria-label="select-host"
-					size="small"
-					sx={{ cursor: "pointer", color: "white" }}
-					onClick={() => rest.setSelectIsOpen(!rest.selectIsOpen)}
-				>
-					<ExpandMoreIcon fontSize="small" />
-				</IconButton>
-			</Stack>
-			<TooltipView
-				baseRef={rest.ref}
-				isOpen={rest.selectIsOpen}
-				setIsOpen={rest.setSelectIsOpen}
-				data={rest.tooltipViewData}
-				handleSelectAction={rest.handleSelectt}
-			/>
+					},
+					"& .MuiOutlinedInput-notchedOutline": {
+						border: "none",
+					},
+					"& .MuiSelect-select": {
+						paddingTop: 0,
+						paddingBottom: 0,
+					},
+				}}
+				value={rest.displayText}
+				onChange={handleChange}
+			>
+				{rest.tooltipViewData.map((v) => (
+					<MenuItem key={`menu-${v}`} value={v}>
+						{v}
+					</MenuItem>
+				))}
+			</Select>
 			<Button
 				sx={{
 					cursor: "pointer",
 					fontSize: "small",
 					color: "lightgray",
-					px: 0,
+					p: 0,
 				}}
 				onClick={rest.handleSetAsDefault}
 			>
 				Set as default
 			</Button>
-		</Box>
+		</Stack>
 	);
 };
 
 export const HostSelectView = () => {
-	const [hostSelectIsOpen, setHostSelectIsOpen] = useState(false);
-	const [modelSelectIsOpen, setmodelSelectIsOpen] = useState(false);
-
 	const [config, setConfig] = useAtom(configAtom);
 	const [currentOllamaHost, setCurrentOllamaHost] = useAtom(
 		currentOllamaHostAtom,
 	);
-
-	const hostRef = useRef<HTMLDivElement>(null);
-	const modelRef = useRef<HTMLDivElement>(null);
 
 	const handleSelectOllamaHost = (select: string) => {
 		setCurrentOllamaHost({
@@ -142,9 +139,6 @@ export const HostSelectView = () => {
 	return (
 		<Stack sx={{ alignItems: "flex-start" }} direction={"row"} gap={6}>
 			<SelectableP
-				ref={hostRef}
-				selectIsOpen={hostSelectIsOpen}
-				setSelectIsOpen={setHostSelectIsOpen}
 				displayText={currentOllamaHost?.DisplayName || ""}
 				handleSelectt={handleSelectOllamaHost}
 				handleSetAsDefault={handleSetAsDefaultHost}
@@ -156,9 +150,6 @@ export const HostSelectView = () => {
 			/>
 
 			<SelectableP
-				ref={modelRef}
-				selectIsOpen={modelSelectIsOpen}
-				setSelectIsOpen={setmodelSelectIsOpen}
 				displayText={currentOllamaHost?.ModelName || ""}
 				handleSelectt={handleSelectModel}
 				handleSetAsDefault={handleSetAsDefaultModel}
