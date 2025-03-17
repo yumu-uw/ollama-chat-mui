@@ -132,7 +132,6 @@ function App() {
 				sx={{
 					height: "100%",
 					marginEnd: "auto",
-					pr: "1.5em",
 					overflow: "auto",
 				}}
 			>

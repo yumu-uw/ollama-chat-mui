@@ -1,4 +1,4 @@
-import { Card, CardContent, Paper, Stack, Typography } from "@mui/material";
+import { Paper, Stack, Typography } from "@mui/material";
 import { memo } from "react";
 
 type Props = {
