@@ -150,5 +150,5 @@ func (a *App) OpenURLInBrowser(url string) string {
 	if err != nil {
 		return "error: " + err.Error()
 	}
-	return "URL opened successfully"
+	return ""
 }

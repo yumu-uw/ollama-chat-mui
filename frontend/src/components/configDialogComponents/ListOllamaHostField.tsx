@@ -93,7 +93,12 @@ export const ListOllamaHostField = () => {
 					</TableBody>
 				</Table>
 			</TableContainer>
-			<Snackbar open={open} autoHideDuration={5000} onClose={handleClose}>
+			<Snackbar
+				anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+				open={open}
+				autoHideDuration={3000}
+				onClose={handleClose}
+			>
 				<Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
 					Cannot delete default Ollama Host.
 				</Alert>

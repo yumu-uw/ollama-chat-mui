@@ -1,4 +1,4 @@
-import ArrowCircleUpOutlinedIcon from "@mui/icons-material/ArrowCircleUpOutlined";
+import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { Divider, IconButton, Stack, TextField } from "@mui/material";
 
 type Props = {
@@ -52,7 +52,7 @@ export const MessageInputArea = ({ input, setInput, callOllamaApi }: Props) => {
 					sx={{ cursor: "pointer" }}
 					onClick={callOllamaApi}
 				>
-					<ArrowCircleUpOutlinedIcon fontSize="large" />
+					<SendOutlinedIcon fontSize="large" />
 				</IconButton>
 			</Stack>
 		</Stack>

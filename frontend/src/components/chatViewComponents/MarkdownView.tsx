@@ -21,12 +21,15 @@ export const MarkdownView = memo(({ mdStr }: Props) => {
 	const [open, setOpen] = useState(false);
 
 	const handleLinkClick = async (href?: string) => {
-		if (href) {
-			console.log(href);
-			await navigator.clipboard.writeText(href);
-			setOpen(true);
-			OpenURLInBrowser(href);
+		if (!href) {
+			return;
 		}
+		OpenURLInBrowser(href).then((result) => {
+			if (result.startsWith("error:")) {
+				setOpen(true);
+				return;
+			}
+		});
 	};
 
 	const handleClose = (
@@ -80,11 +83,11 @@ export const MarkdownView = memo(({ mdStr }: Props) => {
 			>
 				<Alert
 					onClose={handleClose}
-					severity="info"
+					severity="error"
 					variant="filled"
 					sx={{ width: "100%" }}
 				>
-					リンクをコピーしました！
+					ページを開けませんでした。
 				</Alert>
 			</Snackbar>
 		</>
