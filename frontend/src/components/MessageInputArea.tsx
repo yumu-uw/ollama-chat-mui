@@ -1,13 +1,38 @@
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import { Divider, IconButton, Stack, TextField } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 
 type Props = {
 	input: string;
+	sendDisabled: boolean;
 	setInput: React.Dispatch<React.SetStateAction<string>>;
 	callOllamaApi(): void;
 };
 
-export const MessageInputArea = ({ input, setInput, callOllamaApi }: Props) => {
+export const MessageInputArea = ({
+	input,
+	sendDisabled,
+	setInput,
+	callOllamaApi,
+}: Props) => {
+	const [debouncedCall, setDebouncedCall] = useState<() => void>(
+		() => () => {},
+	);
+
+	useEffect(() => {
+		const handler = setTimeout(() => {
+			debouncedCall();
+		}, 300);
+
+		return () => {
+			clearTimeout(handler);
+		};
+	}, [debouncedCall]);
+
+	const handleCallOllamaApi = useCallback(() => {
+		setDebouncedCall(() => callOllamaApi);
+	}, [callOllamaApi]);
+
 	return (
 		<Stack
 			sx={{
@@ -38,7 +63,10 @@ export const MessageInputArea = ({ input, setInput, callOllamaApi }: Props) => {
 				onKeyDown={(e) => {
 					if (e.key === "Enter" && e.altKey) {
 						e.preventDefault();
-						callOllamaApi();
+						if (sendDisabled) {
+							return;
+						}
+						handleCallOllamaApi();
 					}
 				}}
 				onChange={(e) => {
@@ -50,7 +78,8 @@ export const MessageInputArea = ({ input, setInput, callOllamaApi }: Props) => {
 				<IconButton
 					aria-label="send-message"
 					sx={{ cursor: "pointer" }}
-					onClick={callOllamaApi}
+					onClick={handleCallOllamaApi}
+					disabled={sendDisabled}
 				>
 					<SendOutlinedIcon fontSize="large" />
 				</IconButton>

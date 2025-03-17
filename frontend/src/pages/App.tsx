@@ -23,6 +23,7 @@ function App() {
 
 	const [input, setInput] = useState("");
 	const [prevInput, setPrevInput] = useState("");
+	const [sendDisabled, setSendDisabled] = useState(false);
 	const [ollamaResopnse, setOllamaResopnse] = useState("");
 	const [chatHistory, setChatHistory] = useState<Chat[]>([
 		{
@@ -74,6 +75,7 @@ function App() {
 	}, [ollamaResopnse]);
 
 	function callOllamaApi() {
+		setSendDisabled(true);
 		const msg = input;
 		setPrevInput(msg);
 		setInput("");
@@ -101,6 +103,7 @@ function App() {
 			setPrevInput("");
 			setOllamaResopnse("");
 			setChatHistory(newMessages);
+			setSendDisabled(false);
 			EventsOff("receiveChat");
 		});
 
@@ -141,6 +144,7 @@ function App() {
 			</Box>
 			<MessageInputArea
 				input={input}
+				sendDisabled={sendDisabled}
 				setInput={setInput}
 				callOllamaApi={callOllamaApi}
 			/>
