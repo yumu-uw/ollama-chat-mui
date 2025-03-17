@@ -75,6 +75,9 @@ function App() {
 	}, [ollamaResopnse]);
 
 	function callOllamaApi() {
+		if (input === "") {
+			return;
+		}
 		setSendDisabled(true);
 		const msg = input;
 		setPrevInput(msg);
