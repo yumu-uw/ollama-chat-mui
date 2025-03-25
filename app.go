@@ -131,3 +131,11 @@ func (a *App) UpdateDefaultOllamaEndPointName(name string) string {
 	}
 	return ""
 }
+
+func (a *App) UpdatePrompt(newPrompt string) string {
+	a.config.DefaultPrompt = newPrompt
+	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
+		return err.Error()
+	}
+	return ""
+}
