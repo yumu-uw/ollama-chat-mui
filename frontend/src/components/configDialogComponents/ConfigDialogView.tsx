@@ -4,10 +4,12 @@ import { Stack } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import { useAtom } from "jotai";
+import { AddOllamaHostField } from "./AddOllamaHostField";
+import { CustomPromptField } from "./CustomPromptField";
+import { ListOllamaHostField } from "./ListOllamaHostField";
 
 type Props = {
 	justifyContent?: string;
-	children: React.ReactNode;
 };
 
 export const ConfigDialogView = ({ ...rest }: Props) => {
@@ -50,7 +52,9 @@ export const ConfigDialogView = ({ ...rest }: Props) => {
 					justifyContent: rest.justifyContent,
 				}}
 			>
-				{rest.children}
+				<AddOllamaHostField />
+				<ListOllamaHostField />
+				<CustomPromptField />
 			</Stack>
 		</Dialog>
 	);
