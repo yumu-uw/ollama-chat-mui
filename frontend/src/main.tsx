@@ -8,8 +8,17 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import { HashRouter, Route, Routes } from "react-router";
+import { ScreenGetAll, WindowSetSize } from "wailsjs/runtime/runtime";
 import { RootLayout } from "./components/sharedComponents/RootLayout";
 import { App2 } from "./pages/App2";
+
+ScreenGetAll().then((data) => {
+	for (const screen of data) {
+		if (screen.isCurrent) {
+			WindowSetSize(1024, screen.height * 0.8);
+		}
+	}
+});
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 createRoot(document.getElementById("root")!).render(
