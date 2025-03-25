@@ -27,6 +27,11 @@ func main() {
 		panic(err)
 	}
 
+	if config.DefaultPrompt == "" {
+		config.DefaultPrompt = "You are a helpful, respectful and honest coding assistant. Always reply using markdown. Be clear and concise, prioritizing brevity in your responses. Always answer in Japanese."
+		ymuwutil.UpdateConfigJson(config)
+	}
+
 	// Create an instance of the app structure
 	app := NewApp(config)
 

@@ -4,6 +4,7 @@ type ConfigJson struct {
 	AppTheme                  string           `json:"AppTheme"`
 	OllamaEndpoints           []OllamaEndpoint `json:"OllamaEndpoints"`
 	DefaultOllamaEndPointName string           `json:"DefaultOllamaEndPointName"`
+	DefaultPrompt             string           `json:"DefaultPrompt"`
 }
 
 type OllamaEndpoint struct {

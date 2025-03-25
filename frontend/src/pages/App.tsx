@@ -25,13 +25,7 @@ function App() {
 	const [prevInput, setPrevInput] = useState("");
 	const [sendDisabled, setSendDisabled] = useState(false);
 	const [ollamaResopnse, setOllamaResopnse] = useState("");
-	const [chatHistory, setChatHistory] = useState<Chat[]>([
-		{
-			role: "system",
-			content:
-				"You are a helpful, respectful and honest coding assistant. Always reply using markdown. Be clear and concise, prioritizing brevity in your responses. Always answer in Japanese.",
-		},
-	]);
+	const [chatHistory, setChatHistory] = useState<Chat[]>([]);
 
 	const chatRef = useRef<HTMLDivElement>(null);
 
@@ -39,12 +33,18 @@ function App() {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		GetConfig().then((data) => {
-			// document.body.setAttribute("data-theme", data.AppTheme);
 			const newConfig: ConfigModel = {
 				OllamaEndpoints: data.OllamaEndpoints,
 				DefaultOllamaEndPointName: data.DefaultOllamaEndPointName,
+				DefaultPrompt: data.DefaultPrompt,
 			};
 			setConfig(newConfig);
+			setChatHistory([
+				{
+					role: "system",
+					content: newConfig.DefaultPrompt,
+				},
+			]);
 
 			if (newConfig.OllamaEndpoints.length === 0) {
 				setTimeout(() => {

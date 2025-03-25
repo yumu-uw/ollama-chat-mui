@@ -49,24 +49,11 @@ func CreateTemplateConfigJson() error {
 
 	// 初期値書き込み
 	encoder := json.NewEncoder(file)
-	// config := model.ConfigJson{
-	// 	AppTheme: "light",
-	// 	OllamaEndpoints: []model.OllamaEndpoint{
-	// 		{
-	// 			EndpointName: "localhost",
-	// 			EndpointURL:  "http://localhost:11434",
-	// 			LLMModels: []string{
-	// 				"qwen2.5-coder:7b",
-	// 			},
-	// 			DefaultLLMModel: "qwen2.5-coder:7b",
-	// 		},
-	// 	},
-	// 	DefaultOllamaEndPointName: "localhost",
-	// }
 	config := model.ConfigJson{
 		AppTheme:                  "light",
 		OllamaEndpoints:           []model.OllamaEndpoint{},
 		DefaultOllamaEndPointName: "",
+		DefaultPrompt:             "You are a helpful, respectful and honest coding assistant. Always reply using markdown. Be clear and concise, prioritizing brevity in your responses. Always answer in Japanese.",
 	}
 
 	if err := encoder.Encode(config); err != nil {
