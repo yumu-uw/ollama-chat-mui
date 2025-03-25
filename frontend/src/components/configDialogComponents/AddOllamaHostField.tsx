@@ -11,7 +11,7 @@ import {
 	UpdateOllamaEndpoints,
 } from "wailsjs/go/main/App";
 import type { model } from "wailsjs/go/models";
-import { set, z } from "zod";
+import { z } from "zod";
 
 const DisplayNameScheme = z.string().nonempty();
 const OllamaHostScheme = z.string().url();

@@ -4,6 +4,7 @@ import { IconButton, Stack } from "@mui/material";
 import { useSetAtom } from "jotai";
 import { AddOllamaHostField } from "../configDialogComponents/AddOllamaHostField";
 import { ConfigDialogView } from "../configDialogComponents/ConfigDialogView";
+import { CustomPromptField } from "../configDialogComponents/CustomPromptField";
 import { ListOllamaHostField } from "../configDialogComponents/ListOllamaHostField";
 
 export const RightButtonView = () => {
@@ -25,6 +26,7 @@ export const RightButtonView = () => {
 			<ConfigDialogView>
 				<AddOllamaHostField />
 				<ListOllamaHostField />
+				<CustomPromptField />
 			</ConfigDialogView>
 		</Stack>
 	);
