@@ -3,13 +3,17 @@ import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
 import { deepCopyObject } from "@/lib/util";
 import {
 	Alert,
+	type AlertColor,
+	type AlertPropsColorOverrides,
 	Box,
 	Button,
 	Snackbar,
+	type SnackbarCloseReason,
 	Stack,
 	TextField,
 	Typography,
 } from "@mui/material";
+import type { OverridableStringUnion } from "@mui/types";
 import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { UpdatePrompt } from "wailsjs/go/main/App";
@@ -23,6 +27,11 @@ export const CustomPromptField = () => {
 
 	const [prompt, setPrompt] = useState(config?.DefaultPrompt ?? "");
 	const [promptErrorMessage, setPromptErrorMessage] = useState("");
+	const [open, setOpen] = useState(false);
+	const [snackBarMessage, setSnackBarMessage] = useState("");
+	const [severity, setSeverity] = useState<
+		OverridableStringUnion<AlertColor, AlertPropsColorOverrides> | undefined
+	>();
 
 	const handleSubmit = async () => {
 		if (!PromptScheme.safeParse(prompt).success) {
@@ -37,8 +46,27 @@ export const CustomPromptField = () => {
 		newConfig.DefaultPrompt = prompt;
 		setConfig(newConfig);
 		UpdatePrompt(prompt).then((result) => {
-			console.log(result);
+			if (result === "") {
+				setOpen(true);
+				setSeverity("success");
+				setSnackBarMessage("Prompt updated successfully");
+			} else {
+				setOpen(true);
+				setSeverity("error");
+				setSnackBarMessage("Failed to update prompt");
+			}
 		});
+	};
+
+	const handleClose = (
+		event: React.SyntheticEvent | Event,
+		reason?: SnackbarCloseReason,
+	) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setOpen(false);
 	};
 
 	useEffect(() => {
@@ -98,16 +126,16 @@ export const CustomPromptField = () => {
 					</Box>
 				</Stack>
 			</Stack>
-			{/* <Snackbar
+			<Snackbar
 				anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
 				open={open}
 				autoHideDuration={3000}
 				onClose={handleClose}
 			>
-				<Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-					Cannot delete default Ollama Host.
+				<Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
+					{snackBarMessage}
 				</Alert>
-			</Snackbar> */}
+			</Snackbar>
 		</>
 	);
 };
