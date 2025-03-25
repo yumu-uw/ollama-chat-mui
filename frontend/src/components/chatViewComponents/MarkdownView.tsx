@@ -10,7 +10,7 @@ import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
-import { OpenURLInBrowser } from "wailsjs/go/main/App";
+import { BrowserOpenURL } from "wailsjs/runtime/runtime";
 import { CustomCode } from "./CustomCode";
 
 type Props = {
@@ -19,18 +19,6 @@ type Props = {
 
 export const MarkdownView = memo(({ mdStr }: Props) => {
 	const [open, setOpen] = useState(false);
-
-	const handleLinkClick = async (href?: string) => {
-		if (!href) {
-			return;
-		}
-		OpenURLInBrowser(href).then((result) => {
-			if (result.startsWith("error:")) {
-				setOpen(true);
-				return;
-			}
-		});
-	};
 
 	const handleClose = (
 		event: React.SyntheticEvent | Event,
@@ -58,7 +46,11 @@ export const MarkdownView = memo(({ mdStr }: Props) => {
 									"&:hover": { textDecoration: "underline" },
 									cursor: "pointer",
 								}}
-								onClick={() => handleLinkClick(props.href)}
+								onClick={() => {
+									if (props.href) {
+										BrowserOpenURL(props.href);
+									}
+								}}
 							>
 								{props.href}
 							</Link>

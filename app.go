@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"os/exec"
 	"strings"
 
 	"ollama-chat/pkg/model"
@@ -129,26 +128,6 @@ func (a *App) UpdateDefaultOllamaEndPointName(name string) string {
 	a.config.DefaultOllamaEndPointName = name
 	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
 		return err.Error()
-	}
-	return ""
-}
-
-// OpenURLInBrowser opens the specified URL in the default browser on Windows
-func (a *App) OpenURLInBrowser(url string) string {
-	var cmd *exec.Cmd
-
-	switch runtime.Environment(a.ctx).Platform {
-	case "windows":
-		cmd = exec.Command("rundll32", "url.dll,FileProtocolHandler", url)
-	case "darwin":
-		cmd = exec.Command("open", url)
-	default:
-		return "unsupported platform"
-	}
-
-	err := cmd.Start()
-	if err != nil {
-		return "error: " + err.Error()
 	}
 	return ""
 }
