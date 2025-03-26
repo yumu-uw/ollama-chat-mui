@@ -1,9 +1,8 @@
-import { configAtom } from "@/atom/configAtom";
+import { ConfigContext } from "@/context/configContext";
 import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
 import { deepCopyObject } from "@/lib/util";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { useAtom, useSetAtom } from "jotai";
 import { use, useEffect, useState } from "react";
 import {
 	GetOllamaModels,
@@ -17,13 +16,16 @@ const DisplayNameScheme = z.string().nonempty();
 const OllamaHostScheme = z.string().url();
 
 export const AddOllamaHostField = () => {
-	const [config, setConfig] = useAtom(configAtom);
+	const configContext = use(ConfigContext);
+	if (!configContext) {
+		throw new Error("failed to get currentOllamaHostContext");
+	}
+	const { config, setConfig } = configContext;
 
 	const configDialogIsOpenContext = use(ConfigDialogIsOpenContext);
 	if (!configDialogIsOpenContext) {
 		throw new Error("failed to get configDialogIsOpenContext");
 	}
-
 	const { configDialogIsOpen, setConfigDialogIsOpen } =
 		configDialogIsOpenContext;
 
@@ -31,7 +33,6 @@ export const AddOllamaHostField = () => {
 	if (!currentOllamaHostContext) {
 		throw new Error("failed to get currentOllamaHostContext");
 	}
-
 	const { setCurrentOllamaHost } = currentOllamaHostContext;
 
 	const [displayName, setDisplayName] = useState("");

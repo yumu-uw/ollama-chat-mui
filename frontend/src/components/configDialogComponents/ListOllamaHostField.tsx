@@ -1,4 +1,4 @@
-import { configAtom } from "@/atom/configAtom";
+import { ConfigContext } from "@/context/configContext";
 import { deepCopyObject } from "@/lib/util";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
@@ -16,12 +16,15 @@ import {
 	TableRow,
 	Typography,
 } from "@mui/material";
-import { useAtom } from "jotai";
-import { useState } from "react";
+import { use, useState } from "react";
 import { UpdateOllamaEndpoints } from "wailsjs/go/main/App";
 
 export const ListOllamaHostField = () => {
-	const [config, setConfig] = useAtom(configAtom);
+	const configContext = use(ConfigContext);
+	if (!configContext) {
+		throw new Error("failed to get currentOllamaHostContext");
+	}
+	const { config, setConfig } = configContext;
 
 	const [open, setOpen] = useState(false);
 

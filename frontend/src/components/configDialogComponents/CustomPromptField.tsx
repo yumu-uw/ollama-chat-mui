@@ -1,4 +1,4 @@
-import { configAtom } from "@/atom/configAtom";
+import { ConfigContext } from "@/context/configContext";
 import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import { deepCopyObject } from "@/lib/util";
 import {
@@ -14,7 +14,6 @@ import {
 	Typography,
 } from "@mui/material";
 import type { OverridableStringUnion } from "@mui/types";
-import { useAtom } from "jotai";
 import { use, useEffect, useState } from "react";
 import { UpdatePrompt } from "wailsjs/go/main/App";
 import { z } from "zod";
@@ -22,7 +21,11 @@ import { z } from "zod";
 const PromptScheme = z.string().nonempty();
 
 export const CustomPromptField = () => {
-	const [config, setConfig] = useAtom(configAtom);
+	const configContext = use(ConfigContext);
+	if (!configContext) {
+		throw new Error("failed to get currentOllamaHostContext");
+	}
+	const { config, setConfig } = configContext;
 
 	const configDialogIsOpenContext = use(ConfigDialogIsOpenContext);
 	if (!configDialogIsOpenContext) {

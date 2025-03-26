@@ -1,21 +1,24 @@
 import { use, useEffect, useRef, useState } from "react";
 import "@/css/github-markdown.css";
-import { configAtom } from "@/atom/configAtom";
 import { MessageInputArea } from "@/components/MessageInputArea";
 import { ChatView } from "@/components/chatViewComponents/ChatView";
 import { MarkdownView } from "@/components/chatViewComponents/MarkdownView";
 import { UserMessageView } from "@/components/chatViewComponents/UserMessageView";
+import { ConfigContext } from "@/context/configContext";
 import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
 import type { ConfigModel } from "@/model/configModel";
 import type { Chat, ResponseData } from "@/model/dataModels";
 import { Box, Stack } from "@mui/material";
-import { useAtom, useSetAtom } from "jotai";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
 
 function App() {
-	const setConfig = useSetAtom(configAtom);
+	const configContext = use(ConfigContext);
+	if (!configContext) {
+		throw new Error("failed to get currentOllamaHostContext");
+	}
+	const { setConfig } = configContext;
 
 	const configDialogIsOpenContext = use(ConfigDialogIsOpenContext);
 	if (!configDialogIsOpenContext) {
