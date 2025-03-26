@@ -39,12 +39,10 @@ function App() {
 				DefaultPrompt: data.DefaultPrompt,
 			};
 			setConfig(newConfig);
-			setChatHistory([
-				{
-					role: "system",
-					content: newConfig.DefaultPrompt,
-				},
-			]);
+
+			EventsOn("refreshChat", () => {
+				setChatHistory([]);
+			});
 
 			if (newConfig.OllamaEndpoints.length === 0) {
 				setTimeout(() => {

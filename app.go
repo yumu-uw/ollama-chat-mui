@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"slices"
 	"strings"
 
 	"ollama-chat/pkg/model"
@@ -38,9 +39,16 @@ func (a *App) GetConfig() model.ConfigJson {
 }
 
 func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model.Chat) string {
+	systemPrompt := []model.Chat{
+		{
+			Role:    "system",
+			Content: a.config.DefaultPrompt,
+		},
+	}
+	newChat := slices.Concat(systemPrompt, chatHistory)
 	data := model.ChatApiRequestData{
 		Model:    ollamaModel,
-		Messages: chatHistory,
+		Messages: newChat,
 		Stream:   true,
 	}
 
@@ -108,12 +116,8 @@ func (a *App) GetModels() string {
 	return a.config.AppTheme
 }
 
-func (a *App) UpdateAppTheme(newAppTheme string) string {
-	a.config.AppTheme = newAppTheme
-	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
-		return err.Error()
-	}
-	return ""
+func (a *App) RefreshChatHistory() {
+	runtime.EventsEmit(a.ctx, "refreshChat")
 }
 
 func (a *App) UpdateOllamaEndpoints(newOllamaEndpoints []model.OllamaEndpoint) string {
