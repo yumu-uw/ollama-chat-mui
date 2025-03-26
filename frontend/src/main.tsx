@@ -17,7 +17,7 @@ import { App2 } from "./pages/App2";
 ScreenGetAll().then((data) => {
 	for (const screen of data) {
 		if (screen.isCurrent) {
-			WindowSetSize(1024, screen.height * 0.8);
+			WindowSetSize(1024, screen.height * 0.6);
 		}
 	}
 });
