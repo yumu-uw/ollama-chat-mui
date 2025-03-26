@@ -1,5 +1,5 @@
 import { configAtom } from "@/atom/configAtom";
-import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
+import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import { deepCopyObject } from "@/lib/util";
 import {
 	Alert,
@@ -14,8 +14,8 @@ import {
 	Typography,
 } from "@mui/material";
 import type { OverridableStringUnion } from "@mui/types";
-import { useAtom, useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { use, useEffect, useState } from "react";
 import { UpdatePrompt } from "wailsjs/go/main/App";
 import { z } from "zod";
 
@@ -23,7 +23,13 @@ const PromptScheme = z.string().nonempty();
 
 export const CustomPromptField = () => {
 	const [config, setConfig] = useAtom(configAtom);
-	const configDialogIsOpen = useAtomValue(configDIalogIsOpenAtom);
+
+	const configDialogIsOpenContext = use(ConfigDialogIsOpenContext);
+	if (!configDialogIsOpenContext) {
+		throw new Error("failed to get configDialogIsOpenContext");
+	}
+
+	const { configDialogIsOpen } = configDialogIsOpenContext;
 
 	const [prompt, setPrompt] = useState(config?.DefaultPrompt ?? "");
 	const [promptErrorMessage, setPromptErrorMessage] = useState("");

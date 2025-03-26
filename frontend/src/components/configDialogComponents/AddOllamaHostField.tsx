@@ -1,10 +1,10 @@
 import { configAtom } from "@/atom/configAtom";
-import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
 import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
+import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import { deepCopyObject } from "@/lib/util";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useAtom, useSetAtom } from "jotai";
+import { use, useEffect, useState } from "react";
 import {
 	GetOllamaModels,
 	UpdateDefaultOllamaEndPointName,
@@ -18,9 +18,15 @@ const OllamaHostScheme = z.string().url();
 
 export const AddOllamaHostField = () => {
 	const [config, setConfig] = useAtom(configAtom);
-	const configDialogIsOpen = useAtomValue(configDIalogIsOpenAtom);
 	const setCurrentOllamaHost = useSetAtom(currentOllamaHostAtom);
-	const setConfigDIalogIsOpen = useSetAtom(configDIalogIsOpenAtom);
+
+	const configDialogIsOpenContext = use(ConfigDialogIsOpenContext);
+	if (!configDialogIsOpenContext) {
+		throw new Error("failed to get configDialogIsOpenContext");
+	}
+
+	const { configDialogIsOpen, setConfigDialogIsOpen } =
+		configDialogIsOpenContext;
 
 	const [displayName, setDisplayName] = useState("");
 	const [ollamaHost, setOllamaHost] = useState("");
@@ -105,7 +111,7 @@ export const AddOllamaHostField = () => {
 				Endpoint: newOllamaEndpoint.EndpointUrl,
 				ModelName: newOllamaEndpoint.DefaultLLMModel,
 			});
-			setConfigDIalogIsOpen(false);
+			setConfigDialogIsOpen(false);
 		}
 	};
 

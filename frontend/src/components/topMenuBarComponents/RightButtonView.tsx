@@ -1,4 +1,4 @@
-import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
+import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import RefreshOutlinedIcon from "@mui/icons-material/RefreshOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {
@@ -10,13 +10,17 @@ import {
 	Stack,
 	Tooltip,
 } from "@mui/material";
-import { useSetAtom } from "jotai";
-import { useState } from "react";
+import { use, useState } from "react";
 import { RefreshChatHistory } from "wailsjs/go/main/App";
 import { ConfigDialogView } from "../configDialogComponents/ConfigDialogView";
 
 export const RightButtonView = () => {
-	const setConfigDIalogIsOpen = useSetAtom(configDIalogIsOpenAtom);
+	const configDialogIsOpenContext = use(ConfigDialogIsOpenContext);
+	if (!configDialogIsOpenContext) {
+		throw new Error("failed to get configDialogIsOpenContext");
+	}
+
+	const { setConfigDialogIsOpen } = configDialogIsOpenContext;
 
 	const [open, setOpen] = useState(false);
 
@@ -46,7 +50,8 @@ export const RightButtonView = () => {
 					size="small"
 					sx={{ cursor: "pointer", color: "white" }}
 					onClick={() => {
-						setConfigDIalogIsOpen(true);
+						// setConfigDIalogIsOpen(true);
+						setConfigDialogIsOpen(true);
 					}}
 				>
 					<SettingsOutlinedIcon fontSize="medium" />
@@ -54,6 +59,7 @@ export const RightButtonView = () => {
 
 				<ConfigDialogView />
 			</Stack>
+
 			<Dialog
 				open={open}
 				onClose={() => setOpen(false)}

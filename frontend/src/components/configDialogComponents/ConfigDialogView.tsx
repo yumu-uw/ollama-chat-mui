@@ -1,9 +1,9 @@
-import { configDIalogIsOpenAtom } from "@/atom/configDIalogIsOpenAtom";
+import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import CloseIcon from "@mui/icons-material/Close";
 import { Stack } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
-import { useAtom } from "jotai";
+import { use } from "react";
 import { AddOllamaHostField } from "./AddOllamaHostField";
 import { CustomPromptField } from "./CustomPromptField";
 import { ListOllamaHostField } from "./ListOllamaHostField";
@@ -13,18 +13,22 @@ type Props = {
 };
 
 export const ConfigDialogView = ({ ...rest }: Props) => {
-	const [configDIalogIsOpen, setConfigDIalogIsOpen] = useAtom(
-		configDIalogIsOpenAtom,
-	);
+	const configDialogIsOpenContext = use(ConfigDialogIsOpenContext);
+	if (!configDialogIsOpenContext) {
+		throw new Error("failed to get configDialogIsOpenContext");
+	}
+
+	const { configDialogIsOpen, setConfigDialogIsOpen } =
+		configDialogIsOpenContext;
 
 	const handleClose = () => {
 		console.log("close");
-		setConfigDIalogIsOpen(false);
+		setConfigDialogIsOpen(false);
 	};
 
 	return (
 		<Dialog
-			open={configDIalogIsOpen}
+			open={configDialogIsOpen}
 			onClose={handleClose}
 			maxWidth={"md"}
 			fullWidth
