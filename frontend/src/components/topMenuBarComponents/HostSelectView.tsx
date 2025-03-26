@@ -1,5 +1,5 @@
 import { configAtom } from "@/atom/configAtom";
-import { currentOllamaHostAtom } from "@/atom/currentOllamaHostAtom";
+import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
 import { deepCopyObject } from "@/lib/util";
 import {
 	Button,
@@ -9,6 +9,7 @@ import {
 	Stack,
 } from "@mui/material";
 import { useAtom } from "jotai";
+import { use } from "react";
 import {
 	UpdateDefaultOllamaEndPointName,
 	UpdateOllamaEndpoints,
@@ -72,9 +73,13 @@ const SelectableP = ({ ...rest }: SelectablePProps) => {
 
 export const HostSelectView = () => {
 	const [config, setConfig] = useAtom(configAtom);
-	const [currentOllamaHost, setCurrentOllamaHost] = useAtom(
-		currentOllamaHostAtom,
-	);
+
+	const currentOllamaHostContext = use(CurrentOllamaHostContext);
+	if (!currentOllamaHostContext) {
+		throw new Error("failed to get currentOllamaHostContext");
+	}
+
+	const { currentOllamaHost, setCurrentOllamaHost } = currentOllamaHostContext;
 
 	const handleSelectOllamaHost = (select: string) => {
 		setCurrentOllamaHost({
