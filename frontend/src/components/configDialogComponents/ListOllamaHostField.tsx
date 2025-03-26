@@ -85,7 +85,7 @@ export const ListOllamaHostField = () => {
 								<TableCell>{v.EndpointUrl}</TableCell>
 								<TableCell align="center">
 									<IconButton onClick={() => handleDeleteOllamaHost(i)}>
-										<DeleteForeverIcon color={"inherit"} />
+										<DeleteForeverIcon color={"error"} />
 									</IconButton>
 								</TableCell>
 							</TableRow>
