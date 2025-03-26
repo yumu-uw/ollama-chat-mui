@@ -49,11 +49,11 @@ export const CustomPromptField = () => {
 			if (result === "") {
 				setOpen(true);
 				setSeverity("success");
-				setSnackBarMessage("Prompt updated successfully");
+				setSnackBarMessage("プロンプトを更新しました");
 			} else {
 				setOpen(true);
 				setSeverity("error");
-				setSnackBarMessage("Failed to update prompt");
+				setSnackBarMessage("プロンプト更新時にエラーが発生しました");
 			}
 		});
 	};
