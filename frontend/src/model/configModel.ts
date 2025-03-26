@@ -1,5 +1,3 @@
-export type AppThemeModel = "light" | "dark";
-
 export type ConfigModel = {
 	OllamaEndpoints: OllamaEndpoint[];
 	DefaultOllamaEndPointName: string;
