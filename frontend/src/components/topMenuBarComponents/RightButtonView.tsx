@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { use, useState } from "react";
 import { RefreshChatHistory } from "wailsjs/go/main/App";
-import { ConfigDialogView } from "../configDialogComponents/ConfigDialogView";
 
 export const RightButtonView = () => {
 	const configDialogIsOpenContext = use(ConfigDialogIsOpenContext);
@@ -50,14 +49,11 @@ export const RightButtonView = () => {
 					size="small"
 					sx={{ cursor: "pointer", color: "white" }}
 					onClick={() => {
-						// setConfigDIalogIsOpen(true);
 						setConfigDialogIsOpen(true);
 					}}
 				>
 					<SettingsOutlinedIcon fontSize="medium" />
 				</IconButton>
-
-				<ConfigDialogView />
 			</Stack>
 
 			<Dialog

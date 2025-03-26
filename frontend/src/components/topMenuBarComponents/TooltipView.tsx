@@ -1,6 +1,5 @@
-import { Box, Button, Fade, Popper } from "@mui/material";
-import { useAtomValue } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import { Box, Button } from "@mui/material";
+import { useEffect, useRef } from "react";
 
 type Props = {
 	baseRef: React.RefObject<HTMLDivElement | null>;

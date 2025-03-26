@@ -7,6 +7,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { Outlet } from "react-router";
+import { ConfigDialogView } from "../configDialogComponents/ConfigDialogView";
 import { HostSelectView } from "../topMenuBarComponents/HostSelectView";
 import { RightButtonView } from "../topMenuBarComponents/RightButtonView";
 
@@ -30,6 +31,8 @@ export const RootLayout = () => {
 			<Container sx={{ height: "calc(100vh - 65px)", py: "1em" }}>
 				<Outlet />
 			</Container>
+
+			<ConfigDialogView />
 		</>
 	);
 };
