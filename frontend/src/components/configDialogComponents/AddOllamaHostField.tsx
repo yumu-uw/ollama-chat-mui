@@ -85,7 +85,7 @@ export const AddOllamaHostField = () => {
 
 		const newOllamaEndpoint: model.OllamaEndpoint = {
 			EndpointName: displayName,
-			EndpointUrl: ollamaHost,
+			EndpointUrl: ollamaHost.replace(/\/$/, ""),
 			LLMModels: models,
 			DefaultLLMModel: models.length > 0 ? models[0] : "",
 		};
