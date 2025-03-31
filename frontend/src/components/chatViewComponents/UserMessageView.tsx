@@ -1,4 +1,4 @@
-import { Paper, Stack, Typography } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import { memo } from "react";
 
 type Props = {
@@ -11,7 +11,8 @@ export const UserMessageView = memo(({ message }: Props) => {
 			direction={"row"}
 			sx={{ mx: "0.5em", mb: "1em", justifyContent: "flex-end" }}
 		>
-			<Paper elevation={4} sx={{ textAlign: "right", padding: "0.5em" }}>
+			<Box flex={1} />
+			<Paper elevation={4} sx={{ padding: "0.5em" }}>
 				{message.split(/\r?\n/).map((v, index) => {
 					return (
 						<Typography
