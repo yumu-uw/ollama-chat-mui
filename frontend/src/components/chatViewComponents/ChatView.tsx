@@ -26,6 +26,7 @@ export const ChatView = memo(({ chatHistory }: Props) => {
 								index
 							}`}
 							message={value.content}
+							imgBase64={value.images[0] ?? undefined}
 						/>
 					);
 				}

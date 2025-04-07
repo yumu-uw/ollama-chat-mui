@@ -1,8 +1,9 @@
 package model
 
 type Chat struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+	Role    string   `json:"role"`
+	Content string   `json:"content"`
+	Images  []string `json:"images"`
 }
 
 type ChatApiRequestData struct {

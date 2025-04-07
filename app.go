@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
+	"os"
 	"slices"
 	"strings"
 
@@ -142,4 +144,28 @@ func (a *App) UpdatePrompt(newPrompt string) string {
 		return err.Error()
 	}
 	return ""
+}
+
+func (a *App) LoadImgBase64() string {
+	img, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
+		Title: "Select an image",
+		Filters: []runtime.FileFilter{
+			{
+				DisplayName: "Images (*.png;*.jpg)",
+				Pattern:     "*.png;*.jpg;*.jpeg;*.gif",
+			},
+		},
+	})
+	if err != nil {
+		return "error: " + err.Error()
+	}
+	if len(img) == 0 {
+		return "error: no file selected"
+	}
+
+	bytes, err := os.ReadFile(img)
+	if err != nil {
+		return "error"
+	}
+	return base64.StdEncoding.EncodeToString(bytes)
 }

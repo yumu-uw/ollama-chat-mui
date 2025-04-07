@@ -33,7 +33,9 @@ function App() {
 	const { currentOllamaHost, setCurrentOllamaHost } = currentOllamaHostContext;
 
 	const [input, setInput] = useState("");
+	const [imgBase64, setImgBase64] = useState("");
 	const [prevInput, setPrevInput] = useState("");
+	const [prevImgBase64, setPrevImgBase64] = useState("");
 	const [sendDisabled, setSendDisabled] = useState(false);
 	const [ollamaResopnse, setOllamaResopnse] = useState("");
 	const [chatHistory, setChatHistory] = useState<Chat[]>([]);
@@ -90,7 +92,9 @@ function App() {
 		setSendDisabled(true);
 		const msg = input;
 		setPrevInput(msg);
+		setPrevImgBase64(imgBase64);
 		setInput("");
+		setImgBase64("");
 		EventsOn("receiveChat", (data: string) => {
 			data.split(/\r?\n/).map((v) => {
 				if (v !== "") {
@@ -106,13 +110,16 @@ function App() {
 				{
 					role: "user",
 					content: msg,
+					images: imgBase64 ? [imgBase64] : [],
 				},
 				{
 					role: "assistant",
 					content: output,
+					images: [],
 				},
 			];
 			setPrevInput("");
+			setPrevImgBase64("");
 			setOllamaResopnse("");
 			setChatHistory(newMessages);
 			setSendDisabled(false);
@@ -127,6 +134,7 @@ function App() {
 				{
 					role: "user",
 					content: msg,
+					images: imgBase64 ? [imgBase64] : [],
 				},
 			],
 		);
@@ -151,11 +159,18 @@ function App() {
 				}}
 			>
 				<ChatView chatHistory={chatHistory} />
-				{prevInput && <UserMessageView message={prevInput} />}
+				{prevInput && (
+					<UserMessageView
+						message={prevInput}
+						imgBase64={prevImgBase64 !== "" ? prevImgBase64 : undefined}
+					/>
+				)}
 				{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
 			</Box>
 			<MessageInputArea
 				input={input}
+				imgBase64={imgBase64}
+				setImgBase64={setImgBase64}
 				sendDisabled={sendDisabled}
 				setInput={setInput}
 				callOllamaApi={callOllamaApi}
