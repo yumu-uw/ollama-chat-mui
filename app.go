@@ -76,7 +76,7 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
-		for _, v := range strings.Split(scanner.Text(), "\n") {
+		for v := range strings.SplitSeq(scanner.Text(), "\n") {
 			var obj model.ChatApiResponseData
 			if err := json.Unmarshal([]byte(v), &obj); err != nil {
 				panic(err)
@@ -87,11 +87,9 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 	}
 
 	if err := scanner.Err(); err != nil {
-		runtime.EventsEmit(a.ctx, "deleteEvent", output)
 		return ymuwutil.CreateErrorMessage(err)
 	}
-	runtime.EventsEmit(a.ctx, "deleteEvent", output)
-	return ""
+	return output
 }
 
 func (a *App) GetOllamaModels(ollamaURL string) string {

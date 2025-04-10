@@ -9,9 +9,15 @@ import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
 import type { ConfigModel } from "@/model/configModel";
 import type { Chat, ResponseData } from "@/model/dataModels";
-import { Box, Stack } from "@mui/material";
+import {
+	Alert,
+	Box,
+	Snackbar,
+	type SnackbarCloseReason,
+	Stack,
+} from "@mui/material";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
-import { EventsOff, EventsOn, EventsOnce } from "wailsjs/runtime/runtime";
+import { EventsOff, EventsOn } from "wailsjs/runtime/runtime";
 
 function App() {
 	const configContext = use(ConfigContext);
@@ -32,6 +38,8 @@ function App() {
 	}
 	const { currentOllamaHost, setCurrentOllamaHost } = currentOllamaHostContext;
 
+	const [open, setOpen] = useState(false);
+	const [snackBarMessage, setSnackBarMessage] = useState("");
 	const [input, setInput] = useState("");
 	const [imgBase64, setImgBase64] = useState("");
 	const [prevInput, setPrevInput] = useState("");
@@ -42,7 +50,7 @@ function App() {
 
 	const chatRef = useRef<HTMLDivElement>(null);
 
-	// 設定ファイルの情報を取得
+	// 初期設定
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		GetConfig().then((data) => {
@@ -52,10 +60,6 @@ function App() {
 				DefaultPrompt: data.DefaultPrompt,
 			};
 			setConfig(newConfig);
-
-			EventsOn("refreshChat", () => {
-				setChatHistory([]);
-			});
 
 			if (newConfig.OllamaEndpoints.length === 0) {
 				setTimeout(() => {
@@ -75,6 +79,29 @@ function App() {
 				}
 			}
 		});
+
+		// チャット履歴のリフレッシュイベントを登録
+		EventsOn("refreshChat", () => {
+			setChatHistory([]);
+		});
+
+		// 受信したメッセージを表示するイベントを登録
+		EventsOn("receiveChat", (data: string) => {
+			data.split(/\r?\n/).map((v) => {
+				if (v !== "") {
+					const j = JSON.parse(v) as ResponseData;
+					setOllamaResopnse((prev) => prev + j.message.content);
+				}
+			});
+		});
+
+		return () => {
+			// チャット履歴のリフレッシュイベントを解除
+			EventsOff("refreshChat");
+
+			// 受信したメッセージを表示するイベントを解除
+			EventsOff("receiveChat");
+		};
 	}, []);
 
 	// チャットエリアを自動でスクロール
@@ -95,36 +122,6 @@ function App() {
 		setPrevImgBase64(imgBase64);
 		setInput("");
 		setImgBase64("");
-		EventsOn("receiveChat", (data: string) => {
-			data.split(/\r?\n/).map((v) => {
-				if (v !== "") {
-					const j = JSON.parse(v) as ResponseData;
-					setOllamaResopnse((prev) => prev + j.message.content);
-				}
-			});
-		});
-
-		EventsOnce("deleteEvent", (output: string) => {
-			const newMessages: Chat[] = [
-				...chatHistory,
-				{
-					role: "user",
-					content: msg,
-					images: imgBase64 ? [imgBase64] : [],
-				},
-				{
-					role: "assistant",
-					content: output,
-					images: [],
-				},
-			];
-			setPrevInput("");
-			setPrevImgBase64("");
-			setOllamaResopnse("");
-			setChatHistory(newMessages);
-			setSendDisabled(false);
-			EventsOff("receiveChat");
-		});
 
 		SendChat(
 			currentOllamaHost?.Endpoint as string,
@@ -137,45 +134,93 @@ function App() {
 					images: imgBase64 ? [imgBase64] : [],
 				},
 			],
-		);
+		).then((data) => {
+			if (data.startsWith("error:")) {
+				setSnackBarMessage("Ollamaサーバーとの通信に失敗しました。");
+				setOpen(true);
+			} else {
+				const newMessages: Chat[] = [
+					...chatHistory,
+					{
+						role: "user",
+						content: msg,
+						images: imgBase64 ? [imgBase64] : [],
+					},
+					{
+						role: "assistant",
+						content: data,
+						images: [],
+					},
+				];
+				setChatHistory(newMessages);
+			}
+
+			setPrevInput("");
+			setPrevImgBase64("");
+			setOllamaResopnse("");
+			setSendDisabled(false);
+		});
 	}
 
+	const handleClose = (
+		event: React.SyntheticEvent | Event,
+		reason?: SnackbarCloseReason,
+	) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setOpen(false);
+	};
+
 	return (
-		<Stack
-			direction={"column"}
-			gap={4}
-			sx={{
-				height: "100%",
-				width: "100%",
-				justifyContent: "space-between",
-			}}
-		>
-			<Box
-				ref={chatRef}
+		<>
+			<Stack
+				direction={"column"}
+				gap={4}
 				sx={{
 					height: "100%",
-					marginEnd: "auto",
-					overflow: "auto",
+					width: "100%",
+					justifyContent: "space-between",
 				}}
 			>
-				<ChatView chatHistory={chatHistory} />
-				{prevInput && (
-					<UserMessageView
-						message={prevInput}
-						imgBase64={prevImgBase64 !== "" ? prevImgBase64 : undefined}
-					/>
-				)}
-				{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
-			</Box>
-			<MessageInputArea
-				input={input}
-				imgBase64={imgBase64}
-				setImgBase64={setImgBase64}
-				sendDisabled={sendDisabled}
-				setInput={setInput}
-				callOllamaApi={callOllamaApi}
-			/>
-		</Stack>
+				<Box
+					ref={chatRef}
+					sx={{
+						height: "100%",
+						marginEnd: "auto",
+						overflow: "auto",
+					}}
+				>
+					<ChatView chatHistory={chatHistory} />
+					{prevInput && (
+						<UserMessageView
+							message={prevInput}
+							imgBase64={prevImgBase64 !== "" ? prevImgBase64 : undefined}
+						/>
+					)}
+					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
+				</Box>
+				<MessageInputArea
+					input={input}
+					imgBase64={imgBase64}
+					setImgBase64={setImgBase64}
+					sendDisabled={sendDisabled}
+					setInput={setInput}
+					callOllamaApi={callOllamaApi}
+				/>
+			</Stack>
+			<Snackbar
+				anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+				open={open}
+				autoHideDuration={3000}
+				onClose={handleClose}
+			>
+				<Alert onClose={handleClose} severity={"error"} sx={{ width: "100%" }}>
+					{snackBarMessage}
+				</Alert>
+			</Snackbar>
+		</>
 	);
 }
 
