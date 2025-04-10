@@ -56,19 +56,19 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 
 	jsonData, err := json.Marshal(data)
 	if err != nil {
-		return err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 
 	req, err := http.NewRequest("POST", ollamaURL+"/api/chat", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	defer resp.Body.Close()
 
@@ -88,7 +88,7 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 
 	if err := scanner.Err(); err != nil {
 		runtime.EventsEmit(a.ctx, "deleteEvent", output)
-		return "error: " + err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	runtime.EventsEmit(a.ctx, "deleteEvent", output)
 	return ""
@@ -97,13 +97,13 @@ func (a *App) SendChat(ollamaURL string, ollamaModel string, chatHistory []model
 func (a *App) GetOllamaModels(ollamaURL string) string {
 	resp, err := http.Get(ollamaURL + "/api/tags")
 	if err != nil {
-		return "error: " + err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	defer resp.Body.Close()
 
 	var data model.TagApiResponse
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		return "error: " + err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 
 	var models []string
@@ -114,10 +114,6 @@ func (a *App) GetOllamaModels(ollamaURL string) string {
 	return strings.Join(models, ",")
 }
 
-func (a *App) GetModels() string {
-	return a.config.AppTheme
-}
-
 func (a *App) RefreshChatHistory() {
 	runtime.EventsEmit(a.ctx, "refreshChat")
 }
@@ -125,7 +121,7 @@ func (a *App) RefreshChatHistory() {
 func (a *App) UpdateOllamaEndpoints(newOllamaEndpoints []model.OllamaEndpoint) string {
 	a.config.OllamaEndpoints = newOllamaEndpoints
 	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
-		return err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	return ""
 }
@@ -133,7 +129,7 @@ func (a *App) UpdateOllamaEndpoints(newOllamaEndpoints []model.OllamaEndpoint) s
 func (a *App) UpdateDefaultOllamaEndPointName(name string) string {
 	a.config.DefaultOllamaEndPointName = name
 	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
-		return err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	return ""
 }
@@ -141,7 +137,7 @@ func (a *App) UpdateDefaultOllamaEndPointName(name string) string {
 func (a *App) UpdatePrompt(newPrompt string) string {
 	a.config.DefaultPrompt = newPrompt
 	if err := ymuwutil.UpdateConfigJson(a.config); err != nil {
-		return err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	return ""
 }
@@ -157,15 +153,15 @@ func (a *App) LoadImgBase64() string {
 		},
 	})
 	if err != nil {
-		return "error: " + err.Error()
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	if len(img) == 0 {
-		return "error: no file selected"
+		return ymuwutil.CreateErrorMessage(err)
 	}
 
 	bytes, err := os.ReadFile(img)
 	if err != nil {
-		return "error"
+		return ymuwutil.CreateErrorMessage(err)
 	}
 	return base64.StdEncoding.EncodeToString(bytes)
 }
