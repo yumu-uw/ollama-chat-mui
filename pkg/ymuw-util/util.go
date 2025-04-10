@@ -92,3 +92,7 @@ func UpdateConfigJson(newConfig model.ConfigJson) error {
 	}
 	return nil
 }
+
+func CreateErrorMessage(err error) string {
+	return "error: " + err.Error()
+}
