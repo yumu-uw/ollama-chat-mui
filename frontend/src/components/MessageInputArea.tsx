@@ -88,7 +88,7 @@ export const MessageInputArea = ({
 			/>
 			<Divider sx={{ borderBottomWidth: 1, borderBottomColor: "black" }} />
 			<Stack direction={"row"} sx={{ w: "100%", justifyContent: "flex-end" }}>
-				<Tooltip title="画像を選択">
+				{/* <Tooltip title="画像を選択">
 					<IconButton
 						aria-label="send-message"
 						sx={{ cursor: "pointer" }}
@@ -105,7 +105,7 @@ export const MessageInputArea = ({
 					>
 						<AddOutlinedIcon fontSize="large" />
 					</IconButton>
-				</Tooltip>
+				</Tooltip> */}
 				<Box sx={{ flexGrow: 1 }} />
 				<IconButton
 					aria-label="send-message"
