@@ -1,4 +1,3 @@
-import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
 import {
 	Box,
@@ -9,7 +8,7 @@ import {
 	Tooltip,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { LoadImgBase64 } from "wailsjs/go/main/App";
+// import { LoadImgBase64 } from "wailsjs/go/main/App";
 
 type Props = {
 	input: string;
@@ -22,8 +21,8 @@ type Props = {
 
 export const MessageInputArea = ({
 	input,
-	imgBase64,
-	setImgBase64,
+	// imgBase64,
+	// setImgBase64,
 	sendDisabled,
 	setInput,
 	callOllamaApi,
@@ -59,7 +58,7 @@ export const MessageInputArea = ({
 			<TextField
 				value={input}
 				variant={"standard"}
-				placeholder="送信するメッセージ(Enterで改行、Alt+Enterで送信)"
+				placeholder="送信するメッセージ(Enterで送信、Shift+Enterで改行)"
 				multiline
 				maxRows={6}
 				sx={{
@@ -74,12 +73,14 @@ export const MessageInputArea = ({
 					},
 				}}
 				onKeyDown={(e) => {
-					if (e.key === "Enter" && e.altKey) {
-						e.preventDefault();
-						if (sendDisabled) {
+					if (e.key === "Enter") {
+						if (e.shiftKey) {
 							return;
 						}
-						handleCallOllamaApi();
+						e.preventDefault();
+						if (!sendDisabled) {
+							handleCallOllamaApi();
+						}
 					}
 				}}
 				onChange={(e) => {
