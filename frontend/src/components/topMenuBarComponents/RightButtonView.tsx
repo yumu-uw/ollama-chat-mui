@@ -1,4 +1,5 @@
 import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import RefreshOutlinedIcon from "@mui/icons-material/RefreshOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {
@@ -40,7 +41,7 @@ export const RightButtonView = () => {
 							setOpen(true);
 						}}
 					>
-						<RefreshOutlinedIcon fontSize="medium" />
+						<DeleteForeverOutlinedIcon fontSize="medium" />
 					</IconButton>
 				</Tooltip>
 

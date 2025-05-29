@@ -1,7 +1,7 @@
 import { ConfigContext } from "@/context/configContext";
 import { deepCopyObject } from "@/lib/util";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import UpdateOutlinedIcon from "@mui/icons-material/UpdateOutlined";
+import SyncOutlinedIcon from "@mui/icons-material/SyncOutlined";
 import {
 	Alert,
 	type AlertColor,
@@ -137,7 +137,7 @@ export const ListOllamaHostField = () => {
 								<TableCell align="center">
 									<Tooltip title="モデル情報を更新">
 										<IconButton onClick={() => handleUpdateModels(i)}>
-											<UpdateOutlinedIcon />
+											<SyncOutlinedIcon />
 										</IconButton>
 									</Tooltip>
 								</TableCell>

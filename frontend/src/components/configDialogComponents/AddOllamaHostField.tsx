@@ -205,7 +205,7 @@ export const AddOllamaHostField = () => {
 						}}
 						onClick={handleSubmit}
 					>
-						Add Ollama Host
+						Add
 					</Button>
 				</Box>
 			</Stack>

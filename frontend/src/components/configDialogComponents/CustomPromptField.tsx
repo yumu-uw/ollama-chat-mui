@@ -130,7 +130,7 @@ export const CustomPromptField = () => {
 							}}
 							onClick={handleSubmit}
 						>
-							Update Prompt
+							Update
 						</Button>
 					</Box>
 				</Stack>
