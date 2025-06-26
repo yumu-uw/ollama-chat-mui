@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"slices"
 	"strings"
@@ -144,6 +145,7 @@ func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
 		}
 		resp.Body.Close()
 	}
+	log.Println("Filtered models:", filteredModels)
 	return filteredModels
 }
 
