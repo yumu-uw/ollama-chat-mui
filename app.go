@@ -122,6 +122,7 @@ func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
 			"model": model,
 		})
 		if err != nil {
+			log.Println("Error marshalling JSON for model:", model, "Error:", err)
 			continue
 		}
 
@@ -131,6 +132,7 @@ func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
 			bytes.NewBuffer(body),
 		)
 		if err != nil {
+			log.Println("Error making POST request for model:", model, "Error:", err)
 			continue
 		}
 
