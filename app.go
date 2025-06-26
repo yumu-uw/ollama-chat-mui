@@ -107,7 +107,45 @@ func (a *App) GetOllamaModels(ollamaURL string) string {
 		models = append(models, string(v.Name))
 	}
 
+	models = a.excludeEmbededModel(ollamaURL, models)
+
 	return strings.Join(models, ",")
+}
+
+// embdedモデルはチャット未対応のため除外する
+func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
+	var filteredModels []string
+	for _, model := range models {
+		body, err := json.Marshal(map[string]string{
+			"model": model,
+		})
+		if err != nil {
+			continue
+		}
+
+		resp, err := http.Post(
+			ollamaURL+"/api/show",
+			"application/json",
+			bytes.NewBuffer(body),
+		)
+		if err != nil {
+			continue
+		}
+
+		defer resp.Body.Close()
+
+		var showResp struct {
+			Capabilities []string `json:"capabilities"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&showResp); err == nil {
+			// "embedding" を含まない場合のみ追加
+			containsEmbedding := slices.Contains(showResp.Capabilities, "embedding")
+			if !containsEmbedding {
+				filteredModels = append(filteredModels, model)
+			}
+		}
+	}
+	return filteredModels
 }
 
 func (a *App) RefreshChatHistory() {
