@@ -146,6 +146,8 @@ func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
 			if !containsEmbedding {
 				filteredModels = append(filteredModels, model)
 			}
+		} else {
+			log.Println("Error decoding response for model:", model, "Error:", err)
 		}
 		resp.Body.Close()
 	}
