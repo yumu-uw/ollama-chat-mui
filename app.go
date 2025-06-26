@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 	"slices"
@@ -140,8 +139,7 @@ func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
 		var showResp struct {
 			Capabilities []string `json:"capabilities"`
 		}
-		raw, _ := io.ReadAll(resp.Body)
-		log.Println("Model:", model, "Raw response:", string(raw))
+
 		if err := json.NewDecoder(resp.Body).Decode(&showResp); err == nil {
 			// "embedding" を含まない場合のみ追加
 			containsEmbedding := slices.Contains(showResp.Capabilities, "embedding")
