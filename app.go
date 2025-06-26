@@ -132,8 +132,6 @@ func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
 			continue
 		}
 
-		defer resp.Body.Close()
-
 		var showResp struct {
 			Capabilities []string `json:"capabilities"`
 		}
@@ -144,6 +142,7 @@ func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
 				filteredModels = append(filteredModels, model)
 			}
 		}
+		resp.Body.Close()
 	}
 	return filteredModels
 }
