@@ -4,10 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"encoding/base64"
 	"encoding/json"
 	"net/http"
-	"os"
 	"slices"
 	"strings"
 
@@ -138,28 +136,4 @@ func (a *App) UpdatePrompt(newPrompt string) string {
 		return ymuwutil.CreateErrorMessage(err)
 	}
 	return ""
-}
-
-func (a *App) LoadImgBase64() string {
-	img, err := runtime.OpenFileDialog(a.ctx, runtime.OpenDialogOptions{
-		Title: "Select an image",
-		Filters: []runtime.FileFilter{
-			{
-				DisplayName: "Images (*.png;*.jpg)",
-				Pattern:     "*.png;*.jpg;*.jpeg;*.gif",
-			},
-		},
-	})
-	if err != nil {
-		return ymuwutil.CreateErrorMessage(err)
-	}
-	if len(img) == 0 {
-		return ymuwutil.CreateErrorMessage(err)
-	}
-
-	bytes, err := os.ReadFile(img)
-	if err != nil {
-		return ymuwutil.CreateErrorMessage(err)
-	}
-	return base64.StdEncoding.EncodeToString(bytes)
 }

@@ -1,7 +1,6 @@
 export type Chat = {
 	role: string;
 	content: string;
-	images: string[];
 };
 
 export type RequestData = {

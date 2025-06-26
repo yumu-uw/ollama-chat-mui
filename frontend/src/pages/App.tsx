@@ -41,9 +41,7 @@ function App() {
 	const [open, setOpen] = useState(false);
 	const [snackBarMessage, setSnackBarMessage] = useState("");
 	const [input, setInput] = useState("");
-	const [imgBase64, setImgBase64] = useState("");
 	const [prevInput, setPrevInput] = useState("");
-	const [prevImgBase64, setPrevImgBase64] = useState("");
 	const [sendDisabled, setSendDisabled] = useState(false);
 	const [ollamaResopnse, setOllamaResopnse] = useState("");
 	const [chatHistory, setChatHistory] = useState<Chat[]>([]);
@@ -119,9 +117,7 @@ function App() {
 		setSendDisabled(true);
 		const msg = input;
 		setPrevInput(msg);
-		setPrevImgBase64(imgBase64);
 		setInput("");
-		setImgBase64("");
 
 		SendChat(
 			currentOllamaHost?.Endpoint as string,
@@ -131,7 +127,6 @@ function App() {
 				{
 					role: "user",
 					content: msg,
-					images: imgBase64 ? [imgBase64] : [],
 				},
 			],
 		).then((data) => {
@@ -144,19 +139,16 @@ function App() {
 					{
 						role: "user",
 						content: msg,
-						images: imgBase64 ? [imgBase64] : [],
 					},
 					{
 						role: "assistant",
 						content: data,
-						images: [],
 					},
 				];
 				setChatHistory(newMessages);
 			}
 
 			setPrevInput("");
-			setPrevImgBase64("");
 			setOllamaResopnse("");
 			setSendDisabled(false);
 		});
@@ -193,18 +185,11 @@ function App() {
 					}}
 				>
 					<ChatView chatHistory={chatHistory} />
-					{prevInput && (
-						<UserMessageView
-							message={prevInput}
-							imgBase64={prevImgBase64 !== "" ? prevImgBase64 : undefined}
-						/>
-					)}
+					{prevInput && <UserMessageView message={prevInput} />}
 					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
 				</Box>
 				<MessageInputArea
 					input={input}
-					imgBase64={imgBase64}
-					setImgBase64={setImgBase64}
 					sendDisabled={sendDisabled}
 					setInput={setInput}
 					callOllamaApi={callOllamaApi}

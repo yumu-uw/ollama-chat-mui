@@ -8,21 +8,16 @@ import {
 	Tooltip,
 } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-// import { LoadImgBase64 } from "wailsjs/go/main/App";
 
 type Props = {
 	input: string;
-	imgBase64: string;
 	sendDisabled: boolean;
 	setInput: React.Dispatch<React.SetStateAction<string>>;
-	setImgBase64: React.Dispatch<React.SetStateAction<string>>;
 	callOllamaApi(): void;
 };
 
 export const MessageInputArea = ({
 	input,
-	// imgBase64,
-	// setImgBase64,
 	sendDisabled,
 	setInput,
 	callOllamaApi,
@@ -89,24 +84,6 @@ export const MessageInputArea = ({
 			/>
 			<Divider sx={{ borderBottomWidth: 1, borderBottomColor: "black" }} />
 			<Stack direction={"row"} sx={{ w: "100%", justifyContent: "flex-end" }}>
-				{/* <Tooltip title="画像を選択">
-					<IconButton
-						aria-label="send-message"
-						sx={{ cursor: "pointer" }}
-						onClick={() => {
-							LoadImgBase64().then((result) => {
-								if (result.startsWith("error: ")) {
-									console.error(result);
-									return;
-								}
-								setImgBase64(result);
-							});
-						}}
-						disabled={sendDisabled}
-					>
-						<AddOutlinedIcon fontSize="large" />
-					</IconButton>
-				</Tooltip> */}
 				<Box sx={{ flexGrow: 1 }} />
 				<IconButton
 					aria-label="send-message"
