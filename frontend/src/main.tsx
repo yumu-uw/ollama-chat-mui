@@ -12,7 +12,6 @@ import { RootLayout } from "./components/sharedComponents/RootLayout";
 import { ConfigProvider } from "./context/configContext";
 import { ConfigDialogIsOpenProvider } from "./context/configDIalogIsOpenContext";
 import { CurrentOllamaHostProvider } from "./context/currentOllamaHostContext";
-import { App2 } from "./pages/App2";
 
 ScreenGetAll().then((data) => {
 	for (const screen of data) {
@@ -32,7 +31,6 @@ createRoot(document.getElementById("root")!).render(
 						<Routes>
 							<Route element={<RootLayout />}>
 								<Route index element={<App />} />
-								<Route path="app2" element={<App2 />} />
 							</Route>
 						</Routes>
 					</HashRouter>
