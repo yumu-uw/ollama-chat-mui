@@ -108,6 +108,7 @@ func (a *App) GetOllamaModels(ollamaURL string) string {
 		models = append(models, string(v.Name))
 	}
 
+	log.Println("models", models)
 	models = a.excludeEmbededModel(ollamaURL, models)
 
 	return strings.Join(models, ",")
@@ -139,6 +140,7 @@ func (a *App) excludeEmbededModel(ollamaURL string, models []string) []string {
 		if err := json.NewDecoder(resp.Body).Decode(&showResp); err == nil {
 			// "embedding" を含まない場合のみ追加
 			containsEmbedding := slices.Contains(showResp.Capabilities, "embedding")
+			log.Println("Model:", model, "Capabilities:", showResp.Capabilities, "Contains Embedding:", containsEmbedding)
 			if !containsEmbedding {
 				filteredModels = append(filteredModels, model)
 			}
