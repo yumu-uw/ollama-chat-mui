@@ -161,7 +161,6 @@ export const ListOllamaHostField = () => {
 			>
 				<Alert onClose={handleClose} severity={severity} sx={{ width: "100%" }}>
 					{snackbarMsg}
-					Cannot delete default Ollama Host.
 				</Alert>
 			</Snackbar>
 		</Stack>
