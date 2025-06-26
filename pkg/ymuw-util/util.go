@@ -18,11 +18,12 @@ func SetupConfigDir() error {
 		return err
 	}
 
-	if runtime.GOOS == "windows" {
+	switch runtime.GOOS {
+	case "windows":
 		configDir = path.Join(os.Getenv("LOCALAPPDATA"), "YmuwApps", "ollama-chat")
-	} else if runtime.GOOS == "darwin" {
+	case "darwin":
 		configDir = path.Join(user.HomeDir, "Library/Application Support/YmuwApps/ollama-chat")
-	} else {
+	default:
 		configDir = user.HomeDir
 	}
 

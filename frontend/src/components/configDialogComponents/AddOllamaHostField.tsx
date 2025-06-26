@@ -83,11 +83,20 @@ export const AddOllamaHostField = () => {
 			models.push(v);
 		});
 
+		let defaultLLMModel = "";
+		if (models.length > 0) {
+			if (models.includes("phi4:latest")) {
+				defaultLLMModel = "phi4:latest";
+			} else {
+				defaultLLMModel = models[0];
+			}
+		}
+
 		const newOllamaEndpoint: model.OllamaEndpoint = {
 			EndpointName: displayName,
 			EndpointUrl: ollamaHost.replace(/\/$/, ""),
 			LLMModels: models,
-			DefaultLLMModel: models.length > 0 ? models[0] : "",
+			DefaultLLMModel: defaultLLMModel,
 		};
 
 		if (config?.OllamaEndpoints.length === 0) {
