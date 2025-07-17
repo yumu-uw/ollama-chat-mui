@@ -1,8 +1,8 @@
-import { supportLangs } from "@/lib/custom-highlight";
 import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import { Box, Card, IconButton, Stack } from "@mui/material";
 import { useState } from "react";
+import { supportLangs } from "@/lib/custom-highlight";
 
 interface Props {
 	classAttr: string | undefined;

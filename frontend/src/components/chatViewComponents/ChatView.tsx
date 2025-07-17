@@ -1,7 +1,7 @@
-import type { Chat } from "@/model/dataModels";
 import { Box } from "@mui/material";
 import hljs from "highlight.js";
 import { memo, useEffect } from "react";
+import type { Chat } from "@/model/dataModels";
 import { MarkdownView } from "./MarkdownView";
 import { UserMessageView } from "./UserMessageView";
 
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const ChatView = memo(({ chatHistory }: Props) => {
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: false positive
 	useEffect(() => {
 		hljs.highlightAll();
 	}, [chatHistory]);
@@ -22,7 +22,7 @@ export const ChatView = memo(({ chatHistory }: Props) => {
 					return (
 						<UserMessageView
 							key={`usermsg-${
-								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								// biome-ignore lint/suspicious/noArrayIndexKey: false positive
 								index
 							}`}
 							message={value.content}
@@ -33,7 +33,7 @@ export const ChatView = memo(({ chatHistory }: Props) => {
 					return (
 						<MarkdownView
 							key={`assistantmsg-${
-								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+								// biome-ignore lint/suspicious/noArrayIndexKey: false positive
 								index
 							}`}
 							mdStr={value.content}

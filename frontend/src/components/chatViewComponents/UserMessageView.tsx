@@ -26,11 +26,11 @@ export const UserMessageView = memo(({ message, imgBase64 }: Props) => {
 						return (
 							<Typography
 								key={`preinput-${
-									// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+									// biome-ignore lint/suspicious/noArrayIndexKey: using index as key is acceptable here
 									index
 								}`}
 								variant="body1"
-								sx={{ fontWeight: 500 }}
+								sx={{ fontWeight: 400 }}
 							>
 								{v}
 							</Typography>

@@ -9,3 +9,7 @@ pre code:not(.hljs) {
 	padding: 1em !important;
 	background-color: #F3F6F9 !important;
 }
+
+.markdown-body {
+	font-weight: 400 !important;
+}

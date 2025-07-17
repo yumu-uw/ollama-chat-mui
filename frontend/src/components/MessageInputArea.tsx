@@ -1,13 +1,6 @@
 import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
-import {
-	Box,
-	Divider,
-	IconButton,
-	Stack,
-	TextField,
-	Tooltip,
-} from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { Box, Divider, IconButton, Stack, TextField } from "@mui/material";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
 	input: string;
@@ -25,6 +18,7 @@ export const MessageInputArea = ({
 	const [debouncedCall, setDebouncedCall] = useState<() => void>(
 		() => () => {},
 	);
+	const isComposingRef = useRef(false);
 
 	useEffect(() => {
 		const handler = setTimeout(() => {
@@ -69,7 +63,11 @@ export const MessageInputArea = ({
 				}}
 				onKeyDown={(e) => {
 					if (e.key === "Enter") {
-						if (e.shiftKey) {
+						if (isComposingRef.current) {
+							isComposingRef.current = false;
+							return;
+						}
+						if (e.shiftKey || isComposingRef.current) {
 							return;
 						}
 						e.preventDefault();
@@ -77,6 +75,9 @@ export const MessageInputArea = ({
 							handleCallOllamaApi();
 						}
 					}
+				}}
+				onCompositionStart={() => {
+					isComposingRef.current = true;
 				}}
 				onChange={(e) => {
 					setInput(e.target.value);
