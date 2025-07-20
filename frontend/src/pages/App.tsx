@@ -30,7 +30,7 @@ function App() {
 	if (!configDialogIsOpenContext) {
 		throw new Error("failed to get configDialogIsOpenContext");
 	}
-	const { setConfigDialogIsOpen } = configDialogIsOpenContext;
+	const { configDialogIsOpen, setConfigDialogIsOpen } = configDialogIsOpenContext;
 
 	const currentOllamaHostContext = use(CurrentOllamaHostContext);
 	if (!currentOllamaHostContext) {
@@ -117,6 +117,32 @@ function App() {
 			chatRef.current.scrollTop = chatRef.current.scrollHeight;
 		}
 	}, [ollamaResopnse]);
+
+	// チャットの初期状態でWelcomeメッセージをアニメーション表示する。
+	useEffect(() => {
+		if (currentOllamaHost?.DisplayName === "") return;
+		if (configDialogIsOpen) return;
+		if (chatHistory.length === 0) {
+			setOllamaResopnse("");
+			setSendDisabled(true);
+			const welcomeMessage = "ようこそ！何かお手伝いできることはありますか？";
+			for (let i = 0; i < welcomeMessage.length; i++) {
+				setTimeout(() => {
+					setOllamaResopnse((prev) => prev + welcomeMessage[i]);
+					if (i === welcomeMessage.length - 1) {
+						setOllamaResopnse("");
+						setChatHistory([
+							{
+								role: "assistant",
+								content: welcomeMessage,
+							}
+						]);
+						setSendDisabled(false);
+					}
+				}, 500 + i * 10);
+			}
+		}
+	}, [chatHistory, currentOllamaHost.DisplayName, configDialogIsOpen]);
 
 	function callOllamaApi() {
 		if (input === "") {
