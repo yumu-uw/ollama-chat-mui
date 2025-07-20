@@ -43,6 +43,7 @@ function App() {
 	const [input, setInput] = useState("");
 	const [prevInput, setPrevInput] = useState("");
 	const [sendDisabled, setSendDisabled] = useState(false);
+	const [waitingResponse, setWaitingResponse] = useState(false);
 	const [ollamaResopnse, setOllamaResopnse] = useState("");
 	const [chatHistory, setChatHistory] = useState<Chat[]>([]);
 
@@ -85,12 +86,19 @@ function App() {
 
 		// 受信したメッセージを表示するイベントを登録
 		EventsOn("receiveChat", (data: string) => {
+			setWaitingResponse(false);
+			try {
 			data.split(/\r?\n/).map((v) => {
 				if (v !== "") {
 					const j = JSON.parse(v) as ResponseData;
 					setOllamaResopnse((prev) => prev + j.message.content);
 				}
 			});
+			} catch (e) {
+				setOllamaResopnse((prev) => prev + "Error parsing response data.");
+				setSendDisabled(false);
+				setSnackBarMessage("Response data parsing error.");
+			}
 		});
 
 		return () => {
@@ -115,6 +123,7 @@ function App() {
 			return;
 		}
 		setSendDisabled(true);
+		setWaitingResponse(true);
 		const msg = input;
 		setPrevInput(msg);
 		setInput("");
@@ -169,7 +178,6 @@ function App() {
 		<>
 			<Stack
 				direction={"column"}
-				gap={4}
 				sx={{
 					height: "100%",
 					width: "100%",
@@ -179,13 +187,14 @@ function App() {
 				<Box
 					ref={chatRef}
 					sx={{
+						padding: "0 0.5em 1em 0.5em",
 						height: "100%",
 						marginEnd: "auto",
 						overflow: "auto",
 					}}
 				>
 					<ChatView chatHistory={chatHistory} />
-					{prevInput && <UserMessageView message={prevInput} />}
+					{prevInput && <UserMessageView message={prevInput} loading={waitingResponse} />}
 					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
 				</Box>
 				<MessageInputArea

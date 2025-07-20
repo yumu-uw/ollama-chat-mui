@@ -41,7 +41,7 @@ export const CustomCode = ({ classAttr, value }: Props) => {
 			<Stack
 				direction={"row"}
 				sx={{
-					p: "0.5em",
+					pl: "0.5em",
 					justifyContent: "space-between",
 					fontWeight: "bold",
 					bgcolor: "lightgray",
