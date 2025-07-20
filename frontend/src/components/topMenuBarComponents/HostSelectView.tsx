@@ -2,7 +2,6 @@ import { ConfigContext } from "@/context/configContext";
 import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
 import { deepCopyObject } from "@/lib/util";
 import {
-	Button,
 	MenuItem,
 	Select,
 	type SelectChangeEvent,
@@ -17,7 +16,6 @@ import {
 type SelectablePProps = {
 	displayText: string;
 	handleSelectt: (select: string) => void;
-	handleSetAsDefault: () => void;
 	tooltipViewData: string[];
 };
 
@@ -26,47 +24,30 @@ const SelectableP = ({ ...rest }: SelectablePProps) => {
 		rest.handleSelectt(event.target.value as string);
 	};
 	return (
-		<Stack
-			gap={1}
-			direction={"column"}
-			sx={{ alignItems: "center", justifyContent: "center" }}
-		>
-			<Select
-				sx={{
+		<Select
+			sx={{
+				color: "white",
+				border: "none",
+				"& .MuiSvgIcon-root": {
 					color: "white",
+				},
+				"& .MuiOutlinedInput-notchedOutline": {
 					border: "none",
-					"& .MuiSvgIcon-root": {
-						color: "white",
-					},
-					"& .MuiOutlinedInput-notchedOutline": {
-						border: "none",
-					},
-					"& .MuiSelect-select": {
-						paddingTop: 0,
-						paddingBottom: 0,
-					},
-				}}
-				value={rest.displayText}
-				onChange={handleChange}
-			>
-				{rest.tooltipViewData.map((v) => (
-					<MenuItem key={`menu-${v}`} value={v}>
-						{v}
-					</MenuItem>
-				))}
-			</Select>
-			<Button
-				sx={{
-					cursor: "pointer",
-					fontSize: "small",
-					color: "lightgray",
-					p: 0,
-				}}
-				onClick={rest.handleSetAsDefault}
-			>
-				Set as default
-			</Button>
-		</Stack>
+				},
+				"& .MuiSelect-select": {
+					paddingTop: 0,
+					paddingBottom: 0,
+				},
+			}}
+			value={rest.displayText}
+			onChange={handleChange}
+		>
+			{rest.tooltipViewData.map((v) => (
+				<MenuItem key={`menu-${v}`} value={v}>
+					{v}
+				</MenuItem>
+			))}
+		</Select>
 	);
 };
 
@@ -94,45 +75,41 @@ export const HostSelectView = () => {
 				config?.OllamaEndpoints?.find((v) => v.EndpointName === select)
 					?.DefaultLLMModel || "",
 		});
+		setDefaultHost(select);
 	};
 
 	const handleSelectModel = (select: string) => {
 		setCurrentOllamaHost((prev) => {
 			const prevDisplayName = prev?.DisplayName as string;
 			const prevEndpoint = prev?.Endpoint as string;
-			const newModelName =
-				config?.OllamaEndpoints?.find(
-					(v) => v.EndpointName === prevDisplayName,
-				)?.LLMModels.find((v) => v === select) || "";
+			const newModelName = select;
 			return {
 				DisplayName: prevDisplayName,
 				Endpoint: prevEndpoint,
 				ModelName: newModelName,
 			};
 		});
+		setDefaultModel(currentOllamaHost.DisplayName, select);
 	};
 
-	const handleSetAsDefaultHost = () => {
+	const setDefaultHost = (host: string) => {
 		const newConfig = deepCopyObject(config);
 		if (!newConfig) return;
-		newConfig.DefaultOllamaEndPointName =
-			currentOllamaHost?.DisplayName || newConfig.DefaultOllamaEndPointName;
+		newConfig.DefaultOllamaEndPointName = host;
 		setConfig(newConfig);
-		UpdateDefaultOllamaEndPointName(newConfig.DefaultOllamaEndPointName).then(
-			(result) => {
-				if (result !== "") {
-					alert(result);
-				}
-			},
-		);
+		UpdateDefaultOllamaEndPointName(newConfig.DefaultOllamaEndPointName).then((result) => {
+			if (result !== "") {
+				alert(result);
+			}
+		});
 	};
 
-	const handleSetAsDefaultModel = () => {
+	const setDefaultModel = (host: string, model: string) => {
 		const newConfig = deepCopyObject(config);
 		if (!newConfig) return;
 		for (const endpoint of newConfig.OllamaEndpoints) {
-			if (endpoint.EndpointName === currentOllamaHost?.DisplayName) {
-				endpoint.DefaultLLMModel = currentOllamaHost?.ModelName;
+			if (endpoint.EndpointName === host) {
+				endpoint.DefaultLLMModel = model;
 				break;
 			}
 		}
@@ -145,11 +122,10 @@ export const HostSelectView = () => {
 	};
 
 	return (
-		<Stack sx={{ alignItems: "flex-start" }} direction={"row"} gap={6}>
+		<Stack sx={{ alignItems: "flex-start" }} direction={"row"}>
 			<SelectableP
 				displayText={currentOllamaHost?.DisplayName || ""}
 				handleSelectt={handleSelectOllamaHost}
-				handleSetAsDefault={handleSetAsDefaultHost}
 				tooltipViewData={
 					config?.OllamaEndpoints?.map((v) => {
 						return v.EndpointName;
@@ -160,7 +136,6 @@ export const HostSelectView = () => {
 			<SelectableP
 				displayText={currentOllamaHost?.ModelName || ""}
 				handleSelectt={handleSelectModel}
-				handleSetAsDefault={handleSetAsDefaultModel}
 				tooltipViewData={
 					config?.OllamaEndpoints?.find(
 						(v) => v.EndpointName === currentOllamaHost?.DisplayName,
