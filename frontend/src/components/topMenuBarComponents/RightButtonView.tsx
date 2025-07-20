@@ -1,12 +1,10 @@
 import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
-import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import RefreshOutlinedIcon from "@mui/icons-material/RefreshOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import { PlaylistRemoveOutlined, Settings } from "@mui/icons-material";
 import {
 	Button,
 	Dialog,
 	DialogActions,
-	DialogTitle,
+	DialogContent,
 	IconButton,
 	Stack,
 	Tooltip,
@@ -32,7 +30,7 @@ export const RightButtonView = () => {
 	return (
 		<>
 			<Stack direction={"row"} gap={1}>
-				<Tooltip title="チャット履歴をクリア">
+				<Tooltip title="チャット履歴を削除">
 					<IconButton
 						aria-label="refresh"
 						size="small"
@@ -41,20 +39,22 @@ export const RightButtonView = () => {
 							setOpen(true);
 						}}
 					>
-						<DeleteForeverOutlinedIcon fontSize="medium" />
+						<PlaylistRemoveOutlined fontSize="medium" />
 					</IconButton>
 				</Tooltip>
 
-				<IconButton
-					aria-label="setting"
-					size="small"
-					sx={{ cursor: "pointer", color: "white" }}
-					onClick={() => {
-						setConfigDialogIsOpen(true);
-					}}
-				>
-					<SettingsOutlinedIcon fontSize="medium" />
-				</IconButton>
+				<Tooltip title="設定">
+					<IconButton
+						aria-label="setting"
+						size="small"
+						sx={{ cursor: "pointer", color: "white" }}
+						onClick={() => {
+							setConfigDialogIsOpen(true);
+						}}
+					>
+						<Settings fontSize="medium" />
+					</IconButton>
+				</Tooltip>
 			</Stack>
 
 			<Dialog
@@ -63,17 +63,15 @@ export const RightButtonView = () => {
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
-				<DialogTitle id="alert-dialog-title">
-					{"チャット履歴をクリアしますか？"}
-				</DialogTitle>
+				<DialogContent id="alert-dialog-title">チャット履歴を削除しますか？</DialogContent>
 				<DialogActions>
-					<Button onClick={() => setOpen(false)}>キャンセル</Button>
+					<Button onClick={() => setOpen(false)}>Cancel</Button>
 					<Button
-						sx={{ bgcolor: "red", color: "white" }}
+						variant="contained"
 						onClick={handleRefreshChat}
 						autoFocus
 					>
-						クリア
+						OK
 					</Button>
 				</DialogActions>
 			</Dialog>
