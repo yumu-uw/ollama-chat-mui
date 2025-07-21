@@ -18,7 +18,7 @@ export const TooltipView = ({
 }: Props) => {
 	const tooltipRef = useRef<HTMLDivElement>(null);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional dependency omission
 	useEffect(() => {
 		if (!isOpen) return;
 

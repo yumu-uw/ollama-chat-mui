@@ -1,6 +1,3 @@
-import { ConfigContext } from "@/context/configContext";
-import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
-import { deepCopyObject } from "@/lib/util";
 import { ToggleOff, ToggleOn } from "@mui/icons-material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import SyncOutlinedIcon from "@mui/icons-material/SyncOutlined";
@@ -8,7 +5,6 @@ import {
 	Alert,
 	type AlertColor,
 	type AlertPropsColorOverrides,
-	Chip,
 	IconButton,
 	Paper,
 	Snackbar,
@@ -21,7 +17,6 @@ import {
 	TableHead,
 	TableRow,
 	Tooltip,
-	Typography,
 } from "@mui/material";
 import type { OverridableStringUnion } from "@mui/types";
 import { use, useState } from "react";
@@ -30,6 +25,9 @@ import {
 	UpdateDefaultOllamaEndPointName,
 	UpdateOllamaEndpoints,
 } from "wailsjs/go/main/App";
+import { ConfigContext } from "@/context/configContext";
+import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
+import { deepCopyObject } from "@/lib/util";
 
 export const ListOllamaHostField = () => {
 	const configContext = use(ConfigContext);
@@ -123,7 +121,7 @@ export const ListOllamaHostField = () => {
 	};
 
 	const handleClose = (
-		event: React.SyntheticEvent | Event,
+		_event: React.SyntheticEvent | Event,
 		reason?: SnackbarCloseReason,
 	) => {
 		if (reason === "clickaway") {

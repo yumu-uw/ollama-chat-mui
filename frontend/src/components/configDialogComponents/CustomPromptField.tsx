@@ -1,6 +1,3 @@
-import { ConfigContext } from "@/context/configContext";
-import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
-import { deepCopyObject } from "@/lib/util";
 import {
 	Alert,
 	type AlertColor,
@@ -14,6 +11,9 @@ import type { OverridableStringUnion } from "@mui/types";
 import { use, useEffect, useState } from "react";
 import { UpdatePrompt } from "wailsjs/go/main/App";
 import { z } from "zod";
+import { ConfigContext } from "@/context/configContext";
+import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
+import { deepCopyObject } from "@/lib/util";
 
 const PromptScheme = z.string().nonempty();
 
@@ -65,7 +65,7 @@ export const CustomPromptField = () => {
 	};
 
 	const handleClose = (
-		event: React.SyntheticEvent | Event,
+		_event: React.SyntheticEvent | Event,
 		reason?: SnackbarCloseReason,
 	) => {
 		if (reason === "clickaway") {

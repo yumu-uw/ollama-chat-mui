@@ -21,7 +21,7 @@ export const MarkdownView = memo(({ mdStr }: Props) => {
 	const [open, setOpen] = useState(false);
 
 	const handleClose = (
-		event: React.SyntheticEvent | Event,
+		_event: React.SyntheticEvent | Event,
 		reason?: SnackbarCloseReason,
 	) => {
 		if (reason === "clickaway") {
@@ -56,8 +56,7 @@ export const MarkdownView = memo(({ mdStr }: Props) => {
 							</Link>
 						),
 						code(props) {
-							// eslint-disable-next-line @typescript-eslint/no-unused-vars
-							const { node, ...rest } = props;
+							const { ...rest } = props;
 							const classAttr = rest.className;
 							const value = rest.children;
 							return <CustomCode classAttr={classAttr} value={value} />;

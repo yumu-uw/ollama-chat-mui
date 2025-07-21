@@ -95,7 +95,7 @@ function App() {
 						setOllamaResopnse((prev) => prev + j.message.content);
 					}
 				});
-			} catch (e) {
+			} catch (_e) {
 				setOllamaResopnse((prev) => `${prev}Error·parsing·response·data.`);
 				setSendDisabled(false);
 				setSnackBarMessage("Response data parsing error.");

@@ -1,11 +1,11 @@
-import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
-import { ConfigContext } from "@/context/configContext";
-import CloseIcon from "@mui/icons-material/Close";
 import { AddOutlined } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
 import { Box, DialogTitle, Stack, Tooltip, Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
+import { ConfigContext } from "@/context/configContext";
+import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
 import { AddOllamaHostDialog } from "./AddOllamaHostDialog";
 import { CustomPromptField } from "./CustomPromptField";
 import { ListOllamaHostField } from "./ListOllamaHostField";

@@ -9,11 +9,13 @@
 		"ignoreUnknown": false,
 		"includes": [
 			"**",
-			"!**/wailsjs/",
-			"!**/styled-system/",
-			"!**/dist/",
+			"!**/wailsjs/**",
+			"!**/styled-system/**",
+			"!**/dist/**",
 			"!**/tsconfig.*",
-			"!**/postcss.config.cjs"
+			"!**/postcss.config.cjs",
+			"!**/github-markdown.css",
+			"!**/github-highlight.css"
 		]
 	},
 	"formatter": {
