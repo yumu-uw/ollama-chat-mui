@@ -30,7 +30,7 @@ function App() {
 	if (!configDialogIsOpenContext) {
 		throw new Error("failed to get configDialogIsOpenContext");
 	}
-	const { setConfigDialogIsOpen } = configDialogIsOpenContext;
+	const { configDialogIsOpen, setConfigDialogIsOpen } = configDialogIsOpenContext;
 
 	const currentOllamaHostContext = use(CurrentOllamaHostContext);
 	if (!currentOllamaHostContext) {
@@ -43,6 +43,7 @@ function App() {
 	const [input, setInput] = useState("");
 	const [prevInput, setPrevInput] = useState("");
 	const [sendDisabled, setSendDisabled] = useState(false);
+	const [waitingResponse, setWaitingResponse] = useState(false);
 	const [ollamaResopnse, setOllamaResopnse] = useState("");
 	const [chatHistory, setChatHistory] = useState<Chat[]>([]);
 
@@ -85,12 +86,19 @@ function App() {
 
 		// 受信したメッセージを表示するイベントを登録
 		EventsOn("receiveChat", (data: string) => {
+			setWaitingResponse(false);
+			try {
 			data.split(/\r?\n/).map((v) => {
 				if (v !== "") {
 					const j = JSON.parse(v) as ResponseData;
 					setOllamaResopnse((prev) => prev + j.message.content);
 				}
 			});
+			} catch (e) {
+				setOllamaResopnse((prev) => prev + "Error parsing response data.");
+				setSendDisabled(false);
+				setSnackBarMessage("Response data parsing error.");
+			}
 		});
 
 		return () => {
@@ -110,11 +118,38 @@ function App() {
 		}
 	}, [ollamaResopnse]);
 
+	// チャットの初期状態でWelcomeメッセージをアニメーション表示する。
+	useEffect(() => {
+		if (currentOllamaHost?.DisplayName === "") return;
+		if (configDialogIsOpen) return;
+		if (chatHistory.length === 0) {
+			setOllamaResopnse("");
+			setSendDisabled(true);
+			const welcomeMessage = "ようこそ！何かお手伝いできることはありますか？";
+			for (let i = 0; i < welcomeMessage.length; i++) {
+				setTimeout(() => {
+					setOllamaResopnse((prev) => prev + welcomeMessage[i]);
+					if (i === welcomeMessage.length - 1) {
+						setOllamaResopnse("");
+						setChatHistory([
+							{
+								role: "assistant",
+								content: welcomeMessage,
+							}
+						]);
+						setSendDisabled(false);
+					}
+				}, 500 + i * 10);
+			}
+		}
+	}, [chatHistory, currentOllamaHost.DisplayName, configDialogIsOpen]);
+
 	function callOllamaApi() {
 		if (input === "") {
 			return;
 		}
 		setSendDisabled(true);
+		setWaitingResponse(true);
 		const msg = input;
 		setPrevInput(msg);
 		setInput("");
@@ -169,7 +204,6 @@ function App() {
 		<>
 			<Stack
 				direction={"column"}
-				gap={4}
 				sx={{
 					height: "100%",
 					width: "100%",
@@ -179,13 +213,14 @@ function App() {
 				<Box
 					ref={chatRef}
 					sx={{
+						padding: "0 0.5em 1em 0.5em",
 						height: "100%",
 						marginEnd: "auto",
 						overflow: "auto",
 					}}
 				>
 					<ChatView chatHistory={chatHistory} />
-					{prevInput && <UserMessageView message={prevInput} />}
+					{prevInput && <UserMessageView message={prevInput} loading={waitingResponse} />}
 					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
 				</Box>
 				<MessageInputArea

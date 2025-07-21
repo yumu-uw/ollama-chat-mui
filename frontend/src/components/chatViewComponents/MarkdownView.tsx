@@ -33,7 +33,7 @@ export const MarkdownView = memo(({ mdStr }: Props) => {
 
 	return (
 		<>
-			<Paper elevation={4} sx={{ width: "90%", mx: "0.5em", mb: "3em" }}>
+			<Paper elevation={1} sx={{ width: "98%", mx: "0.5em", mb: "1em" }}>
 				<Markdown
 					className="markdown-body"
 					rehypePlugins={[rehypeRaw, rehypeSanitize]}

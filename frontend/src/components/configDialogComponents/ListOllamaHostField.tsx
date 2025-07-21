@@ -1,11 +1,14 @@
 import { ConfigContext } from "@/context/configContext";
+import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
 import { deepCopyObject } from "@/lib/util";
+import { ToggleOff, ToggleOn } from "@mui/icons-material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import SyncOutlinedIcon from "@mui/icons-material/SyncOutlined";
 import {
 	Alert,
 	type AlertColor,
 	type AlertPropsColorOverrides,
+	Chip,
 	IconButton,
 	Paper,
 	Snackbar,
@@ -22,7 +25,7 @@ import {
 } from "@mui/material";
 import type { OverridableStringUnion } from "@mui/types";
 import { use, useState } from "react";
-import { GetOllamaModels, UpdateOllamaEndpoints } from "wailsjs/go/main/App";
+import { GetOllamaModels, UpdateDefaultOllamaEndPointName, UpdateOllamaEndpoints } from "wailsjs/go/main/App";
 
 export const ListOllamaHostField = () => {
 	const configContext = use(ConfigContext);
@@ -30,6 +33,12 @@ export const ListOllamaHostField = () => {
 		throw new Error("failed to get currentOllamaHostContext");
 	}
 	const { config, setConfig } = configContext;
+
+	const currentOllamaHostContext = use(CurrentOllamaHostContext);
+	if (!currentOllamaHostContext) {
+		throw new Error("failed to get currentOllamaHostContext");
+	}
+	const { setCurrentOllamaHost } = currentOllamaHostContext;
 
 	const [open, setOpen] = useState(false);
 	const [severity, setSeverity] = useState<
@@ -63,6 +72,23 @@ export const ListOllamaHostField = () => {
 			setSnackbarMsg("LLM models updated.");
 			setSeverity("success");
 			setOpen(true);
+		});
+	};
+
+	const handleSetDefaultHost = (index: number) => {
+		const newConfig = deepCopyObject(config);
+		if (!newConfig) return;
+		newConfig.DefaultOllamaEndPointName = newConfig.OllamaEndpoints[index].EndpointName
+		setConfig(newConfig);
+		setCurrentOllamaHost({
+			DisplayName: newConfig.OllamaEndpoints[index].EndpointName,
+			Endpoint: newConfig.OllamaEndpoints[index].EndpointUrl,
+			ModelName: newConfig.OllamaEndpoints[index].DefaultLLMModel || "",
+		});
+		UpdateDefaultOllamaEndPointName(newConfig.DefaultOllamaEndPointName).then((result) => {
+			if (result !== "") {
+				alert(result);
+			}
 		});
 	};
 
@@ -106,15 +132,8 @@ export const ListOllamaHostField = () => {
 				p: "1em",
 				width: "90%",
 				alignItems: "flex-start",
-				border: "1px solid",
-				borderColor: "black",
-				borderRadius: "1em",
 			}}
 		>
-			<Typography variant="h5" gutterBottom>
-				List Ollama Host
-			</Typography>
-
 			<TableContainer component={Paper} sx={{ maxHeight: "600px" }}>
 				<Table stickyHeader aria-label="ollama host table">
 					<TableHead>
@@ -123,28 +142,43 @@ export const ListOllamaHostField = () => {
 								bgcolor: "gray",
 							}}
 						>
-							<TableCell>DisplayName</TableCell>
-							<TableCell>OllamaHostURL</TableCell>
 							<TableCell />
+							<TableCell>Name</TableCell>
+							<TableCell>URL</TableCell>
 							<TableCell />
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{config?.OllamaEndpoints.map((v, i) => (
 							<TableRow key={`hostlist-${v.EndpointName}`}>
+								<TableCell>
+									<Tooltip title="デフォルトホストに設定">
+										<IconButton 
+											disabled={config.DefaultOllamaEndPointName === v.EndpointName}
+											onClick={() => handleSetDefaultHost(i)}
+										>
+										{config.DefaultOllamaEndPointName === v.EndpointName ? (
+											<ToggleOn color="success" />
+										) : (
+											<ToggleOff />
+										)}
+										</IconButton>
+									</Tooltip>
+								</TableCell>
 								<TableCell>{v.EndpointName}</TableCell>
 								<TableCell>{v.EndpointUrl}</TableCell>
-								<TableCell align="center">
+								<TableCell align="right">
 									<Tooltip title="モデル情報を更新">
 										<IconButton onClick={() => handleUpdateModels(i)}>
 											<SyncOutlinedIcon />
 										</IconButton>
 									</Tooltip>
-								</TableCell>
-								<TableCell align="center">
 									<Tooltip title="ホストを削除">
-										<IconButton onClick={() => handleDeleteOllamaHost(i)}>
-											<DeleteForeverIcon color={"error"} />
+										<IconButton
+											disabled={config.DefaultOllamaEndPointName === v.EndpointName}
+											onClick={() => handleDeleteOllamaHost(i)}
+										>
+											<DeleteForeverIcon color={config.DefaultOllamaEndPointName === v.EndpointName ? "disabled" : "error"} />
 										</IconButton>
 									</Tooltip>
 								</TableCell>

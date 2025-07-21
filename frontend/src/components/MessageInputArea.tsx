@@ -1,6 +1,11 @@
-import SendOutlinedIcon from "@mui/icons-material/SendOutlined";
-import { Box, Divider, IconButton, Stack, TextField } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+	Box,
+	IconButton,
+	Stack,
+	TextField,
+} from "@mui/material";
+import { Send } from "@mui/icons-material";
 
 type Props = {
 	input: string;
@@ -36,64 +41,56 @@ export const MessageInputArea = ({
 
 	return (
 		<Stack
-			sx={{
-				px: "1em",
-				borderRadius: "1em",
-				bgcolor: "lightgray",
-				color: "black",
-				boxShadow: 3,
-			}}
+			direction="row"
+			justifyContent="center"
 		>
-			<TextField
-				value={input}
-				variant={"standard"}
-				placeholder="送信するメッセージ(Enterで送信、Shift+Enterで改行)"
-				multiline
-				maxRows={6}
+			<Stack
 				sx={{
-					w: "100%",
-					resize: "none",
-					py: "0.5em",
-					"& .MuiInput-underline:before, & .MuiInput-underline:after": {
-						borderBottom: "none",
-					},
-					"& .MuiInput-underline:hover:not(.Mui-disabled):before": {
-						borderBottom: "none",
-					},
+					borderRadius: "0.5em",
+					bgcolor: "grey.100",
+					color: "black",
+					boxShadow: 3,
+					width: "100%",
+					maxWidth: "md"
 				}}
-				onKeyDown={(e) => {
-					if (e.key === "Enter") {
-						if (isComposingRef.current) {
-							isComposingRef.current = false;
-							return;
+			>
+				<TextField
+					size="small"
+					value={input}
+					variant="filled"
+					placeholder="送信するメッセージ(Enterで送信、Shift+Enterで改行)"
+					multiline
+					maxRows={6}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+							if (e.shiftKey) {
+								return;
+							}
+							e.preventDefault();
+							if (!sendDisabled) {
+								handleCallOllamaApi();
+							}
 						}
-						if (e.shiftKey || isComposingRef.current) {
-							return;
-						}
-						e.preventDefault();
-						if (!sendDisabled) {
-							handleCallOllamaApi();
-						}
-					}
-				}}
-				onCompositionStart={() => {
-					isComposingRef.current = true;
-				}}
-				onChange={(e) => {
-					setInput(e.target.value);
-				}}
-			/>
-			<Divider sx={{ borderBottomWidth: 1, borderBottomColor: "black" }} />
-			<Stack direction={"row"} sx={{ w: "100%", justifyContent: "flex-end" }}>
-				<Box sx={{ flexGrow: 1 }} />
-				<IconButton
-					aria-label="send-message"
-					sx={{ cursor: "pointer" }}
-					onClick={handleCallOllamaApi}
-					disabled={sendDisabled}
-				>
-					<SendOutlinedIcon fontSize="large" />
-				</IconButton>
+					}}
+					onCompositionStart={() => {
+						isComposingRef.current = true;
+					}}
+					onChange={(e) => {
+						setInput(e.target.value);
+					}}
+				/>
+				<Stack direction={"row"} sx={{ w: "100%", justifyContent: "flex-end" }}>
+					<Box sx={{ flexGrow: 1 }} />
+					<IconButton
+						aria-label="send-message"
+						sx={{ cursor: "pointer", m: "0.2em" }}
+						onClick={handleCallOllamaApi}
+						disabled={sendDisabled}
+						size="small"
+					>
+						<Send />
+					</IconButton>
+				</Stack>
 			</Stack>
 		</Stack>
 	);

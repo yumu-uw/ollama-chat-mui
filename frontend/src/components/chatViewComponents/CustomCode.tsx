@@ -1,6 +1,5 @@
-import CheckOutlinedIcon from "@mui/icons-material/CheckOutlined";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-import { Box, Card, IconButton, Stack } from "@mui/material";
+import { Alert, Box, Card, IconButton, Snackbar, SnackbarCloseReason, Stack } from "@mui/material";
 import { useState } from "react";
 import { supportLangs } from "@/lib/custom-highlight";
 
@@ -24,16 +23,25 @@ export const CustomCode = ({ classAttr, value }: Props) => {
 	const handleCopyButton = async () => {
 		setHasCopied(true);
 		await navigator.clipboard.writeText(value?.toString() as string);
-		setTimeout(() => {
-			setHasCopied(false);
-		}, 1500);
 	};
+
+	const handleClose = (
+		event: React.SyntheticEvent | Event,
+		reason?: SnackbarCloseReason,
+	) => {
+		if (reason === "clickaway") {
+			return;
+		}
+
+		setHasCopied(false);
+	};
+
 	return (
 		<Stack>
 			<Stack
 				direction={"row"}
 				sx={{
-					p: "0.5em",
+					pl: "0.5em",
 					justifyContent: "space-between",
 					fontWeight: "bold",
 					bgcolor: "lightgray",
@@ -42,37 +50,29 @@ export const CustomCode = ({ classAttr, value }: Props) => {
 				}}
 			>
 				{classAttr?.split("-")[1]}
-				{!hasCopied && (
-					<Box>
-						<IconButton
-							aria-label="copy-code"
-							size="small"
-							sx={{
-								cursor: "pointer",
-								color: "black",
-							}}
-							onClick={handleCopyButton}
-						>
-							<ContentCopyOutlinedIcon />
-							コピーする
-						</IconButton>
-					</Box>
-				)}
-				{hasCopied && (
-					<Box>
-						<IconButton
-							aria-label="copied-code"
-							size="small"
-							sx={{
-								cursor: "pointer",
-								color: "black",
-							}}
-						>
-							<CheckOutlinedIcon />
-							コピーしました！
-						</IconButton>
-					</Box>
-				)}
+				<Box>
+					<IconButton
+						aria-label="copy-code"
+						size="small"
+						sx={{
+							cursor: "pointer",
+						}}
+						onClick={handleCopyButton}
+					>
+						<ContentCopyOutlinedIcon />
+					</IconButton>
+				</Box>
+
+				<Snackbar
+					anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+					open={hasCopied}
+					autoHideDuration={1500}
+					onClose={handleClose}
+				>
+					<Alert severity="success" sx={{ width: "100%" }}>
+						コピーしました
+					</Alert>
+				</Snackbar>
 			</Stack>
 			<Card variant="outlined">
 				<code className={lang}>{value}</code>

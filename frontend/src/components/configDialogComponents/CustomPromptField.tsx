@@ -5,13 +5,10 @@ import {
 	Alert,
 	type AlertColor,
 	type AlertPropsColorOverrides,
-	Box,
-	Button,
 	Snackbar,
 	type SnackbarCloseReason,
 	Stack,
 	TextField,
-	Typography,
 } from "@mui/material";
 import type { OverridableStringUnion } from "@mui/types";
 import { use, useEffect, useState } from "react";
@@ -91,49 +88,26 @@ export const CustomPromptField = () => {
 					p: "1em",
 					width: "90%",
 					alignItems: "flex-start",
-					border: "1px solid",
-					borderColor: "black",
-					borderRadius: "1em",
 				}}
 			>
-				<Typography variant="h5" gutterBottom>
-					Setting Prompt
-				</Typography>
-				<Stack gap={2} sx={{ width: "100%", alignItems: "center" }}>
-					<Stack sx={{ width: "100%", alignItems: "flex-start" }}>
-						<TextField
-							variant="outlined"
-							label="Prompt*"
-							placeholder="e.g. Ollama localhost"
-							multiline
-							maxRows={4}
-							error={promptErrorMessage !== ""}
-							helperText={promptErrorMessage}
-							slotProps={{ inputLabel: { shrink: true } }}
-							sx={{
-								p: "0.3em",
-								width: "100%",
-								borderColor: "1px solid black",
-								borderRadius: "1em",
-							}}
-							value={prompt}
-							onChange={(e) => setPrompt(e.target.value)}
-						/>
-					</Stack>
-
-					<Box sx={{ width: "100%", textAlign: "center" }}>
-						<Button
-							variant="contained"
-							sx={{
-								cursor: "pointer",
-								p: "1em",
-							}}
-							onClick={handleSubmit}
-						>
-							Update
-						</Button>
-					</Box>
-				</Stack>
+				<TextField
+					variant="outlined"
+					label="System message*"
+					multiline
+					maxRows={4}
+					error={promptErrorMessage !== ""}
+					helperText={promptErrorMessage}
+					slotProps={{ inputLabel: { shrink: true } }}
+					sx={{
+						p: "0.3em",
+						width: "100%",
+						borderColor: "1px solid black",
+						borderRadius: "1em",
+					}}
+					value={prompt}
+					onChange={(e) => setPrompt(e.target.value)}
+					onBlur={handleSubmit}
+				/>
 			</Stack>
 			<Snackbar
 				anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

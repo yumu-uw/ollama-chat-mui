@@ -12,4 +12,5 @@ pre code:not(.hljs) {
 
 .markdown-body {
 	font-weight: 400 !important;
+	font-size: 0.9em !important;
 }
