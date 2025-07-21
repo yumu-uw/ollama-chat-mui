@@ -1,14 +1,5 @@
 import { use, useEffect, useRef, useState } from "react";
 import "@/css/github-markdown.css";
-import { MessageInputArea } from "@/components/MessageInputArea";
-import { ChatView } from "@/components/chatViewComponents/ChatView";
-import { MarkdownView } from "@/components/chatViewComponents/MarkdownView";
-import { UserMessageView } from "@/components/chatViewComponents/UserMessageView";
-import { ConfigContext } from "@/context/configContext";
-import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
-import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
-import type { ConfigModel } from "@/model/configModel";
-import type { Chat, ResponseData } from "@/model/dataModels";
 import {
 	Alert,
 	Box,
@@ -18,6 +9,15 @@ import {
 } from "@mui/material";
 import { GetConfig, SendChat } from "wailsjs/go/main/App";
 import { EventsOff, EventsOn } from "wailsjs/runtime/runtime";
+import { ChatView } from "@/components/chatViewComponents/ChatView";
+import { MarkdownView } from "@/components/chatViewComponents/MarkdownView";
+import { UserMessageView } from "@/components/chatViewComponents/UserMessageView";
+import { MessageInputArea } from "@/components/MessageInputArea";
+import { ConfigContext } from "@/context/configContext";
+import { ConfigDialogIsOpenContext } from "@/context/configDIalogIsOpenContext";
+import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
+import type { ConfigModel } from "@/model/configModel";
+import type { Chat, ResponseData } from "@/model/dataModels";
 
 function App() {
 	const configContext = use(ConfigContext);
@@ -30,7 +30,8 @@ function App() {
 	if (!configDialogIsOpenContext) {
 		throw new Error("failed to get configDialogIsOpenContext");
 	}
-	const { configDialogIsOpen, setConfigDialogIsOpen } = configDialogIsOpenContext;
+	const { configDialogIsOpen, setConfigDialogIsOpen } =
+		configDialogIsOpenContext;
 
 	const currentOllamaHostContext = use(CurrentOllamaHostContext);
 	if (!currentOllamaHostContext) {
@@ -50,7 +51,7 @@ function App() {
 	const chatRef = useRef<HTMLDivElement>(null);
 
 	// 初期設定
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional non-exhaustive deps
 	useEffect(() => {
 		GetConfig().then((data) => {
 			const newConfig: ConfigModel = {
@@ -88,14 +89,14 @@ function App() {
 		EventsOn("receiveChat", (data: string) => {
 			setWaitingResponse(false);
 			try {
-			data.split(/\r?\n/).map((v) => {
-				if (v !== "") {
-					const j = JSON.parse(v) as ResponseData;
-					setOllamaResopnse((prev) => prev + j.message.content);
-				}
-			});
+				data.split(/\r?\n/).map((v) => {
+					if (v !== "") {
+						const j = JSON.parse(v) as ResponseData;
+						setOllamaResopnse((prev) => prev + j.message.content);
+					}
+				});
 			} catch (e) {
-				setOllamaResopnse((prev) => prev + "Error parsing response data.");
+				setOllamaResopnse((prev) => `${prev}Error·parsing·response·data.`);
 				setSendDisabled(false);
 				setSnackBarMessage("Response data parsing error.");
 			}
@@ -111,7 +112,7 @@ function App() {
 	}, []);
 
 	// チャットエリアを自動でスクロール
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	// biome-ignore lint/correctness/useExhaustiveDependencies: intentional non-exhaustive deps
 	useEffect(() => {
 		if (chatRef.current) {
 			chatRef.current.scrollTop = chatRef.current.scrollHeight;
@@ -127,19 +128,22 @@ function App() {
 			setSendDisabled(true);
 			const welcomeMessage = "ようこそ！何かお手伝いできることはありますか？";
 			for (let i = 0; i < welcomeMessage.length; i++) {
-				setTimeout(() => {
-					setOllamaResopnse((prev) => prev + welcomeMessage[i]);
-					if (i === welcomeMessage.length - 1) {
-						setOllamaResopnse("");
-						setChatHistory([
-							{
-								role: "assistant",
-								content: welcomeMessage,
-							}
-						]);
-						setSendDisabled(false);
-					}
-				}, 500 + i * 10);
+				setTimeout(
+					() => {
+						setOllamaResopnse((prev) => prev + welcomeMessage[i]);
+						if (i === welcomeMessage.length - 1) {
+							setOllamaResopnse("");
+							setChatHistory([
+								{
+									role: "assistant",
+									content: welcomeMessage,
+								},
+							]);
+							setSendDisabled(false);
+						}
+					},
+					500 + i * 10,
+				);
 			}
 		}
 	}, [chatHistory, currentOllamaHost.DisplayName, configDialogIsOpen]);
@@ -190,7 +194,7 @@ function App() {
 	}
 
 	const handleClose = (
-		event: React.SyntheticEvent | Event,
+		_event: React.SyntheticEvent | Event,
 		reason?: SnackbarCloseReason,
 	) => {
 		if (reason === "clickaway") {
@@ -220,7 +224,9 @@ function App() {
 					}}
 				>
 					<ChatView chatHistory={chatHistory} />
-					{prevInput && <UserMessageView message={prevInput} loading={waitingResponse} />}
+					{prevInput && (
+						<UserMessageView message={prevInput} loading={waitingResponse} />
+					)}
 					{ollamaResopnse !== "" && <MarkdownView mdStr={ollamaResopnse} />}
 				</Box>
 				<MessageInputArea

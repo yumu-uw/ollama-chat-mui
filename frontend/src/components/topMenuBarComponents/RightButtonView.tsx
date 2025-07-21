@@ -63,14 +63,12 @@ export const RightButtonView = () => {
 				aria-labelledby="alert-dialog-title"
 				aria-describedby="alert-dialog-description"
 			>
-				<DialogContent id="alert-dialog-title">チャット履歴を削除しますか？</DialogContent>
+				<DialogContent id="alert-dialog-title">
+					チャット履歴を削除しますか？
+				</DialogContent>
 				<DialogActions>
 					<Button onClick={() => setOpen(false)}>Cancel</Button>
-					<Button
-						variant="contained"
-						onClick={handleRefreshChat}
-						autoFocus
-					>
+					<Button variant="contained" onClick={handleRefreshChat} autoFocus>
 						OK
 					</Button>
 				</DialogActions>

@@ -1,7 +1,20 @@
 import { ConfigContext } from "@/context/configContext";
 import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
 import { deepCopyObject } from "@/lib/util";
-import { Alert, Backdrop, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle, Snackbar, Stack, TextField, Typography } from "@mui/material";
+import {
+	Alert,
+	Backdrop,
+	Button,
+	CircularProgress,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	Snackbar,
+	Stack,
+	TextField,
+	Typography,
+} from "@mui/material";
 import { use, useState } from "react";
 import {
 	GetOllamaModels,
@@ -22,13 +35,16 @@ type AddOllamaHostDialogProps = {
 	onClose?: () => void;
 };
 
-export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) => {
+export const AddOllamaHostDialog = ({
+	open,
+	onClose,
+}: AddOllamaHostDialogProps) => {
 	const configContext = use(ConfigContext);
 	if (!configContext) {
 		throw new Error("failed to get currentOllamaHostContext");
 	}
 	const { config, setConfig } = configContext;
-	
+
 	const isInitialSetup = config?.OllamaEndpoints.length === 0;
 
 	const currentOllamaHostContext = use(CurrentOllamaHostContext);
@@ -49,7 +65,7 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 		setOllamaHost(DefaultHost);
 		setDisplayNameEerrorMessage("");
 		setHostErrorMessage("");
-	}
+	};
 
 	const handleSubmit = async () => {
 		if (submitting) return;
@@ -64,7 +80,7 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 				newDisplayNameErrorMessage = "";
 				setDisplayNameEerrorMessage("");
 			}
-	
+
 			if (ollamaHost === "") {
 				newHostErrorMessage = "Ollama Host is required";
 				setHostErrorMessage(newHostErrorMessage);
@@ -75,30 +91,30 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 				newHostErrorMessage = "";
 				setHostErrorMessage("");
 			}
-	
+
 			if (newDisplayNameErrorMessage !== "" || newHostErrorMessage !== "") {
 				return;
 			}
 			setDisplayNameEerrorMessage("");
 			setHostErrorMessage("");
-	
+
 			for (const endpoint of config?.OllamaEndpoints ?? []) {
 				if (endpoint.EndpointName === displayName) {
 					setDisplayNameEerrorMessage("Display Name is already registered");
 					return;
 				}
 			}
-	
+
 			const data = await GetOllamaModels(ollamaHost);
 			if (data.startsWith("error:")) {
 				throw new Error(data);
 			}
-	
+
 			const models: string[] = [];
 			data.split(",").map((v) => {
 				models.push(v);
 			});
-	
+
 			let defaultLLMModel = "";
 			if (models.length > 0) {
 				if (models.includes("phi4:latest")) {
@@ -107,21 +123,20 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 					defaultLLMModel = models[0];
 				}
 			}
-	
+
 			const newOllamaEndpoint: model.OllamaEndpoint = {
 				EndpointName: displayName,
 				EndpointUrl: ollamaHost.replace(/\/$/, ""),
 				LLMModels: models,
 				DefaultLLMModel: defaultLLMModel,
 			};
-	
+
 			if (isInitialSetup) {
 				handleInitSetting(newOllamaEndpoint);
 			} else {
 				handleAddOllamaHost(newOllamaEndpoint);
 			}
 			handleOnClose();
-
 		} catch (error) {
 			console.error("Error adding Ollama host:", error);
 			setSnackbarMsg(`Error: ${error}`);
@@ -177,7 +192,7 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 			fullWidth
 		>
 			<Backdrop
-				sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+				sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
 				open={submitting}
 			>
 				<CircularProgress color="inherit" />
@@ -187,14 +202,21 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 				autoHideDuration={5000}
 				onClose={() => setSnackbarMsg("")}
 			>
-				<Alert severity="error" sx={{ width: "100%" }}>{snackbarMsg}</Alert>
+				<Alert severity="error" sx={{ width: "100%" }}>
+					{snackbarMsg}
+				</Alert>
 			</Snackbar>
-			<DialogTitle>{isInitialSetup ? "Ollama Chatへようこそ🚀" : "ホストの追加"}</DialogTitle>
+			<DialogTitle>
+				{isInitialSetup ? "Ollama Chatへようこそ🚀" : "ホストの追加"}
+			</DialogTitle>
 			<DialogContent>
-				{isInitialSetup && <Typography variant="body2" color="default" sx={{ ml: 1, mb: 2 }}>
-					初めにOllamaのホストを追加する必要があります。<br />
-					他のホストを追加する場合は、以下のフォームに入力してください。
-				</Typography>}
+				{isInitialSetup && (
+					<Typography variant="body2" color="default" sx={{ ml: 1, mb: 2 }}>
+						初めにOllamaのホストを追加する必要があります。
+						<br />
+						他のホストを追加する場合は、以下のフォームに入力してください。
+					</Typography>
+				)}
 				<Stack mt={1} gap={2} sx={{ width: "100%", alignItems: "center" }}>
 					<TextField
 						variant="outlined"
@@ -211,7 +233,7 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 						}}
 						value={displayName}
 						onChange={(e) => {
-							setDisplayName(e.target.value)
+							setDisplayName(e.target.value);
 							if (displayNameEerrorMessage !== "") {
 								setDisplayNameEerrorMessage("");
 							}
@@ -237,7 +259,7 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 						}}
 						value={ollamaHost}
 						onChange={(e) => {
-							setOllamaHost(e.target.value)
+							setOllamaHost(e.target.value);
 							if (hostErrorMessage !== "") {
 								setHostErrorMessage("");
 							}
@@ -252,15 +274,23 @@ export const AddOllamaHostDialog = ({open, onClose}: AddOllamaHostDialogProps) =
 			</DialogContent>
 			<DialogActions>
 				{isInitialSetup ? (
-					<Button onClick={handleSubmit} variant="contained" autoFocus disabled={submitting}>
+					<Button
+						onClick={handleSubmit}
+						variant="contained"
+						autoFocus
+						disabled={submitting}
+					>
 						Connect
 					</Button>
 				) : (
 					<>
-						<Button onClick={handleOnClose}>
-							Cancel
-						</Button>
-						<Button onClick={handleSubmit} variant="contained" autoFocus  disabled={submitting}>
+						<Button onClick={handleOnClose}>Cancel</Button>
+						<Button
+							onClick={handleSubmit}
+							variant="contained"
+							autoFocus
+							disabled={submitting}
+						>
 							Add
 						</Button>
 					</>

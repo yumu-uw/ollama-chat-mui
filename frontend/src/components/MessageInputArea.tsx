@@ -1,11 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-	Box,
-	IconButton,
-	Stack,
-	TextField,
-} from "@mui/material";
 import { Send } from "@mui/icons-material";
+import { Box, IconButton, Stack, TextField } from "@mui/material";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
 	input: string;
@@ -40,10 +35,7 @@ export const MessageInputArea = ({
 	}, [callOllamaApi]);
 
 	return (
-		<Stack
-			direction="row"
-			justifyContent="center"
-		>
+		<Stack direction="row" justifyContent="center">
 			<Stack
 				sx={{
 					borderRadius: "0.5em",
@@ -51,7 +43,7 @@ export const MessageInputArea = ({
 					color: "black",
 					boxShadow: 3,
 					width: "100%",
-					maxWidth: "md"
+					maxWidth: "md",
 				}}
 			>
 				<TextField
@@ -63,7 +55,11 @@ export const MessageInputArea = ({
 					maxRows={6}
 					onKeyDown={(e) => {
 						if (e.key === "Enter") {
-							if (e.shiftKey) {
+							if (isComposingRef.current) {
+								isComposingRef.current = false;
+								return;
+							}
+							if (e.shiftKey || isComposingRef.current) {
 								return;
 							}
 							e.preventDefault();

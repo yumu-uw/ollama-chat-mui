@@ -1,5 +1,13 @@
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-import { Alert, Box, Card, IconButton, Snackbar, SnackbarCloseReason, Stack } from "@mui/material";
+import {
+	Alert,
+	Box,
+	Card,
+	IconButton,
+	Snackbar,
+	type SnackbarCloseReason,
+	Stack,
+} from "@mui/material";
 import { useState } from "react";
 import { supportLangs } from "@/lib/custom-highlight";
 
@@ -26,7 +34,7 @@ export const CustomCode = ({ classAttr, value }: Props) => {
 	};
 
 	const handleClose = (
-		event: React.SyntheticEvent | Event,
+		_event: React.SyntheticEvent | Event,
 		reason?: SnackbarCloseReason,
 	) => {
 		if (reason === "clickaway") {

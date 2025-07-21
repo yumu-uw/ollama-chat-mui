@@ -38,40 +38,45 @@ type Props = {
 	loading?: boolean;
 };
 
-export const UserMessageView = memo(({ message, imgBase64, loading }: Props) => {
-	const CustomBox = loading ? RainbowBox : Paper;
+export const UserMessageView = memo(
+	({ message, imgBase64, loading }: Props) => {
+		const CustomBox = loading ? RainbowBox : Paper;
 
-	return (
-		<Stack
-			direction={"row"}
-			sx={{ mx: "0.5em", mb: "1em", justifyContent: "flex-end" }}
-		>
-			<Box flex={1} />
-			<Stack direction={"column"} gap={2}>
-				{imgBase64 && (
-					<img
-						src={`data:image/png;base64,${imgBase64}`}
-						width={"400px"}
-						alt="User uploaded"
-					/>
-				)}
-				<CustomBox elevation={0} sx={{ padding: "0.5em", bgcolor: "grey.300" }}>
-					{message.split(/\r?\n/).map((v, index) => {
-						return (
-							<Typography
-								key={`preinput-${
-									// biome-ignore lint/suspicious/noArrayIndexKey: using index as key is acceptable here
-									index
-								}`}
-								variant="body1"
-								sx={{ fontWeight: 400, fontSize: "0.9em" }}
-							>
-								{v}
-							</Typography>
-						);
-					})}
-				</CustomBox>
+		return (
+			<Stack
+				direction={"row"}
+				sx={{ mx: "0.5em", mb: "1em", justifyContent: "flex-end" }}
+			>
+				<Box flex={1} />
+				<Stack direction={"column"} gap={2}>
+					{imgBase64 && (
+						<img
+							src={`data:image/png;base64,${imgBase64}`}
+							width={"400px"}
+							alt="User uploaded"
+						/>
+					)}
+					<CustomBox
+						elevation={0}
+						sx={{ padding: "0.5em", bgcolor: "grey.300" }}
+					>
+						{message.split(/\r?\n/).map((v, index) => {
+							return (
+								<Typography
+									key={`preinput-${
+										// biome-ignore lint/suspicious/noArrayIndexKey: using index as key is acceptable here
+										index
+									}`}
+									variant="body1"
+									sx={{ fontWeight: 400, fontSize: "0.9em" }}
+								>
+									{v}
+								</Typography>
+							);
+						})}
+					</CustomBox>
+				</Stack>
 			</Stack>
-		</Stack>
-	);
-});
+		);
+	},
+);

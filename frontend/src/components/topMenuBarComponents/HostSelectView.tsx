@@ -1,12 +1,7 @@
 import { ConfigContext } from "@/context/configContext";
 import { CurrentOllamaHostContext } from "@/context/currentOllamaHostContext";
 import { deepCopyObject } from "@/lib/util";
-import {
-	MenuItem,
-	Select,
-	type SelectChangeEvent,
-	Stack,
-} from "@mui/material";
+import { MenuItem, Select, type SelectChangeEvent, Stack } from "@mui/material";
 import { use } from "react";
 import {
 	UpdateDefaultOllamaEndPointName,
@@ -97,11 +92,13 @@ export const HostSelectView = () => {
 		if (!newConfig) return;
 		newConfig.DefaultOllamaEndPointName = host;
 		setConfig(newConfig);
-		UpdateDefaultOllamaEndPointName(newConfig.DefaultOllamaEndPointName).then((result) => {
-			if (result !== "") {
-				alert(result);
-			}
-		});
+		UpdateDefaultOllamaEndPointName(newConfig.DefaultOllamaEndPointName).then(
+			(result) => {
+				if (result !== "") {
+					alert(result);
+				}
+			},
+		);
 	};
 
 	const setDefaultModel = (host: string, model: string) => {

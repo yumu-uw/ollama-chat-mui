@@ -7,7 +7,7 @@ pre code:not(.hljs) {
 	display: block !important;
 	overflow-x: auto !important;
 	padding: 1em !important;
-	background-color: #F3F6F9 !important;
+	background-color: #f3f6f9 !important;
 }
 
 .markdown-body {

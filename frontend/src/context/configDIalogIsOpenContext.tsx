@@ -1,5 +1,5 @@
 import type React from "react";
-import { type ReactNode, createContext, useState } from "react";
+import { createContext, type ReactNode, useState } from "react";
 
 // Define the type for the context value
 interface ConfigDialogIsOpenContextType {

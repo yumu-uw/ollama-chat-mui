@@ -32,7 +32,8 @@ export const ConfigDialogView = ({ ...rest }: Props) => {
 		setOpenAddHostDialog(false);
 	};
 
-	const { configDialogIsOpen, setConfigDialogIsOpen } = configDialogIsOpenContext;
+	const { configDialogIsOpen, setConfigDialogIsOpen } =
+		configDialogIsOpenContext;
 
 	// 初期設定でホストがない場合はダイアログを開く
 	// タイミングでconfig?.OllamaEndpointsが存在するにもかかわらず0が取得されることがあるため
@@ -46,7 +47,7 @@ export const ConfigDialogView = ({ ...rest }: Props) => {
 		return () => {
 			clearTimeout(handler);
 		};
-	}
+	};
 	debouncedInitialOpenHostDialog();
 
 	const handleClose = () => {
@@ -89,9 +90,7 @@ export const ConfigDialogView = ({ ...rest }: Props) => {
 					justifyContent: rest.justifyContent,
 				}}
 			>
-				<Box
-					sx={{width: "100%"}}
-				>
+				<Box sx={{ width: "100%" }}>
 					<Stack direction="row" justifyContent="flex-start" gap={0.5}>
 						<Typography variant="h6" gutterBottom>
 							* Hosts
@@ -104,21 +103,22 @@ export const ConfigDialogView = ({ ...rest }: Props) => {
 									setOpenAddHostDialog(true);
 								}}
 							>
-								<AddOutlined />	
+								<AddOutlined />
 							</IconButton>
 						</Tooltip>
 					</Stack>
 					<ListOllamaHostField />
 				</Box>
-				<Box
-					sx={{width: "100%"}}
-				>
+				<Box sx={{ width: "100%" }}>
 					<Typography variant="h6" gutterBottom>
 						* Prompts
 					</Typography>
 					<CustomPromptField />
 				</Box>
-				<AddOllamaHostDialog open={openAddHostDialog} onClose={handleAddHostDialogClose} />
+				<AddOllamaHostDialog
+					open={openAddHostDialog}
+					onClose={handleAddHostDialogClose}
+				/>
 			</Stack>
 		</Dialog>
 	);

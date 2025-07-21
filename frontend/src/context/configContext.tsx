@@ -1,6 +1,6 @@
-import type { ConfigModel } from "@/model/configModel";
 import type React from "react";
-import { type ReactNode, createContext, useState } from "react";
+import { createContext, type ReactNode, useState } from "react";
+import type { ConfigModel } from "@/model/configModel";
 
 interface ConfigContextType {
 	config: ConfigModel;
